@@ -395,3 +395,50 @@ pre {
     margin: 0;
     color: #606060;
 }
+
+/* ======================== 代码块复制按钮 ======================== */
+.copy-btn {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    padding: 3px 10px;
+    font-size: 12px;
+    font-family: var(--font-stack);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 6px;
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.6);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease, background 0.2s ease, color 0.2s ease;
+    line-height: 1.6;
+    z-index: 1;
+}
+
+pre:hover .copy-btn {
+    opacity: 1;
+}
+
+.copy-btn:hover {
+    background: rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.9);
+}
+
+.copy-btn.copied {
+    background: var(--color-primary, #1a8fe3);
+    color: #fff;
+    border-color: var(--color-primary, #1a8fe3);
+    opacity: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+    .copy-btn {
+        border-color: rgba(0,0,0,0.2);
+        background: rgba(0,0,0,0.15);
+        color: rgba(255,255,255,0.5);
+    }
+    .copy-btn:hover {
+        background: rgba(0,0,0,0.3);
+        color: rgba(255,255,255,0.85);
+    }
+}

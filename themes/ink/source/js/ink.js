@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const alt = img.getAttribute('alt');
 
             if (title === null && alt === null) {
-                return; 
+                return;
             }
 
             img.crossOrigin = 'anonymous';
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (alt) {
                 const altElement = document.createElement('span');
                 altElement.setAttribute('class', 'image-alt');
-                altElement.textContent = alt; 
+                altElement.textContent = alt;
                 figcaption.appendChild(altElement);
             }
 
@@ -37,14 +37,14 @@ document.addEventListener('DOMContentLoaded', function () {
             customElement.appendChild(figcaption);
 
             img.addEventListener('load', function () {
-                customElement.style.display = 'inline-block'; // 修改为 inline-block
+                customElement.style.display = 'inline-block';
                 const canvas = document.createElement('canvas');
                 const rgbColor = getImageColor(canvas, img);
-                figcaption.style.backgroundColor = rgbColor; 
+                figcaption.style.backgroundColor = rgbColor;
             });
 
             img.addEventListener('error', function () {
-                customElement.remove(); 
+                customElement.remove();
             });
         });
     }
@@ -61,9 +61,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const pixelCount = img.width * img.height;
         for (let i = 0; i < data.length; i += 4) {
-            r += data[i];     // R
-            g += data[i + 1]; // G
-            b += data[i + 2]; // B
+            r += data[i];
+            g += data[i + 1];
+            b += data[i + 2];
         }
         r = Math.round(r / pixelCount);
         g = Math.round(g / pixelCount);
@@ -77,14 +77,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const thumbnails = document.querySelectorAll('.thumbnail');
 
     thumbnails.forEach(img => {
-        img.crossOrigin = 'anonymous'; 
+        img.crossOrigin = 'anonymous';
         img.onload = function () {
-            console.log('Image loaded:', img.src); // 调试输出
+            console.log('Image loaded:', img.src);
             const canvas = document.createElement('canvas');
             const rgbColor = getImageColor(canvas, img);
             const articleItem = img.closest('.article-item');
             const articleInfo = articleItem.querySelector('.article-info');
-            articleInfo.style.backgroundColor = rgbColor; 
+            articleInfo.style.backgroundColor = rgbColor;
         };
 
         img.addEventListener('error', function () {
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const data = context.getImageData(0, 0, img.width, img.height).data;
         const colorCounts = {};
-        
+
         for (let i = 0; i < data.length; i += 4) {
             const r = data[i];
             const g = data[i + 1];
@@ -119,6 +119,60 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
         console.log(`Extracted color: ${dominantColor}`);
-        return `${dominantColor}`; 
+        return `${dominantColor}`;
     }
+});
+
+// ======================== 代码块一键复制 ========================
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('pre').forEach(function (pre) {
+        var code = pre.querySelector('code');
+        if (!code) return;
+        // 跳过已经处理过的
+        if (pre.querySelector('.copy-btn')) return;
+
+        var btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.textContent = '复制';
+        btn.setAttribute('aria-label', '复制代码');
+
+        btn.addEventListener('click', function () {
+            var text = code.textContent || code.innerText;
+            // 去掉首尾空行
+            text = text.replace(/^\n+/, '').replace(/\n+$/, '');
+            navigator.clipboard.writeText(text).then(function () {
+                btn.textContent = '已复制!';
+                btn.classList.add('copied');
+                setTimeout(function () {
+                    btn.textContent = '复制';
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(function () {
+                // 降级：fallback 到旧方法
+                try {
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '已复制!';
+                    btn.classList.add('copied');
+                    setTimeout(function () {
+                        btn.textContent = '复制';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                } catch (e) {
+                    btn.textContent = '复制失败';
+                    setTimeout(function () { btn.textContent = '复制'; }, 2000);
+                }
+            });
+        });
+
+        // 让 pre 成为相对定位容器
+        pre.style.position = 'relative';
+        pre.appendChild(btn);
+    });
 });
