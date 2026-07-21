@@ -1,0 +1,26 @@
+<main>
+  <div>
+    <ul class="blog-posts">
+      <% page.posts.forEach(function(item) { %>
+        <li class="article-item">
+          <a href="<%- url_for(item.path) %>" class="link">
+          <img src="<%- item.cover || 'https://picsum.photos/300/300?random=' + Math.random() %>" alt="<%- item.title %>" class="thumbnail" />
+            <div class="article-info">
+              <time><%- item.date.format('YYYY/MM/DD') %></time>
+              <span><%- item.title || 'untitled' %></span>
+            </div>
+          </a>
+        </li>
+      <% }) %>
+    </ul>
+    
+    <nav class="post-navigation">
+      <% if(page.prev !== 0){ %>
+        <button onclick="location.href='<%- url_for(page.prev_link)%>'">上一页</button>
+      <% } %>
+      <% if(page.next !== 0){ %>
+        <button onclick="location.href='<%- url_for(page.next_link)%>'">下一页</button>
+      <% } %>
+    </nav>
+  </div>
+</main>

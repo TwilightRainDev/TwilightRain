@@ -1,0 +1,8 @@
+<header>
+    <a class="title"  href="/" style="display: flex; align-items: start; text-decoration: none;padding: 0px;" >
+        <img style="width:var(--size-step-2);margin-right: 5px;height: var(--size-step-2);margin-top: calc(var(--size-step-1) / 2);" src="<%= url_for(theme.favicon) %>"/>
+        <%= config.title %><% if (page.title) { %>&nbsp;|&nbsp;<%= page.title %><% } %>
+    </a>
+    <p class="subtitle"><%= config.subtitle %></p>
+
+</header>

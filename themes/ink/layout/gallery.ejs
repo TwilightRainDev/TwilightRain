@@ -1,0 +1,23 @@
+<main>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" />
+    <div class="gallery">
+        <% if (page.photos && page.photos.length > 0) { %>
+            <% page.photos.forEach(photo => { %>
+                <figure class="gallery-item">
+                    <a href="<%= photo.src %>" data-fancybox="gallery" data-caption="<%= photo.title %>">
+                        <img src="<%= photo.src %>" alt="<%= photo.title %>" loading="lazy">
+                    </a>
+                    <figcaption class="image-info">
+                        <span class="photo-date"><%= photo.date %></span>
+                        <span class="photo-title"><%= photo.title %></span>
+                    </figcaption>
+                </figure>
+            <% }) %>
+        <% } else { %>
+            <p>没有可显示的照片。</p>
+        <% } %>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+    </main>
