@@ -8,6 +8,10 @@
             <div class="article-info">
               <time><%- item.date.format('YYYY/MM/DD') %></time>
               <span><%- item.title || 'untitled' %></span>
+              <% if (item.excerpt) { %>
+                <% var excerptText = item.excerpt.replace(/<[^>]+>/g, '').trim().substring(0, 100).replace(/\n/g, ' ') + (item.excerpt.replace(/<[^>]+>/g, '').trim().length > 100 ? '...' : '') %>
+                <p class="article-excerpt"><%= excerptText %></p>
+              <% } %>
             </div>
           </a>
         </li>
