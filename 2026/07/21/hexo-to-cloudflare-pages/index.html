@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5">
+    <meta name="description" content="TwilightRain 的个人博客，记录技术探索与日常思考">
+    <meta name="keywords" content="技术博客,个人博客,前端,开发">
+    <script src="/js/ink.js" defer></script>
+    <link rel="shortcut icon" href="/img/icon.svg" type="image/x-icon" />
+    <title>
+        
+            从 GitHub Pages 迁移到 Cloudflare Pages：Hexo 博客部署全记录|TwilightRain
+    </title>
+    
+<link rel="stylesheet" href="/css/style.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="TwilightRain" type="application/atom+xml">
+</head>
+    <body>
+        
+            <header>
+    <a class="title"  href="/" style="display: flex; align-items: start; text-decoration: none;padding: 0px;" >
+        <img style="width:var(--size-step-2);margin-right: 5px;height: var(--size-step-2);margin-top: calc(var(--size-step-1) / 2);" src="/img/icon.svg"/>
+        TwilightRain&nbsp;|&nbsp;从 GitHub Pages 迁移到 Cloudflare Pages：Hexo 博客部署全记录
+    </a>
+    <p class="subtitle"></p>
+
+</header>
+
+        
+        <main>
+    <article>
+        <h2 id="缘起"><a href="#缘起" class="headerlink" title="缘起"></a>缘起</h2><p>事情是这样的。</p>
+<p>我的 Hexo 博客之前一直部署在 GitHub Pages 上，但我发现它在国内的访问体验很不稳定——时而能打开，时而转圈圈，时而直接超时。这是因为 <code>github.io</code> 域名在国内的 CDN 节点访问不畅，加上可能存在的 DNS 污染，导致博客对国内读者不太友好。</p>
+<p>于是我开始寻找解决方案。最直接的办法是使用 Cloudflare Pages 来托管博客，利用它的全球 CDN 加速，让国内访问更稳定。</p>
+<hr>
+<h2 id="第一步：在-Cloudflare-Pages-创建项目"><a href="#第一步：在-Cloudflare-Pages-创建项目" class="headerlink" title="第一步：在 Cloudflare Pages 创建项目"></a>第一步：在 Cloudflare Pages 创建项目</h2><p>操作本身不复杂：</p>
+<ol>
+<li>登录 Cloudflare Dashboard → <strong>Workers &amp; Pages</strong></li>
+<li>点击 <strong>Create application</strong> → 选择 <strong>Pages</strong> 选项卡</li>
+<li>点击 <strong>Connect to Git</strong>，授权 Cloudflare 访问你的 GitHub</li>
+<li>选择你的博客仓库，填入构建设置：</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>配置项</th>
+<th>填写值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Production branch</td>
+<td>main</td>
+</tr>
+<tr>
+<td>Framework preset</td>
+<td>None（列表中没有 Hexo）</td>
+</tr>
+<tr>
+<td>Build command</td>
+<td><code>npm run build</code></td>
+</tr>
+<tr>
+<td>Build directory</td>
+<td>public</td>
+</tr>
+</tbody></table>
+<ol>
+<li>点击 <strong>Save and Deploy</strong></li>
+</ol>
+<p>一切都看起来很简单……直到我看到了红色的报错。</p>
+<span id="more"></span>
+
+<hr>
+<h2 id="第二步：踩坑——package-json-找不到了？"><a href="#第二步：踩坑——package-json-找不到了？" class="headerlink" title="第二步：踩坑——package.json 找不到了？"></a>第二步：踩坑——<code>package.json</code> 找不到了？</h2><p>Cloudflare Pages 的构建日志赫然写着：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm error code ENOENT</span><br><span class="line">npm error path /opt/buildhome/repo/package.json</span><br><span class="line">npm error enoent Could not read package.json</span><br></pre></td></tr></table></figure>
+
+<p>嗯？我的仓库里明明有 <code>package.json</code> 啊。</p>
+<p>回头一看 GitHub 仓库，我明白了——</p>
+<h3 id="根因：推送错了内容"><a href="#根因：推送错了内容" class="headerlink" title="根因：推送错了内容"></a>根因：推送错了内容</h3><p>我的 GitHub 仓库里只有这些文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">index.html</span><br><span class="line">2026/07/13/hello-world/</span><br><span class="line">archives/</span><br><span class="line">css/</span><br><span class="line">fancybox/</span><br><span class="line">js/</span><br></pre></td></tr></table></figure>
+
+<p>全是 <code>hexo generate</code> 生成的<strong>静态文件</strong>，没有 <code>package.json</code>，没有 <code>_config.yml</code>，没有 <code>source/</code> 文件夹。</p>
+<p>换句话说，我之前一直用 <code>hexo deploy</code> 把编译后的 <code>public/</code> 目录推到了仓库里。这在 GitHub Pages 的流程下是正常的——它只需要静态文件。但 <strong>Cloudflare Pages 需要的是源代码</strong>，因为它要在服务端执行 <code>npm install</code> 和 <code>npm run build</code>。</p>
+<h3 id="修复：推送正确的源代码"><a href="#修复：推送正确的源代码" class="headerlink" title="修复：推送正确的源代码"></a>修复：推送正确的源代码</h3><p>解决方案很简单：把 Hexo 的源代码推上去。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在博客根目录执行</span></span><br><span class="line">git init</span><br><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;推送 Hexo 源码到 Cloudflare Pages&quot;</span></span><br><span class="line">git remote add origin https://github.com/你的用户名/你的仓库名.git</span><br><span class="line">git push -u origin main --force</span><br></pre></td></tr></table></figure>
+
+<p>注意 <code>.gitignore</code> 要确保忽略了 <code>node_modules/</code> 和 <code>public/</code>：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">node_modules/</span><br><span class="line">public/</span><br><span class="line">db.json</span><br><span class="line">.deploy*/</span><br></pre></td></tr></table></figure>
+
+<p>这样推送上去的就是干净的源代码，Cloudflare 拉取后会自动安装依赖并构建。</p>
+<hr>
+<h2 id="第三步：又踩一坑——分支名称"><a href="#第三步：又踩一坑——分支名称" class="headerlink" title="第三步：又踩一坑——分支名称"></a>第三步：又踩一坑——分支名称</h2><p>推送成功后，我兴冲冲地点了 <strong>Retry deployment</strong>，结果……还是同样的错误。</p>
+<p>再次查看构建日志，发现 Cloudflare 拉取的依然是旧 commit：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> * branch 8eb197c... -&gt; FETCH_HEAD</span><br><span class="line">HEAD is now at 8eb197c Site updated: 2026-07-13 18:25:29</span><br></pre></td></tr></table></figure>
+
+<p>奇怪，明明推送成功了，为什么还拉取旧代码？</p>
+<p>原因在于 <strong>Cloudflare Pages 配置的 Production branch 还是 <code>master</code></strong>，而我的仓库默认分支已经改成了 <code>main</code>（且 <code>master</code> 已经不存在了）。Cloudflare 找不到 <code>master</code> 分支，就用了一个缓存中的旧提交。</p>
+<p>解决方案：在 Cloudflare Pages 项目设置中，把 <strong>Production branch</strong> 从 <code>master</code> 改为 <code>main</code>，然后再次重试部署。</p>
+<p>这次终于成功了！🎉</p>
+<hr>
+<h2 id="最终效果"><a href="#最终效果" class="headerlink" title="最终效果"></a>最终效果</h2><p>博客成功部署到了 <code>twilightraindev-github-io.pages.dev</code>，构建和部署都自动完成。以后更新博客只需要：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hexo new post <span class="string">&quot;我的新文章&quot;</span></span><br><span class="line"><span class="comment"># 写文章...</span></span><br><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;新文章&quot;</span></span><br><span class="line">git push</span><br></pre></td></tr></table></figure>
+
+<p>Cloudflare Pages 会自动检测到 push 事件，拉取代码、安装依赖、构建、部署，整个流程全自动。</p>
+<hr>
+<h2 id="总结几个要点"><a href="#总结几个要点" class="headerlink" title="总结几个要点"></a>总结几个要点</h2><ol>
+<li><strong>GitHub Pages 推静态文件，Cloudflare Pages 推源代码</strong>——这两种部署方式对仓库内容的要求完全不同，搞清楚区别才能避免踩坑。</li>
+<li><strong>Production branch 要匹配</strong>——Cloudflare Pages 配置的部署分支必须和 GitHub 仓库的默认分支一致。</li>
+<li><strong>Cloudflare Pages 的构建命令记得用 <code>npm run build</code></strong>，而不是 <code>hexo generate</code>。确保 <code>package.json</code> 的 <code>scripts</code> 中有 <code>&quot;build&quot;: &quot;hexo generate&quot;</code>。</li>
+</ol>
+<p>希望这篇文章能帮到同样想迁移到 Cloudflare Pages 的朋友。如果你也遇到了类似的报错，对照上面的步骤检查一下，大概率能解决问题。</p>
+
+    </article>
+</main>
+        
+            <footer style="padding:0 0;" >
+    <div id="footer-nav">
+        <p style="font-size:0.7em;margin: 0px;">
+            
+              <a class="footer-nav-link" href="/">文章</a>
+            
+              <a class="footer-nav-link" href="/about/">关于</a>
+            
+              <a class="footer-nav-link" target="_blank" rel="noopener" href="https://github.com/TwilightRainDev">GitHub</a>
+            
+        </p>
+    </div>
+</footer>
+        
+    </body>
+</html>

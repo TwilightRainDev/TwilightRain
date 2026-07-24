@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5">
+    <meta name="description" content="TwilightRain 的个人博客，记录技术探索与日常思考">
+    <meta name="keywords" content="技术博客,个人博客,前端,开发">
+    <script src="/js/ink.js" defer></script>
+    <link rel="shortcut icon" href="/img/icon.svg" type="image/x-icon" />
+    <title>
+        
+            BiliCompact 完全解析：从动机到架构|TwilightRain
+    </title>
+    
+<link rel="stylesheet" href="/css/style.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="TwilightRain" type="application/atom+xml">
+</head>
+    <body>
+        
+            <header>
+    <a class="title"  href="/" style="display: flex; align-items: start; text-decoration: none;padding: 0px;" >
+        <img style="width:var(--size-step-2);margin-right: 5px;height: var(--size-step-2);margin-top: calc(var(--size-step-1) / 2);" src="/img/icon.svg"/>
+        TwilightRain&nbsp;|&nbsp;BiliCompact 完全解析：从动机到架构
+    </a>
+    <p class="subtitle"></p>
+
+</header>
+
+        
+        <main>
+    <article>
+        <blockquote>
+<p>BiliCompact 是一个非侵入式的 B 站首页精简用户脚本。本文从动机、设计、技术三个维度完整回顾这个项目。</p>
+</blockquote>
+<h2 id="缘起：为什么要写这个脚本"><a href="#缘起：为什么要写这个脚本" class="headerlink" title="缘起：为什么要写这个脚本"></a>缘起：为什么要写这个脚本</h2><p>写了一天代码，晚上瘫在椅子上，打开 B 站想刷两个视频放松一下。</p>
+<p>结果首页一刷新，直播，番剧，推广，付费课程铺了一整屏。我就想看两三个视频，信息量却先灌一脸，反而更累了。</p>
+<p>这种憋屈感持续了挺久。不是说直播没人爱看，番剧没人追，但 B 站不管你想看什么，一股脑全塞给你。</p>
+<p>我忍过，也试过假装看不见。但每次打开首页都像被按着头喂饭。后来想通了，与其每次都烦，不如自己动手。</p>
+<p>于是有了 <strong>BiliCompact</strong>。</p>
+<span id="more"></span>
+
+<p>要求很简单，首页想显示几个视频就显示几个。十个太多？五个。五个还多？三个也行。直播，广告，番剧推广，不想看就别出现。评论区满屏的 @某某某 刷屏，能自动清掉最好。</p>
+<p>然后就动手了。</p>
+<h2 id="痛点：B-站首页的信息过载"><a href="#痛点：B-站首页的信息过载" class="headerlink" title="痛点：B 站首页的信息过载"></a>痛点：B 站首页的信息过载</h2><p>打开 B 站首页，扑面而来的是：</p>
+<ul>
+<li>直播流 — 大量正在直播的推荐</li>
+<li>番剧推荐 — 你不一定感兴趣</li>
+<li>广告 &#x2F; 推广 — 商业内容</li>
+<li>付费课程 — 推销入口</li>
+</ul>
+<p>真正想看的视频，被淹没在其中。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">直播 ████████████████████████████████████ 100%</span><br><span class="line">番剧 ██████████████████████████████ 80%</span><br><span class="line">广告 ████████████████████ 50%</span><br><span class="line">付费 ██████████ 20%</span><br><span class="line">真正想看的 ██████ 12%</span><br></pre></td></tr></table></figure>
+
+<h3 id="之前-vs-之后"><a href="#之前-vs-之后" class="headerlink" title="之前 vs 之后"></a>之前 vs 之后</h3><p><strong>之前</strong>：3 列密集网格，信息拥挤</p>
+<p><strong>之后</strong>：2 列宽松布局，一目了然</p>
+<h2 id="设计哲学：非侵入式"><a href="#设计哲学：非侵入式" class="headerlink" title="设计哲学：非侵入式"></a>设计哲学：非侵入式</h2><p>很多同类脚本会在页面注入 UI 元素——按钮、浮窗、侧边栏。好处是交互直观，坏处是<strong>耦合太深</strong>。B 站的前端频繁改版，每次 DOM 结构调整，注入的 UI 就可能错位、失效，甚至阻塞页面渲染。</p>
+<p>BiliCompact 的做法相反：</p>
+<ul>
+<li><strong>不在 B 站页面注入任何 UI 元素</strong></li>
+<li>配置面板通过 Tampermonkey 的 <code>GM_registerMenuCommand</code> 唤起，以浮层形式展示</li>
+<li>所有过滤逻辑在后台执行，页面外观无变化</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">GM_registerMenuCommand(T(&#x27;MenuSettings&#x27;), () =&gt; OpenConfigPanel());</span><br><span class="line">GM_registerMenuCommand(T(&#x27;MenuRefresh&#x27;), () =&gt; LimitVideos());</span><br><span class="line">GM_registerMenuCommand(T(&#x27;MenuToggle&#x27;), () =&gt; &#123; IsActive = !IsActive; &#125;);</span><br></pre></td></tr></table></figure>
+
+<p>这样做的代价是交互入口不那么直观（藏在扩展菜单里），但换来的是<strong>高稳定性</strong>——B 站改版几次了，脚本还能正常工作。</p>
+<h2 id="功能速览"><a href="#功能速览" class="headerlink" title="功能速览"></a>功能速览</h2><table>
+<thead>
+<tr>
+<th>功能</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>数量限制</td>
+<td>设置每页最大显示视频数量，不同页面可独立设置</td>
+</tr>
+<tr>
+<td>智能过滤</td>
+<td>排除直播 &#x2F; 广告 &#x2F; 番剧 &#x2F; 付费课程</td>
+</tr>
+<tr>
+<td>UP 主白名单</td>
+<td>保留指定 UP 主的内容</td>
+</tr>
+<tr>
+<td>一键切换</td>
+<td>快捷开关，随时恢复原始首页</td>
+</tr>
+<tr>
+<td>评论净化</td>
+<td>删除 @ 提及，隐藏短评论</td>
+</tr>
+<tr>
+<td>配置持久化</td>
+<td>跨页面保存所有设置</td>
+</tr>
+</tbody></table>
+<h3 id="配置面板"><a href="#配置面板" class="headerlink" title="配置面板"></a>配置面板</h3><p>通过 Tampermonkey 菜单打开：</p>
+<table>
+<thead>
+<tr>
+<th>设置项</th>
+<th>说明</th>
+<th>默认</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>最大显示数量</td>
+<td>每页最多显示的视频数</td>
+<td>10</td>
+</tr>
+<tr>
+<td>排除直播</td>
+<td>隐藏直播推荐</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>排除广告</td>
+<td>隐藏推广内容</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>排除番剧</td>
+<td>隐藏番剧推荐</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>排除付费课程</td>
+<td>隐藏付费内容</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>保留推广位</td>
+<td>推广内容不计入数量</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>调试模式</td>
+<td>输出日志到控制台</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>评论净化</td>
+<td>自动删除 @ 提及</td>
+<td>❌</td>
+</tr>
+</tbody></table>
+<p>每种页面可以独立配置数量：首页 10、热门 8、分区 10、动态 6、搜索 10。</p>
+<h2 id="技术架构"><a href="#技术架构" class="headerlink" title="技术架构"></a>技术架构</h2><h3 id="选择器探测机制"><a href="#选择器探测机制" class="headerlink" title="选择器探测机制"></a>选择器探测机制</h3><p>B 站首页的 DOM 结构经常变化，直接写死 CSS 选择器是行不通的。脚本实现了一套<strong>多层级降级探测</strong>策略：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">第一层  id / class 精准选择器              覆盖 2%</span><br><span class="line">第二层  data-* 属性探测 (data-video-id)     +3%</span><br><span class="line">第三层  宽泛属性选择器 [class*=&quot;video&quot;]      +5%</span><br><span class="line">第四层  链接文本回退 (&lt;a href=&quot;/video/&quot;&gt;)    +80%</span><br><span class="line">────────────────────────────────────────</span><br><span class="line">最终覆盖率                                  99%+</span><br></pre></td></tr></table></figure>
+
+<p>具体实现上，每层依次尝试：</p>
+<ol>
+<li><strong>精确类名</strong>（<code>.bili-video-card</code>, <code>.feed-card</code> 等）</li>
+<li><strong>通配类名</strong>（<code>[class*=&quot;video-card&quot;]</code> 等）</li>
+<li><strong>通过链接回退</strong>（查找包含 <code>/video/</code> 链接的父级卡片）</li>
+</ol>
+<p>选择器被缓存，在 URL 变化时自动失效重新探测，适应 SPA 路由切换。</p>
+<h3 id="过滤引擎"><a href="#过滤引擎" class="headerlink" title="过滤引擎"></a>过滤引擎</h3><p>过滤逻辑分为几个阶段，顺序执行：</p>
+<ol>
+<li><strong>去重</strong>：消除嵌套卡片，避免同一个视频被重复计数</li>
+<li><strong>规则过滤</strong>：按配置排除直播、广告、番剧、付费内容</li>
+<li><strong>UP 主白名单</strong>：指定 ID 的 UP 主视频始终保留</li>
+<li><strong>数量截断</strong>：超出限制的视频隐藏</li>
+<li><strong>推广位保护</strong>：配置为保留推广位时，不计入数量限制</li>
+</ol>
+<h3 id="Grid-塌陷处理"><a href="#Grid-塌陷处理" class="headerlink" title="Grid 塌陷处理"></a>Grid 塌陷处理</h3><p>B 站使用 CSS Grid 布局，简单地 <code>display: none</code> 卡片元素不会让网格塌陷，会留下空白。</p>
+<p>BiliCompact 的处理方式是同时设置多个样式：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">El</span>.<span class="property">style</span>.<span class="property">display</span> = <span class="string">&#x27;none&#x27;</span>;</span><br><span class="line"><span class="title class_">El</span>.<span class="property">style</span>.<span class="property">visibility</span> = <span class="string">&#x27;hidden&#x27;</span>;</span><br><span class="line"><span class="title class_">El</span>.<span class="property">style</span>.<span class="property">opacity</span> = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line"><span class="title class_">El</span>.<span class="property">style</span>.<span class="property">height</span> = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line"><span class="title class_">El</span>.<span class="property">style</span>.<span class="property">margin</span> = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line"><span class="title class_">El</span>.<span class="property">style</span>.<span class="property">padding</span> = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line"><span class="title class_">El</span>.<span class="property">style</span>.<span class="property">overflow</span> = <span class="string">&#x27;hidden&#x27;</span>;</span><br><span class="line"><span class="title class_">El</span>.<span class="property">style</span>.<span class="property">flex</span> = <span class="string">&#x27;0 0 0&#x27;</span>;</span><br><span class="line"><span class="title class_">El</span>.<span class="property">style</span>.<span class="property">position</span> = <span class="string">&#x27;absolute&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>通过 <code>height: 0</code> + <code>padding: 0</code> + <code>position: absolute</code> + <code>overflow: hidden</code> 的组合，确保网格完全塌陷，不留视觉空白。</p>
+<h3 id="MutationObserver-节流"><a href="#MutationObserver-节流" class="headerlink" title="MutationObserver + 节流"></a>MutationObserver + 节流</h3><p>为了应对 B 站 SPA 动态加载内容，BiliCompact 使用 <code>MutationObserver</code> 监听 DOM 变化：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">DOM 变化 → MutationObserver 触发 → 防抖/节流(200ms) → 执行精简</span><br><span class="line">                                                              ↕</span><br><span class="line">                                                      定时回查(5s)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>200ms <strong>节流</strong>：防止高频触发</li>
+<li>300ms <strong>防抖</strong>：等待 DOM 稳定后再执行</li>
+<li>5s <strong>定时回查</strong>：兜底处理动态加载的内容</li>
+</ul>
+<h3 id="Shadow-DOM-穿透"><a href="#Shadow-DOM-穿透" class="headerlink" title="Shadow DOM 穿透"></a>Shadow DOM 穿透</h3><p>B 站新版评论区使用 Web Components 技术，评论内容在多层 Shadow DOM 内部：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;bili-comments&gt;</span><br><span class="line">  └─ shadowRoot →</span><br><span class="line">    &lt;bili-comment-thread-renderer&gt;</span><br><span class="line">      └─ shadowRoot →</span><br><span class="line">        &lt;bili-comment-renderer&gt;</span><br><span class="line">          └─ shadowRoot →</span><br><span class="line">            &lt;bili-rich-text&gt;</span><br><span class="line">              └─ shadowRoot → #contents</span><br></pre></td></tr></table></figure>
+
+<p>净化器递归访问 <code>element.shadowRoot</code> 属性，穿透所有 Shadow DOM 边界，找到评论内容容器：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">purifierGetContentsEl</span>(<span class="params">renderer</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> richText = renderer.<span class="property">shadowRoot</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;bili-rich-text&#x27;</span>);</span><br><span class="line">    <span class="keyword">if</span> (richText &amp;&amp; richText.<span class="property">shadowRoot</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> richText.<span class="property">shadowRoot</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;contents&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>删除所有 <code>a[data-type=&quot;mention&quot;]</code>（@ 提及标签），然后检查剩余文字长度，不足 5 字的评论整体隐藏。通过 MutationObserver 监听评论区动态加载，新评论出现时自动处理。同时兼容同页面其他脚本，检测到共存时仅做日志标记，不冲突。</p>
+<h3 id="元素去除系统"><a href="#元素去除系统" class="headerlink" title="元素去除系统"></a>元素去除系统</h3><p>除了核心的视频数量限制，脚本还提供了一组可选的 UI 元素去除预设，涵盖首页轮播图、频道导航、创作中心入口、直播入口等 13 个可去除元素。每个预设包含多版本选择器，适配 B 站不同的 DOM 版本。</p>
+<h3 id="多语言支持"><a href="#多语言支持" class="headerlink" title="多语言支持"></a>多语言支持</h3><p>内置完整的 i18n 系统，支持简体中文、繁体中文、英文，自动根据浏览器语言切换：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">ResolveLanguage</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="title class_">Config</span>.<span class="property">Language</span> &amp;&amp; <span class="title class_">Config</span>.<span class="property">Language</span> !== <span class="string">&#x27;auto&#x27;</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="title class_">Config</span>.<span class="property">Language</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">const</span> <span class="title class_">Nav</span> = (navigator.<span class="property">language</span> || <span class="string">&#x27;&#x27;</span>).<span class="title function_">toLowerCase</span>();</span><br><span class="line">    <span class="keyword">if</span> (<span class="regexp">/^zh-(tw|hk|mo)$/i</span>.<span class="title function_">test</span>(<span class="title class_">Nav</span>) || <span class="regexp">/^zh-(hant)$/i</span>.<span class="title function_">test</span>(<span class="title class_">Nav</span>)) <span class="keyword">return</span> <span class="string">&#x27;zh_TW&#x27;</span>;</span><br><span class="line">    <span class="keyword">if</span> (<span class="regexp">/^zh/i</span>.<span class="title function_">test</span>(<span class="title class_">Nav</span>)) <span class="keyword">return</span> <span class="string">&#x27;zh_CN&#x27;</span>;</span><br><span class="line">    <span class="keyword">if</span> (<span class="regexp">/^en/i</span>.<span class="title function_">test</span>(<span class="title class_">Nav</span>)) <span class="keyword">return</span> <span class="string">&#x27;en_US&#x27;</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;zh_CN&#x27;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>所有用户可见文本通过 <code>T(key, ...args)</code> 函数统一翻译，键缺失时自动回退到中文，不会出现英文报错。语言可在配置面板中手动切换，切换后立即生效。</p>
+<h3 id="持久化与实时生效"><a href="#持久化与实时生效" class="headerlink" title="持久化与实时生效"></a>持久化与实时生效</h3><p>所有配置通过 <code>GM_setValue</code> &#x2F; <code>GM_getValue</code> 持久化，刷新页面不丢失。配置变更后立即生效，无需手动刷新。同时包含定时后备检查（每 5 秒），防止 B 站 SPA 的动态加载导致视频数量超出限制——这是一种防御性编程，确保极端情况下也能正常工作。</p>
+<h2 id="用户反馈"><a href="#用户反馈" class="headerlink" title="用户反馈"></a>用户反馈</h2><p>没想到会有人愿意用这东西。</p>
+<p>一开始只是自己用，顺手传到了 GreasyFork，想着万一有人需要呢。后来真有人说不用被首页轰炸了，还有人问能不能加某某功能。</p>
+<p>看到这些还挺高兴的。</p>
+<p>现在的互联网产品越做越重，功能越堆越多。但用户想要的，有时候就是清静一点。在产品和用户之间，BiliCompact 尝试稍微往用户这边拉一拉。</p>
+<p>如果你也装了它，觉得有用，那我很高兴。觉得哪里不好用，也欢迎提。</p>
+<p>代码完全开源，MIT 协议，想改就改，想删就删，没什么藏着掖着的。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>BiliCompact 在功能上并不复杂，它的设计重心在<strong>稳定性</strong>和<strong>非侵入性</strong>上。一些值得借鉴的点：</p>
+<ol>
+<li><strong>选择器多梯队探测</strong>——应对频繁的前端改版</li>
+<li><strong>非侵入式 UI</strong>——不污染页面 DOM，降低耦合</li>
+<li><strong>Shadow DOM 穿透</strong>——处理现代前端框架的封装</li>
+<li><strong>防御性定时检查</strong>——SPA 动态加载的兜底策略</li>
+</ol>
+<p>项目地址：<a target="_blank" rel="noopener" href="https://greasyfork.org/scripts/585777">GreasyFork - BiliCompact</a> | <a target="_blank" rel="noopener" href="https://github.com/TwilightRainDev">GitHub</a></p>
+
+    </article>
+</main>
+        
+            <footer style="padding:0 0;" >
+    <div id="footer-nav">
+        <p style="font-size:0.7em;margin: 0px;">
+            
+              <a class="footer-nav-link" href="/">文章</a>
+            
+              <a class="footer-nav-link" href="/about/">关于</a>
+            
+              <a class="footer-nav-link" target="_blank" rel="noopener" href="https://github.com/TwilightRainDev">GitHub</a>
+            
+        </p>
+    </div>
+</footer>
+        
+    </body>
+</html>
