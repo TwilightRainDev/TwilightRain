@@ -1710,3 +1710,420 @@ categories:
 ```
 
 两种方式效果完全一致，推荐方式一，后续新版本会自动推送更新。
+
+---
+
+<!-- ============================================================
+     复制按钮组件（自包含）
+     功能：在页面中定位 BiliCompact 源码块，添加一键复制按钮
+     用法：直接粘贴到文章 HTML 中即可，样式和脚本全部内联
+     ============================================================ -->
+
+<div id="bili-compact-copy-section">
+    <!-- 工具栏：标题 + 复制按钮 -->
+    <div class="bcc-toolbar">
+        <span class="bcc-title">
+            <span class="bcc-icon">复制</span>
+            BiliCompact v2.6.0 完整源码
+        </span>
+        <button class="bcc-btn" id="bcc-copy-btn" title="点击复制全部源码">
+            <span class="bcc-btn-icon">复制</span>
+            <span class="bcc-btn-text">复制代码</span>
+        </button>
+    </div>
+
+    <!-- 复制成功提示（浮窗） -->
+    <div class="bcc-toast" id="bcc-toast"> 已复制到剪贴板！</div>
+</div>
+
+<style>
+    /* ===== 组件容器 ===== */
+    #bili-compact-copy-section {
+        position: relative;
+        margin: 1.5rem 0 0.5rem 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        font-size: 14px;
+        /* 默认跟随系统深色模式，也可通过 .bcc-dark / .bcc-light 覆盖 */;
+    }
+
+    /* ===== 工具栏 ===== */
+    .bcc-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px 16px;
+        padding: 12px 20px;
+        border-radius: 12px 12px 0 0;
+        background: var(--bcc-bg, #1e1e1e);
+        border-bottom: 1px solid var(--bcc-border, #333);
+        transition: background 0.25s, border-color 0.25s;
+        /* 跟随系统深色/浅色 */;
+    }
+
+    /* 标题 */
+    .bcc-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+        color: var(--bcc-text, #eee);
+        font-size: 15px;
+        letter-spacing: 0.3px;
+        user-select: none;
+    }
+    .bcc-icon {
+        font-size: 18px;
+        line-height: 1;
+    }
+
+    /* ===== 复制按钮 ===== */
+    .bcc-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 18px 6px 14px;
+        border: none;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 500;
+        font-family: inherit;
+        cursor: pointer;
+        background: var(--bcc-accent, #fb7299);
+        color: #fff;
+        transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+        box-shadow: 0 2px 8px rgba(251, 114, 153, 0.25);
+        white-space: nowrap;
+    }
+    .bcc-btn:hover {
+        background: var(--bcc-accent-hover, #ff85a8);
+        box-shadow: 0 4px 14px rgba(251, 114, 153, 0.35);
+        transform: translateY(-1px);
+    }
+    .bcc-btn:active {
+        transform: translateY(0px) scale(0.97);
+        box-shadow: 0 1px 4px rgba(251, 114, 153, 0.2);
+    }
+    .bcc-btn:focus-visible {
+        outline: 2px solid var(--bcc-accent, #fb7299);
+        outline-offset: 2px;
+    }
+    /* 复制成功状态 */
+    .bcc-btn.copied {
+        background: #2ea043;
+        box-shadow: 0 2px 8px rgba(46, 160, 67, 0.3);
+    }
+    .bcc-btn.copied:hover {
+        background: #3fb950;
+    }
+    .bcc-btn-icon {
+        font-size: 16px;
+        line-height: 1;
+    }
+    .bcc-btn-text {
+        line-height: 1.4;
+    }
+
+    /* ===== Toast 提示 ===== */
+    .bcc-toast {
+        position: fixed;
+        top: 24px;
+        left: 50%;
+        transform: translateX(-50%) translateY(-20px);
+        padding: 10px 28px;
+        border-radius: 12px;
+        background: rgba(30, 30, 30, 0.92);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        color: #fff;
+        font-size: 14px;
+        font-weight: 500;
+        font-family: inherit;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        z-index: 2147483647;
+        white-space: nowrap;
+    }
+    .bcc-toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0px);
+    }
+
+    /* ===== 深色 / 浅色 自适应（通过 prefers-color-scheme） ===== */
+    /* 深色（默认） */
+    #bili-compact-copy-section {
+        --bcc-bg: #1e1e1e;
+        --bcc-border: #333;
+        --bcc-text: #eee;
+        --bcc-accent: #fb7299;
+        --bcc-accent-hover: #ff85a8;
+    }
+    /* 浅色模式覆盖 */
+    @media (prefers-color-scheme: light) {
+        #bili-compact-copy-section {
+            --bcc-bg: #f6f6f6;
+            --bcc-border: #e0e0e0;
+            --bcc-text: #222;
+            --bcc-accent: #00aeec;
+            --bcc-accent-hover: #33c0f0;
+        }
+        .bcc-btn {
+            box-shadow: 0 2px 8px rgba(0, 174, 236, 0.2);
+        }
+        .bcc-btn:hover {
+            box-shadow: 0 4px 14px rgba(0, 174, 236, 0.3);
+        }
+        .bcc-toast {
+            background: rgba(255, 255, 255, 0.95);
+            color: #222;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        }
+    }
+
+    /* ===== 响应式 ===== */
+    @media (max-width: 480px) {
+        .bcc-toolbar {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+            padding: 12px 16px;
+        }
+        .bcc-title {
+            font-size: 14px;
+        }
+        .bcc-btn {
+            justify-content: center;
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+        .bcc-toast {
+            font-size: 13px;
+            padding: 8px 20px;
+            white-space: normal;
+            max-width: 90vw;
+        }
+    }
+
+    /* ===== 与页面已有代码块无缝衔接 ===== */
+    /* 让工具栏紧贴代码块上方，无多余间距 */
+    figure.highlight {
+        margin-top: 0 !important;
+        border-radius: 0 0 12px 12px !important;
+    }
+    /* 如果 figure 有上边距，覆盖掉 */
+    .highlight {
+        margin-top: 0 !important;
+    }
+    /* 修复可能的滚动容器样式 */
+    .highlight table {
+        border-radius: 0 !important;
+    }
+</style>
+
+<script>
+    (function() {
+        'use strict';
+
+        // ----- 配置 -----
+        const CONFIG = {
+            // 源码块选择器（精确匹配 BiliCompact 的 JS 代码块）
+            codeBlockSelector: 'figure.highlight.javascript .code pre',
+            // 备选选择器（如果主选择器匹配不到，尝试更宽泛的）
+            fallbackSelector: '.highlight.javascript .code pre',
+            // 按钮和 Toast 的 ID
+            btnId: 'bcc-copy-btn',
+            toastId: 'bcc-toast',
+            // 复制成功时按钮文字
+            successText: '已复制！',
+            // 复制成功提示持续时间（ms）
+            toastDuration: 2200,
+            // 按钮恢复文字的时间（ms）
+            btnResetDelay: 2000,
+        };
+
+        // ----- DOM 引用 -----
+        let btn = null;
+        let toast = null;
+        let resetTimer = null;
+        let toastTimer = null;
+
+        // ----- 工具：获取源码文本 -----
+        function getSourceCode() {
+            // 尝试主选择器
+            let pre = document.querySelector(CONFIG.codeBlockSelector);
+            // 如果失败，尝试备选
+            if (!pre) {
+                pre = document.querySelector(CONFIG.fallbackSelector);
+            }
+            if (!pre) {
+                console.warn('[BCCopy] 未找到源码块，请检查选择器');
+                return null;
+            }
+            // 提取文本内容（保留换行和缩进）
+            return pre.textContent || '';
+        }
+
+        // ----- 复制到剪贴板 -----
+        async function copyToClipboard(text) {
+            if (!text) return false;
+            try {
+                // 优先使用 Clipboard API
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(text);
+                    return true;
+                }
+                // 降级方案：使用 document.execCommand
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.left = '-9999px';
+                ta.style.top = '-9999px';
+                ta.style.width = '1px';
+                ta.style.height = '1px';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.focus();
+                ta.select();
+                const ok = document.execCommand('copy');
+                document.body.removeChild(ta);
+                return ok;
+            } catch (err) {
+                console.error('[BCCopy] 复制失败:', err);
+                return false;
+            }
+        }
+
+        // ----- 显示 Toast -----
+        function showToast(message) {
+            if (!toast) return;
+            // 清除之前的定时器
+            if (toastTimer) {
+                clearTimeout(toastTimer);
+                toastTimer = null;
+            }
+            toast.textContent = message || ' 已复制到剪贴板！';
+            toast.classList.add('show');
+            toastTimer = setTimeout(function() {
+                toast.classList.remove('show');
+                toastTimer = null;
+            }, CONFIG.toastDuration);
+        }
+
+        // ----- 按钮点击处理 -----
+        async function handleCopy() {
+            if (!btn) return;
+
+            // 如果按钮处于"已复制"状态，重置后再执行
+            if (btn.classList.contains('copied')) {
+                // 但允许再次点击，重置状态
+                resetButton();
+            }
+
+            // 获取源码
+            const code = getSourceCode();
+            if (code === null || code.trim() === '') {
+                showToast(' 未找到源码，请检查页面结构');
+                return;
+            }
+
+            // 执行复制
+            const ok = await copyToClipboard(code);
+            if (ok) {
+                // 成功：按钮变绿，显示成功文字
+                btn.classList.add('copied');
+                const originalText = btn.querySelector('.bcc-btn-text');
+                if (originalText) {
+                    originalText.textContent = CONFIG.successText;
+                }
+                showToast(' 已复制到剪贴板！');
+
+                // 定时恢复按钮文字
+                if (resetTimer) {
+                    clearTimeout(resetTimer);
+                    resetTimer = null;
+                }
+                resetTimer = setTimeout(function() {
+                    resetButton();
+                }, CONFIG.btnResetDelay);
+            } else {
+                showToast(' 复制失败，请手动选择复制');
+            }
+        }
+
+        // ----- 恢复按钮原始状态 -----
+        function resetButton() {
+            if (!btn) return;
+            btn.classList.remove('copied');
+            const textEl = btn.querySelector('.bcc-btn-text');
+            if (textEl) {
+                // 从 data 属性恢复原始文字，或使用默认
+                const orig = textEl.dataset.originalText || '复制代码';
+                textEl.textContent = orig;
+            }
+            if (resetTimer) {
+                clearTimeout(resetTimer);
+                resetTimer = null;
+            }
+        }
+
+        // ----- 保存按钮原始文字 -----
+        function preserveButtonText() {
+            if (!btn) return;
+            const textEl = btn.querySelector('.bcc-btn-text');
+            if (textEl && !textEl.dataset.originalText) {
+                textEl.dataset.originalText = textEl.textContent || '复制代码';
+            }
+        }
+
+        // ----- 初始化组件 -----
+        function init() {
+            // 获取按钮和 Toast
+            btn = document.getElementById(CONFIG.btnId);
+            toast = document.getElementById(CONFIG.toastId);
+
+            if (!btn) {
+                console.warn('[BCCopy] 未找到复制按钮，请检查 ID');
+                return;
+            }
+
+            // 保存按钮原始文字
+            preserveButtonText();
+
+            // 绑定点击事件
+            btn.addEventListener('click', handleCopy);
+
+            // 键盘支持：回车/空格触发
+            btn.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleCopy();
+                }
+            });
+
+            // 初始状态：确保按钮文字正确
+            resetButton();
+
+            // 小延迟后检查是否需要适配深色/浅色模式
+            // （页面可能动态切换主题，但我们的组件使用 prefers-color-scheme，自动适配）
+            console.log('[BCCopy] 复制按钮已就绪 ');
+        }
+
+        // ----- 启动时机 -----
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            // DOM 已就绪，立即执行
+            // 但为了确保所有元素都已渲染，使用微任务或短延迟
+            if (document.readyState === 'complete') {
+                init();
+            } else {
+                // interactive 状态，等待一帧
+                requestAnimationFrame(init);
+            }
+        }
+    })();
+</script>
