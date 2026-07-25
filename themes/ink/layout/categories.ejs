@@ -1,0 +1,16 @@
+<main>
+  <h1>分类归档</h1>
+  <% if (site.categories && site.categories.length) { %>
+    <ul class="category-list">
+      <% site.categories.sort('name').each(function(category) { %>
+        <li class="category-list-item">
+          <a href="<%- url_for(category.path) %>">
+            <%= category.name %><span class="category-count">（<%= category.posts.length %> 篇文章）</span>
+          </a>
+        </li>
+      <% }); %>
+    </ul>
+  <% } else { %>
+    <p>暂无分类。</p>
+  <% } %>
+</main>
