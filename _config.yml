@@ -114,5 +114,5 @@ feed:
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git
-  repo: https://github.com/TwilightRainDev/TwilightRainDev.github.io.git
-  branch: main
+  repo: https://github.com/TwilightRainDev/TwilightRain.git
+  branch: gh-pages
