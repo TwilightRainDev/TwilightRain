@@ -1683,7 +1683,7 @@ categories:
 
 ---
 
-## 📦 一键安装
+## 一键安装
 
 <span class="install-badge">推荐</span>
 
@@ -1693,7 +1693,7 @@ categories:
 
 <div class="install-block">
     <a class="install-btn" href="https://greasyfork.org/scripts/585777" target="_blank" rel="noopener">
-        🚀 从 Greasyfork 安装
+        从 Greasyfork 安装
     </a>
     <p class="install-hint">已上架 Greasyfork，自动更新，省心省力。</p>
 </div>

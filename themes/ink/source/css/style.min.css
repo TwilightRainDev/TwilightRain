@@ -975,7 +975,7 @@ pre:hover .copy-btn {
 }
 
 .install-block {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #000000;
     border-radius: 12px;
     padding: 24px 28px;
     margin: 16px 0;
@@ -985,7 +985,7 @@ pre:hover .copy-btn {
 .install-btn {
     display: inline-block;
     background: #fff;
-    color: #667eea !important;
+    color: #000000 !important;
     font-weight: 700;
     font-size: 1.1rem;
     padding: 12px 36px;

@@ -11,9 +11,9 @@ menu:
 #   2. 在仓库 Settings → General → Discussions 启用 Discussions
 #   3. 在 https://giscus.app/ 配置并获取 repo_id 和 category_id
 giscus:
-  enabled: false
+  enabled: true
   repo: TwilightRainDev/TwilightRain
-  repo_id: ''
-  category: Announcements
-  category_id: ''
+  repo_id: R_kgDOTW6QpQ
+  category: General
+  category_id: DIC_kwDOTW6Qpc4DB7C2
   mapping: pathname
