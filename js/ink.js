@@ -123,6 +123,39 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+// ======================== 深色/浅色主题切换 ========================
+(function() {
+    var toggleBtn = document.getElementById('theme-toggle');
+    if (!toggleBtn) return;
+
+    var stored = localStorage.getItem('theme-preference');
+    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    function applyTheme(theme) {
+        if (theme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            toggleBtn.textContent = '☀️';
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+            toggleBtn.textContent = '🌙';
+        }
+    }
+
+    // 初始应用：存储优先，无存储则跟随系统
+    if (stored) {
+        applyTheme(stored);
+    } else if (prefersDark) {
+        applyTheme('dark');
+    }
+
+    toggleBtn.addEventListener('click', function() {
+        var current = document.documentElement.getAttribute('data-theme');
+        var next = current === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+        localStorage.setItem('theme-preference', next);
+    });
+})();
+
 // ======================== 返回顶部 ========================
 (function() {
     var btn = document.createElement('button');

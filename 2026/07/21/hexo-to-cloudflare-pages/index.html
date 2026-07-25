@@ -3,28 +3,77 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5">
-    <meta name="description" content="TwilightRain 的个人博客，记录技术探索与日常思考">
-    <meta name="keywords" content="技术博客,个人博客,前端,开发">
+    
+        <meta name="description" content="缘起事情是这样的。
+我的 Hexo 博客之前一直部署在 GitHub Pages 上，但我发现它在国内的访问体验很不稳定——时而能打开，时而转圈圈，时而直接超时。这是因为 github.io 域名在国内的 CDN 节点访问不畅，加上可能存在的 DNS 污染，导致博客对国内读者不太友好。
+于是我开始寻找解决方案。最直接的办法是使用 Cloudflare Pages 来托管博客，利用它的全球 CDN ">
+    
+    
+        <meta name="keywords" content="Hexo,Cloudflare,博客部署,运维">
+    
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="从 GitHub Pages 迁移到 Cloudflare Pages：Hexo 博客部署全记录 | TwilightRain">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://twilightraindev-github-io.pages.dev/2026/07/21/hexo-to-cloudflare-pages/">
+    <meta property="og:site_name" content="TwilightRain">
+    <meta property="og:locale" content="zh_CN">
+    
+        <meta property="og:description" content="缘起事情是这样的。
+我的 Hexo 博客之前一直部署在 GitHub Pages 上，但我发现它在国内的访问体验很不稳定——时而能打开，时而转圈圈，时而直接超时。这是因为 github.io 域名在国内的 CDN 节点访问不畅，加上可能存在的 DNS 污染，导致博客对国内读者不太友好。
+于是我开始寻找解决方案。最直接的办法是使用 Cloudflare Pages 来托管博客，利用它的全球 CDN ">
+    
+    
+    
+        <meta property="article:published_time" content="2026-07-21T06:45:00.000Z">
+    
+    
+        <meta property="article:modified_time" content="2026-07-21T14:41:18.000Z">
+    
+    
+        
+            <meta property="article:tag" content="Hexo">
+        
+            <meta property="article:tag" content="Cloudflare">
+        
+            <meta property="article:tag" content="博客部署">
+        
+            <meta property="article:tag" content="运维">
+        
+    
+
+    <!-- RSS -->
+    <link rel="alternate" type="application/atom+xml" title="TwilightRain" href="/atom.xml">
+
     <script src="/js/ink.js" defer></script>
     <link rel="shortcut icon" href="/img/icon.svg" type="image/x-icon" />
     <title>
         
-            从 GitHub Pages 迁移到 Cloudflare Pages：Hexo 博客部署全记录|TwilightRain
+            从 GitHub Pages 迁移到 Cloudflare Pages：Hexo 博客部署全记录 | TwilightRain
     </title>
     
 <link rel="stylesheet" href="/css/style.min.css">
 
-<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="TwilightRain" type="application/atom+xml">
-</head>
+<meta name="generator" content="Hexo 8.1.2"></head>
     <body>
         
             <header>
-    <a class="title"  href="/" style="display: flex; align-items: start; text-decoration: none;padding: 0px;" >
-        <img style="width:var(--size-step-2);margin-right: 5px;height: var(--size-step-2);margin-top: calc(var(--size-step-1) / 2);" src="/img/icon.svg"/>
-        TwilightRain&nbsp;|&nbsp;从 GitHub Pages 迁移到 Cloudflare Pages：Hexo 博客部署全记录
-    </a>
+    <div class="header-top">
+        <a class="title" href="/" style="display: flex; align-items: start; text-decoration: none; padding: 0px;">
+            <img style="width:var(--size-step-2);margin-right: 5px;height: var(--size-step-2);margin-top: calc(var(--size-step-1) / 2);" src="/img/icon.svg"/>
+            TwilightRain&nbsp;|&nbsp;从 GitHub Pages 迁移到 Cloudflare Pages：Hexo 博客部署全记录
+        </a>
+        <button id="theme-toggle" class="theme-toggle-btn" aria-label="切换主题">🌙</button>
+    </div>
     <p class="subtitle"></p>
-
+    <nav class="main-nav">
+        <a href="/">文章</a>
+        <a href="/tags/">标签</a>
+        <a href="/categories/">分类</a>
+        <a href="/search/">搜索</a>
+        <a href="/about/">关于</a>
+        <a href="https://github.com/TwilightRainDev" target="_blank" rel="noopener">GitHub</a>
+    </nav>
 </header>
 
         
@@ -117,13 +166,13 @@
             <footer style="padding:0 0;" >
     <div id="footer-nav">
         <p style="font-size:0.7em;margin: 0px;">
-            
-              <a class="footer-nav-link" href="/">文章</a>
-            
-              <a class="footer-nav-link" href="/about/">关于</a>
-            
-              <a class="footer-nav-link" target="_blank" rel="noopener" href="https://github.com/TwilightRainDev">GitHub</a>
-            
+            <a class="footer-nav-link" href="/">首页</a>
+            <a class="footer-nav-link" href="/tags/">标签云</a>
+            <a class="footer-nav-link" href="/categories/">分类</a>
+            <a class="footer-nav-link" href="/search/">搜索</a>
+            <a class="footer-nav-link" href="/atom.xml">RSS</a>
+            <a class="footer-nav-link" href="/sitemap.xml">Sitemap</a>
+            <a class="footer-nav-link" href="https://github.com/TwilightRainDev" target="_blank" rel="noopener">GitHub</a>
         </p>
     </div>
 </footer>
