@@ -110,6 +110,22 @@ feed:
   content_limit_delim: ' '
   order_by: -date
 
+# Search
+search:
+  path: search.xml
+  field: post
+  content: true
+  format: xml
+
+# Sitemap
+sitemap:
+  path:
+    - sitemap.xml
+    - sitemap.txt
+  rel: false
+  tags: true
+  categories: true
+
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:

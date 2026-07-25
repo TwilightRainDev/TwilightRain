@@ -1,0 +1,16 @@
+<main>
+  <h1>标签云</h1>
+  <% if (site.tags && site.tags.length) { %>
+    <div class="tag-cloud">
+      <% site.tags.sort('name').each(function(tag) { %>
+        <% var count = tag.posts.length; %>
+        <% var size = Math.min(Math.max(0.8, 0.8 + (count / 5) * 0.6), 1.8); %>
+        <a href="<%- url_for(tag.path) %>" class="tag-cloud-item" style="font-size: <%= size %>rem;">
+          <%= tag.name %><span class="tag-count">(<%= count %>)</span>
+        </a>
+      <% }); %>
+    </div>
+  <% } else { %>
+    <p>暂无标签。</p>
+  <% } %>
+</main>
