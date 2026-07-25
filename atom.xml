@@ -10,7 +10,35 @@
   <rights>All rights reserved 2026, TwilightRain</rights>
   <subtitle>TwilightRain 的个人博客，记录技术探索与日常思考</subtitle>
   <title>TwilightRain</title>
-  <updated>2026-07-25T03:01:22.000Z</updated>
+  <updated>2026-07-25T03:13:20.000Z</updated>
+  <entry>
+    <author>
+      <name>TwilightRain</name>
+    </author>
+    <category term="项目故事" scheme="https://twilightraindev-github-io.pages.dev/categories/%E9%A1%B9%E7%9B%AE%E6%95%85%E4%BA%8B/"/>
+    <category term="TextTool" scheme="https://twilightraindev-github-io.pages.dev/tags/TextTool/"/>
+    <category term="Windows" scheme="https://twilightraindev-github-io.pages.dev/tags/Windows/"/>
+    <category term=".NET" scheme="https://twilightraindev-github-io.pages.dev/tags/NET/"/>
+    <category term="C#" scheme="https://twilightraindev-github-io.pages.dev/tags/C/"/>
+    <category term="WinForms" scheme="https://twilightraindev-github-io.pages.dev/tags/WinForms/"/>
+    <category term="开源" scheme="https://twilightraindev-github-io.pages.dev/tags/%E5%BC%80%E6%BA%90/"/>
+    <category term="工具" scheme="https://twilightraindev-github-io.pages.dev/tags/%E5%B7%A5%E5%85%B7/"/>
+    <content>
+      <![CDATA[<blockquote><p>集行合并、文件拼接、中文截断修复、标点替换于一体</p></blockquote><p>写代码的人大概都经历过这样的时刻：手头有一批文本文件需要处理，合并短行、拼接文件、修复莫名其妙被截断的中文、批量替换标点符号。需求本身不复杂，但每次都要翻出零散的批处理脚本、PowerShell 命令，或者临时写一段 C# 控制台程序，用完就扔，下次再从头来过。</p><p>这些碎片化的处理方式困扰了我很久。于是我把它们攒到了一起，做成了一个 Windows 桌面工具，<strong>TwilightRainTextTool</strong>。</p><span id="more"></span><h2 id="为什么会有这个工具"><a href="#为什么会有这个工具" class="headerlink" title="为什么会有这个工具"></a>为什么会有这个工具</h2><p>最开始，我维护着四五个功能重叠的批处理&#x2F;PowerShell 脚本，散落在不同项目的角落里。每次要用的时候，得先回忆”那个处理中文截断的脚本放在哪个文件夹了”，再手动改参数、拖文件、等执行。更麻烦的是，这些脚本的输入输出格式还不统一，有的原地修改，有的生成新文件，有的需要手动指定编码。</p><p>需求是固定的，但每次处理的成本却是重复的。与其每次都写一次胶水代码，不如做一个统一的 GUI 工具，把常用的文本处理能力集成进去，点点鼠标就能完成。</p><h2 id="它能做什么"><a href="#它能做什么" class="headerlink" title="它能做什么"></a>它能做什么</h2><p>工具目前提供了四个核心功能，分别对应四个标签页。</p><h3 id="1-行合并"><a href="#1-行合并" class="headerlink" title="1. 行合并"></a>1. 行合并</h3><p>这是最常用的功能。把一堆短行按阈值合并成有意义的段落，比如把被意外拆散的文本重新拼接起来。支持按<strong>字节数</strong>或<strong>字符数</strong>两种模式合并，阈值范围 1 到 1000，可以灵活调整。</p><p>合并之后还有三道后处理工序：</p><ul><li><strong>修复中文截断</strong>：如果当前行以中文字符结尾，自动合并下一行（<code>Hello\nWorld</code> → <code>HelloWorld</code>）</li><li><strong>修复标点截断</strong>：如果当前行以自定义标点结尾，自动合并下一行（<code>回家吧，\n孩子</code> → <code>回家吧，孩子</code>）</li><li><strong>行尾不合并</strong>：如果当前行以特定标点（如句号、感叹号、章节标题标记）结尾，则阻止合并，保持独立</li></ul><p>整个处理是<strong>单次文件写入</strong>的流水线：读文件 → 阈值合并 → 中文修复 → 标点截断修复 → 标点替换 → 写输出。</p><h3 id="2-文件拼接"><a href="#2-文件拼接" class="headerlink" title="2. 文件拼接"></a>2. 文件拼接</h3><p>把一个目录下匹配通配符模式的所有文件按名称排序后合并成一个文件。每个文件会单独检测编码，统一以 <strong>UTF-8 with BOM</strong> 格式输出。</p><h3 id="3-标点替换"><a href="#3-标点替换" class="headerlink" title="3. 标点替换"></a>3. 标点替换</h3><p>自由配置查找-替换规则（比如把连续的句号 <code>。。</code> 替换成单个 <code>。</code>），支持规则的增删改和排序。规则以 JSON 格式持久化到 <code>replace_rules.json</code>，重启程序后自动加载。</p><h3 id="4-关于页面"><a href="#4-关于页面" class="headerlink" title="4. 关于页面"></a>4. 关于页面</h3><p>显示版本、作者信息和 GitHub 链接，并提供了<strong>语言切换</strong>功能，简体中文、繁體中文、English 三语实时切换，偏好自动保存。</p><h2 id="一些设计上的考量"><a href="#一些设计上的考量" class="headerlink" title="一些设计上的考量"></a>一些设计上的考量</h2><p>在开发这个工具时，我给自己定了几条原则：</p><p><strong>安全第一</strong>。所有处理结果都保存为 <code>*_Processed.*</code> 格式的新文件，绝不覆盖原始文件。误操作了？原始文件还在，随时可以重来。</p><p><strong>编码自动检测</strong>。文本处理最头疼的问题就是编码。工具会优先检测 BOM，其次尝试 UTF-8 验证，最后 fallback 到 GBK。大多数常见的中文文本文件都能自动识别，不需要用户手动选择编码。</p><p><strong>批量处理</strong>。支持一次拖拽多个文件，全部处理完毕。不用一个一个等。</p><p><strong>拖拽即用</strong>。直接把 <code>.txt</code> 文件拖到窗口上就能开始处理。操作路径尽可能短。</p><p><strong>国际化</strong>。内置了三种语言，并根据系统 UI 语言自动匹配。虽然是个小工具，但多语言支持从第一天就做了。</p><h2 id="技术实现"><a href="#技术实现" class="headerlink" title="技术实现"></a>技术实现</h2><p>工具基于 <strong>.NET 7 WinForms</strong> 开发。架构上做了比较清晰的分层：</p><ul><li><strong>Controls&#x2F;</strong>：四个标签页的 UI 控件，从主窗体独立出来，保持 MainForm 只有约 165 行</li><li><strong>Services&#x2F;</strong>：核心业务逻辑，编码检测、行合并算法、文件拼接、标点替换、处理流水线编排</li><li><strong>Localization&#x2F;</strong>：三语 JSON 资源文件 + 运行时切换逻辑</li><li><strong>TextTool.Tests&#x2F;</strong>：63 个单元测试，覆盖各个服务类</li></ul><p>整个项目遵循了比较规整的项目结构，也写了架构文档（<code>ARCHITECTURE.md</code>）和架构决策记录（<code>adr/</code>），方便后续维护和他人理解。</p><h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>TwilightRain Text Tool 不是一个宏大的项目，它解决的是我日常工作中真实遇到的小问题。但正是这些小工具，积少成多，最终能节省下可观的时间。</p><p>如果你也有类似的文本处理需求，欢迎下载试用。项目开源在 GitHub 上，Issue 和 PR 都随时欢迎。</p><p><strong>项目地址</strong>：<a href="https://github.com/TwilightRainDev/TwilightRainTextTool">https://github.com/TwilightRainDev/TwilightRainTextTool</a></p><hr><p><em>本文转载自 <a href="https://twilightrain.pages.dev/">TwilightRain’s Blog</a></em></p>]]>
+    </content>
+    <id>https://twilightraindev-github-io.pages.dev/2026/07/25/windows-text-tool-intro/</id>
+    <link href="https://twilightraindev-github-io.pages.dev/2026/07/25/windows-text-tool-intro/"/>
+    <published>2026-07-25T05:00:00.000Z</published>
+    <summary>
+      <![CDATA[<blockquote>
+<p>集行合并、文件拼接、中文截断修复、标点替换于一体</p>
+</blockquote>
+<p>写代码的人大概都经历过这样的时刻：手头有一批文本文件需要处理，合并短行、拼接文件、修复莫名其妙被截断的中文、批量替换标点符号。需求本身不复杂，但每次都要翻出零散的批处理脚本、PowerShell 命令，或者临时写一段 C# 控制台程序，用完就扔，下次再从头来过。</p>
+<p>这些碎片化的处理方式困扰了我很久。于是我把它们攒到了一起，做成了一个 Windows 桌面工具，<strong>TwilightRainTextTool</strong>。</p>]]>
+    </summary>
+    <title>告别散装脚本：我写了一个 Windows 文本处理工具箱</title>
+    <updated>2026-07-25T03:13:20.000Z</updated>
+  </entry>
   <entry>
     <author>
       <name>TwilightRain</name>
