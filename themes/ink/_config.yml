@@ -4,3 +4,16 @@ menu:
   文章: /
   关于: /about/
   GitHub: https://github.com/TwilightRainDev
+
+# Giscus 评论系统配置
+# 启用方法：
+#   1. 在 https://github.com/apps/giscus 安装 App 到仓库
+#   2. 在仓库 Settings → General → Discussions 启用 Discussions
+#   3. 在 https://giscus.app/ 配置并获取 repo_id 和 category_id
+giscus:
+  enabled: false
+  repo: TwilightRainDev/TwilightRain
+  repo_id: ''
+  category: Announcements
+  category_id: ''
+  mapping: pathname

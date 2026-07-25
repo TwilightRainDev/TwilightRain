@@ -1,47 +1,39 @@
 ---
-title: Hello World
+title: 关于我
 date: 2026-07-13 17:44:00
+updated: 2026-07-25
 tags:
-  - Hexo
   - 博客
 categories:
-  - 技术笔记
+  - 随笔
 cover: /img/avatar.jpg
+comments: true
 ---
-Welcome to [Hexo](https://hexo.io/)! This is your very first post. Check [documentation](https://hexo.io/docs/) for more info. If you get any problems when using Hexo, you can find the answer in [troubleshooting](https://hexo.io/docs/troubleshooting.html) or you can ask me on [GitHub](https://github.com/hexojs/hexo/issues).
+
+> 写代码的，偶尔折腾点小东西。
+
+网名 **TwilightRain**，写点前端也写点桌面端。前端主要用 JavaScript / TypeScript，桌面端用 C# .NET 搞些 WinForms 小工具。平时会鼓捣一些脚本、工具、小项目。
+
+这个博客主要用来记录技术探索和日常思考。
 
 <!-- more -->
 
-## Quick Start
+## 做过什么
 
-### Create a new post
+- [TwilightRain Text Tool](https://github.com/TwilightRainDev/TwilightRainTextTool) — 集行合并、文件拼接、中文截断修复、标点替换于一体的 Windows 文本处理桌面工具，纯 C# 构建，支持国际化与深色模式。
+- [BiliCompact](https://greasyfork.org/scripts/585777) — 一个 Tampermonkey 用户脚本，用于精简 B 站网页端首页。
+- [GitHub](https://github.com/TwilightRainDev)
+- [B站](https://space.bilibili.com/403777931)
 
-``` bash
-$ hexo new "My New Post"
-```
+## 写博客干嘛
 
-More info: [Writing](https://hexo.io/docs/writing.html)
+一是给自己留个记录，二是万一有人遇到类似问题，搜到这里能有个参考。如果你觉得内容有用，不妨在评论区打个招呼。
 
-### Run server
+## 联系方式
 
-``` bash
-$ hexo server
-```
+- **GitHub**: [TwilightRainDev](https://github.com/TwilightRainDev)
+- **B站**: [TwilightRain](https://space.bilibili.com/403777931)
 
-More info: [Server](https://hexo.io/docs/server.html)
+---
 
-### Generate static files
-
-``` bash
-$ hexo generate
-```
-
-More info: [Generating](https://hexo.io/docs/generating.html)
-
-### Deploy to remote sites
-
-``` bash
-$ hexo deploy
-```
-
-More info: [Deployment](https://hexo.io/docs/one-command-deployment.html)
+*博客基于 [Hexo](https://hexo.io/) 构建，主题为自用的 ink，源码托管在 [GitHub](https://github.com/TwilightRainDev/TwilightRain)。*

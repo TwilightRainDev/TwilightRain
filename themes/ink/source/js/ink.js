@@ -131,6 +131,15 @@ document.addEventListener('DOMContentLoaded', function () {
     var stored = localStorage.getItem('theme-preference');
     var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
+    function giscusTheme(theme) {
+        var giscus = document.querySelector('iframe.giscus-frame');
+        if (giscus) {
+            giscus.contentWindow.postMessage({
+                giscus: { setConfig: { theme: theme === 'dark' ? 'dark' : 'light' } }
+            }, 'https://giscus.app');
+        }
+    }
+
     function applyTheme(theme) {
         if (theme === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
@@ -139,6 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.documentElement.removeAttribute('data-theme');
             toggleBtn.textContent = '🌙';
         }
+        giscusTheme(theme);
     }
 
     // 初始应用：存储优先，无存储则跟随系统

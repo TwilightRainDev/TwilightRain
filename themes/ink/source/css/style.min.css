@@ -962,6 +962,70 @@ pre:hover .copy-btn {
     background: rgba(255, 255, 255, 0.05);
 }
 
+/* ======================== 一键安装区块 ======================== */
+.install-badge {
+    display: inline-block;
+    background: #e74c3c;
+    color: #fff;
+    font-size: 0.7em;
+    padding: 1px 8px;
+    border-radius: 10px;
+    vertical-align: middle;
+    margin-left: 6px;
+}
+
+.install-block {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin: 16px 0;
+    text-align: center;
+}
+
+.install-btn {
+    display: inline-block;
+    background: #fff;
+    color: #667eea !important;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 12px 36px;
+    border-radius: 8px;
+    text-decoration: none !important;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.install-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.install-btn:active {
+    transform: translateY(0);
+}
+
+.install-hint {
+    color: rgba(255,255,255,0.85);
+    font-size: 0.85rem;
+    margin: 10px 0 0;
+}
+
+/* ======================== 评论区 ======================== */
+.post-comments {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid #e8e8e8;
+}
+
+.post-comments h2 {
+    font-size: var(--size-step-2);
+    margin-bottom: 16px;
+}
+
+[data-theme="dark"] .post-comments {
+    border-top-color: #333;
+}
+
 /* ======================== footer 改进 ======================== */
 #footer-nav p {
     display: flex;

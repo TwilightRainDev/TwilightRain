@@ -1680,3 +1680,33 @@ categories:
 })();
 
 ```
+
+---
+
+## 📦 一键安装
+
+<span class="install-badge">推荐</span>
+
+### 方式一：Greasyfork 直接安装（推荐）
+
+点击下方按钮，一键安装到 Tampermonkey / Violentmonkey：
+
+<div class="install-block">
+    <a class="install-btn" href="https://greasyfork.org/scripts/585777" target="_blank" rel="noopener">
+        🚀 从 Greasyfork 安装
+    </a>
+    <p class="install-hint">已上架 Greasyfork，自动更新，省心省力。</p>
+</div>
+
+### 方式二：复制源码，手动创建
+
+如果你想审查每一行代码再安装，也可以复制上面的源码，在 Tampermonkey 中新建脚本，粘贴保存即可。
+
+```bash
+1. 打开浏览器的 Tampermonkey / Violentmonkey 扩展
+2. 点击「新建脚本」
+3. 删除默认内容，粘贴上方源码
+4. Ctrl+S 保存
+```
+
+两种方式效果完全一致，推荐方式一，后续新版本会自动推送更新。
