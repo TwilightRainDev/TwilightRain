@@ -4,7 +4,6 @@
             <img style="width:var(--size-step-2);margin-right: 5px;height: var(--size-step-2);margin-top: calc(var(--size-step-1) / 2);" src="<%= url_for(theme.favicon) %>"/>
             <%= config.title %><% if (page.title) { %>&nbsp;|&nbsp;<%= page.title %><% } %>
         </a>
-        <button id="theme-toggle" class="theme-toggle-btn" aria-label="切换主题">🌙</button>
     </div>
     <p class="subtitle"><%= config.subtitle %></p>
     <nav class="main-nav">
@@ -13,6 +12,7 @@
         <a href="/categories/">分类</a>
         <a href="/search/">搜索</a>
         <a href="/about/">关于</a>
+        <a href="/settings/">设置</a>
         <a href="https://github.com/TwilightRainDev" target="_blank" rel="noopener">GitHub</a>
     </nav>
 </header>

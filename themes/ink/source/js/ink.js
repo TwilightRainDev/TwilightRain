@@ -123,46 +123,83 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-// ======================== 深色/浅色主题切换 ========================
+// ======================== 偏好设置：主题 & 字体 ========================
+// 设置项存 localStorage，由 /settings/ 页控件修改。
+// 脚本为 defer，HTML 解析完成后立即应用偏好，尽可能减少闪烁。
 (function() {
-    var toggleBtn = document.getElementById('theme-toggle');
-    if (!toggleBtn) return;
-
-    var stored = localStorage.getItem('theme-preference');
-    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-    function giscusTheme(theme) {
-        var giscus = document.querySelector('iframe.giscus-frame');
-        if (giscus) {
-            giscus.contentWindow.postMessage({
-                giscus: { setConfig: { theme: theme === 'dark' ? 'dark' : 'light' } }
-            }, 'https://giscus.app');
-        }
+    function giscusTheme(actual) {
+        var theme = actual === 'dark' ? 'dark' : 'light';
+        var sync = function () {
+            var giscus = document.querySelector('iframe.giscus-frame');
+            if (giscus) {
+                giscus.contentWindow.postMessage({
+                    giscus: { setConfig: { theme: theme } }
+                }, 'https://giscus.app');
+            }
+        };
+        sync();
+        // giscus iframe 异步加载，晚些再同步一次
+        setTimeout(sync, 2000);
     }
 
-    function applyTheme(theme) {
-        if (theme === 'dark') {
+    // 主题偏好：auto（跟随系统）/ light / dark
+    function resolveTheme(pref) {
+        if (pref === 'dark' || pref === 'light') return pref;
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+
+    function applyTheme(pref) {
+        var actual = resolveTheme(pref);
+        if (actual === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
-            toggleBtn.textContent = '☀️';
         } else {
             document.documentElement.removeAttribute('data-theme');
-            toggleBtn.textContent = '🌙';
         }
-        giscusTheme(theme);
+        giscusTheme(actual);
     }
 
-    // 初始应用：存储优先，无存储则跟随系统
-    if (stored) {
-        applyTheme(stored);
-    } else if (prefersDark) {
-        applyTheme('dark');
+    // 字体偏好：lxgw（默认）/ system / hywenhei
+    function applyFont(pref) {
+        if (pref === 'system' || pref === 'hywenhei') {
+            document.documentElement.setAttribute('data-font', pref);
+        } else {
+            document.documentElement.removeAttribute('data-font');
+        }
     }
 
-    toggleBtn.addEventListener('click', function() {
-        var current = document.documentElement.getAttribute('data-theme');
-        var next = current === 'dark' ? 'light' : 'dark';
-        applyTheme(next);
-        localStorage.setItem('theme-preference', next);
+    var storedTheme = localStorage.getItem('theme-preference') || 'auto';
+    var storedFont = localStorage.getItem('font-preference') || 'lxgw';
+
+    applyTheme(storedTheme);
+    applyFont(storedFont);
+
+    // 设置页控件绑定（无控件时静默跳过）
+    document.addEventListener('DOMContentLoaded', function() {
+        var themeRadios = document.querySelectorAll('input[name="theme"]');
+        for (var i = 0; i < themeRadios.length; i++) {
+            (function(r) {
+                r.checked = r.value === storedTheme;
+                r.addEventListener('change', function() {
+                    if (!r.checked) return;
+                    storedTheme = r.value;
+                    localStorage.setItem('theme-preference', storedTheme);
+                    applyTheme(storedTheme);
+                });
+            })(themeRadios[i]);
+        }
+
+        var fontRadios = document.querySelectorAll('input[name="font"]');
+        for (var j = 0; j < fontRadios.length; j++) {
+            (function(r) {
+                r.checked = r.value === storedFont;
+                r.addEventListener('change', function() {
+                    if (!r.checked) return;
+                    storedFont = r.value;
+                    localStorage.setItem('font-preference', storedFont);
+                    applyFont(storedFont);
+                });
+            })(fontRadios[j]);
+        }
     });
 })();
 
@@ -339,17 +376,20 @@ document.addEventListener('DOMContentLoaded', function () {
         var list = document.createElement('ul');
         list.className = 'hover-card-list';
         var items = [
-            '<strong>出身与信仰：</strong>键っ子出身，后遗症至今未愈；附加属性为"月厨失格"。',
-            '<strong>动画与文库：</strong>千禧动画年鉴（人形禁书目录），判定新番标准为"厕纸三集定生死"。',
-            '<strong>游戏日常：</strong>手游侧专注日课周回搬砖；PC侧沉迷P社四萌，自称时间刺客。',
-            '<strong>同人/音乐向：</strong>东方全人物辨识度取决于出题人深度；V家周刊苦手，但脑内再生曲库存足以开十场拼盘。',
-            '<strong>技术产出：</strong>GitHub仓库仅限自嗨项目，无开源贡献。',
-            '<strong>社交人格：</strong>电波系废物，社交互动全靠弹幕共感。',
-            '<strong>结语：</strong>综上，活化石萨卡萨卡班班甲鱼鱼，请多指教。'
+            { label: '出身与信仰：', text: '键っ子出身，后遗症至今未愈；附加属性为"月厨失格"。' },
+            { label: '动画与文库：', text: '千禧动画年鉴（人形禁书目录），判定新番标准为"厕纸三集定生死"。' },
+            { label: '游戏日常：', text: '手游侧专注日课周回搬砖；PC侧沉迷P社四萌，自称时间刺客。' },
+            { label: '同人/音乐向：', text: '东方全人物辨识度取决于出题人深度；V家周刊苦手，但脑内再生曲库存足以开十场拼盘。' },
+            { label: '技术产出：', text: 'GitHub仓库仅限自嗨项目，无开源贡献。' },
+            { label: '社交人格：', text: '电波系废物，社交互动全靠弹幕共感。' },
+            { label: '结语：', text: '综上，活化石萨卡萨卡班班甲鱼鱼，请多指教。' }
         ];
         for (var i = 0; i < items.length; i++) {
             var li = document.createElement('li');
-            li.innerHTML = items[i];
+            var strong = document.createElement('strong');
+            strong.textContent = items[i].label;
+            li.appendChild(strong);
+            li.appendChild(document.createTextNode(items[i].text));
             list.appendChild(li);
         }
 
