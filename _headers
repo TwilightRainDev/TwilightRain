@@ -1,0 +1,4 @@
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://giscus.app https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://chinese-fonts-cdn.deno.dev https://cdnjs.cloudflare.com; img-src 'self' https: data:; font-src 'self' https://chinese-fonts-cdn.deno.dev; frame-src https://giscus.app; connect-src 'self'; base-uri 'self'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
