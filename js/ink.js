@@ -123,46 +123,83 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-// ======================== 深色/浅色主题切换 ========================
+// ======================== 偏好设置：主题 & 字体 ========================
+// 设置项存 localStorage，由 /settings/ 页控件修改。
+// 脚本为 defer，HTML 解析完成后立即应用偏好，尽可能减少闪烁。
 (function() {
-    var toggleBtn = document.getElementById('theme-toggle');
-    if (!toggleBtn) return;
-
-    var stored = localStorage.getItem('theme-preference');
-    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-    function giscusTheme(theme) {
-        var giscus = document.querySelector('iframe.giscus-frame');
-        if (giscus) {
-            giscus.contentWindow.postMessage({
-                giscus: { setConfig: { theme: theme === 'dark' ? 'dark' : 'light' } }
-            }, 'https://giscus.app');
-        }
+    function giscusTheme(actual) {
+        var theme = actual === 'dark' ? 'dark' : 'light';
+        var sync = function () {
+            var giscus = document.querySelector('iframe.giscus-frame');
+            if (giscus) {
+                giscus.contentWindow.postMessage({
+                    giscus: { setConfig: { theme: theme } }
+                }, 'https://giscus.app');
+            }
+        };
+        sync();
+        // giscus iframe 异步加载，晚些再同步一次
+        setTimeout(sync, 2000);
     }
 
-    function applyTheme(theme) {
-        if (theme === 'dark') {
+    // 主题偏好：auto（跟随系统）/ light / dark
+    function resolveTheme(pref) {
+        if (pref === 'dark' || pref === 'light') return pref;
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+
+    function applyTheme(pref) {
+        var actual = resolveTheme(pref);
+        if (actual === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
-            toggleBtn.textContent = '☀️';
         } else {
             document.documentElement.removeAttribute('data-theme');
-            toggleBtn.textContent = '🌙';
         }
-        giscusTheme(theme);
+        giscusTheme(actual);
     }
 
-    // 初始应用：存储优先，无存储则跟随系统
-    if (stored) {
-        applyTheme(stored);
-    } else if (prefersDark) {
-        applyTheme('dark');
+    // 字体偏好：lxgw（默认）/ system / hywenhei
+    function applyFont(pref) {
+        if (pref === 'system' || pref === 'hywenhei') {
+            document.documentElement.setAttribute('data-font', pref);
+        } else {
+            document.documentElement.removeAttribute('data-font');
+        }
     }
 
-    toggleBtn.addEventListener('click', function() {
-        var current = document.documentElement.getAttribute('data-theme');
-        var next = current === 'dark' ? 'light' : 'dark';
-        applyTheme(next);
-        localStorage.setItem('theme-preference', next);
+    var storedTheme = localStorage.getItem('theme-preference') || 'auto';
+    var storedFont = localStorage.getItem('font-preference') || 'lxgw';
+
+    applyTheme(storedTheme);
+    applyFont(storedFont);
+
+    // 设置页控件绑定（无控件时静默跳过）
+    document.addEventListener('DOMContentLoaded', function() {
+        var themeRadios = document.querySelectorAll('input[name="theme"]');
+        for (var i = 0; i < themeRadios.length; i++) {
+            (function(r) {
+                r.checked = r.value === storedTheme;
+                r.addEventListener('change', function() {
+                    if (!r.checked) return;
+                    storedTheme = r.value;
+                    localStorage.setItem('theme-preference', storedTheme);
+                    applyTheme(storedTheme);
+                });
+            })(themeRadios[i]);
+        }
+
+        var fontRadios = document.querySelectorAll('input[name="font"]');
+        for (var j = 0; j < fontRadios.length; j++) {
+            (function(r) {
+                r.checked = r.value === storedFont;
+                r.addEventListener('change', function() {
+                    if (!r.checked) return;
+                    storedFont = r.value;
+                    localStorage.setItem('font-preference', storedFont);
+                    applyFont(storedFont);
+                });
+            })(fontRadios[j]);
+        }
     });
 })();
 
