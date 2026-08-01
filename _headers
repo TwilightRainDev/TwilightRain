@@ -1,4 +1,4 @@
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' https://giscus.app https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' https: data:; font-src 'self'; frame-src https://giscus.app; connect-src 'self'; base-uri 'self'
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://giscus.app https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://giscus.app https://cdnjs.cloudflare.com; img-src 'self' https: data:; font-src 'self'; frame-src https://giscus.app; connect-src 'self'; base-uri 'self'
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
