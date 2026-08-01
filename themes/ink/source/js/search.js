@@ -9,12 +9,33 @@
     var searchIndex = null;
     var loaded = false;
 
-    // 搜索关键词高亮
+    // HTML 转义（纵深防御）
+    function escapeHtml(str) {
+        var div = document.createElement('div');
+        div.appendChild(document.createTextNode(str));
+        return div.innerHTML;
+    }
+
+    // 搜索关键词高亮 → 返回文档片段（安全 DOM 操作，杜绝 innerHTML）
     function highlightText(text, keyword) {
-        if (!keyword) return text;
+        if (!keyword) return document.createTextNode(text);
         var escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         var regex = new RegExp('(' + escaped + ')', 'gi');
-        return text.replace(regex, '<mark class="search-highlight">$1</mark>');
+        var parts = text.split(regex);
+        var fragment = document.createDocumentFragment();
+        for (var i = 0; i < parts.length; i++) {
+            if (i % 2 === 1) {
+                // 匹配部分 → <mark> 标签（textContent 安全写入）
+                var mark = document.createElement('mark');
+                mark.className = 'search-highlight';
+                mark.textContent = parts[i];
+                fragment.appendChild(mark);
+            } else {
+                // 非匹配部分 → 纯文本节点
+                fragment.appendChild(document.createTextNode(parts[i]));
+            }
+        }
+        return fragment;
     }
 
     // 从 URL 提取 searchIndex URL
@@ -50,7 +71,11 @@
                 return searchIndex;
             })
             .catch(function(err) {
-                resultDiv.innerHTML = '<p class="search-error">搜索索引加载失败，请稍后再试。</p>';
+                resultDiv.innerHTML = '';
+                var errP = document.createElement('p');
+                errP.className = 'search-error';
+                errP.textContent = '搜索索引加载失败，请稍后再试。';
+                resultDiv.appendChild(errP);
                 console.error('Search index load error:', err);
                 return [];
             });
@@ -65,7 +90,11 @@
         keyword = keyword.trim().toLowerCase();
 
         if (!loaded || !searchIndex) {
-            resultDiv.innerHTML = '<p class="search-loading">正在加载搜索索引...</p>';
+            resultDiv.innerHTML = '';
+            var loadingP = document.createElement('p');
+            loadingP.className = 'search-loading';
+            loadingP.textContent = '正在加载搜索索引...';
+            resultDiv.appendChild(loadingP);
             return;
         }
 
@@ -102,27 +131,47 @@
             return 0;
         });
 
-        // 渲染结果
+        // 渲染结果（全部通过 DOM API 构建，避免 XSS）
+        resultDiv.innerHTML = '';
+
         if (results.length === 0) {
-            resultDiv.innerHTML = '<p class="search-no-result">未找到与 "<strong>' + highlightText(keyword, keyword) + '</strong>" 相关的结果。</p>';
+            var noResultP = document.createElement('p');
+            noResultP.className = 'search-no-result';
+            noResultP.appendChild(document.createTextNode('未找到与 "'));
+            var strongEl = document.createElement('strong');
+            strongEl.appendChild(highlightText(keyword, keyword));
+            noResultP.appendChild(strongEl);
+            noResultP.appendChild(document.createTextNode('" 相关的结果。'));
+            resultDiv.appendChild(noResultP);
             if (statsDiv) statsDiv.textContent = '';
             return;
         }
 
         if (statsDiv) statsDiv.textContent = '共找到 ' + results.length + ' 条结果';
-        var html = '<ul class="search-results-list">';
+        var ul = document.createElement('ul');
+        ul.className = 'search-results-list';
         results.forEach(function(r) {
-            html += '<li class="search-result-item">';
-            html += '<a href="' + r.url + '">';
-            html += '<h3>' + highlightText(r.title, keyword) + '</h3>';
+            var li = document.createElement('li');
+            li.className = 'search-result-item';
+
+            var a = document.createElement('a');
+            a.href = r.url;
+
+            var h3 = document.createElement('h3');
+            h3.appendChild(highlightText(r.title, keyword));
+            a.appendChild(h3);
+
             if (r.snippet) {
-                html += '<p class="search-snippet">' + highlightText(r.snippet, keyword) + '</p>';
+                var snippetP = document.createElement('p');
+                snippetP.className = 'search-snippet';
+                snippetP.appendChild(highlightText(r.snippet, keyword));
+                a.appendChild(snippetP);
             }
-            html += '</a>';
-            html += '</li>';
+
+            li.appendChild(a);
+            ul.appendChild(li);
         });
-        html += '</ul>';
-        resultDiv.innerHTML = html;
+        resultDiv.appendChild(ul);
     }
 
     // 输入防抖

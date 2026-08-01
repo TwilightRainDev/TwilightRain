@@ -339,17 +339,20 @@ document.addEventListener('DOMContentLoaded', function () {
         var list = document.createElement('ul');
         list.className = 'hover-card-list';
         var items = [
-            '<strong>出身与信仰：</strong>键っ子出身，后遗症至今未愈；附加属性为"月厨失格"。',
-            '<strong>动画与文库：</strong>千禧动画年鉴（人形禁书目录），判定新番标准为"厕纸三集定生死"。',
-            '<strong>游戏日常：</strong>手游侧专注日课周回搬砖；PC侧沉迷P社四萌，自称时间刺客。',
-            '<strong>同人/音乐向：</strong>东方全人物辨识度取决于出题人深度；V家周刊苦手，但脑内再生曲库存足以开十场拼盘。',
-            '<strong>技术产出：</strong>GitHub仓库仅限自嗨项目，无开源贡献。',
-            '<strong>社交人格：</strong>电波系废物，社交互动全靠弹幕共感。',
-            '<strong>结语：</strong>综上，活化石萨卡萨卡班班甲鱼鱼，请多指教。'
+            { label: '出身与信仰：', text: '键っ子出身，后遗症至今未愈；附加属性为"月厨失格"。' },
+            { label: '动画与文库：', text: '千禧动画年鉴（人形禁书目录），判定新番标准为"厕纸三集定生死"。' },
+            { label: '游戏日常：', text: '手游侧专注日课周回搬砖；PC侧沉迷P社四萌，自称时间刺客。' },
+            { label: '同人/音乐向：', text: '东方全人物辨识度取决于出题人深度；V家周刊苦手，但脑内再生曲库存足以开十场拼盘。' },
+            { label: '技术产出：', text: 'GitHub仓库仅限自嗨项目，无开源贡献。' },
+            { label: '社交人格：', text: '电波系废物，社交互动全靠弹幕共感。' },
+            { label: '结语：', text: '综上，活化石萨卡萨卡班班甲鱼鱼，请多指教。' }
         ];
         for (var i = 0; i < items.length; i++) {
             var li = document.createElement('li');
-            li.innerHTML = items[i];
+            var strong = document.createElement('strong');
+            strong.textContent = items[i].label;
+            li.appendChild(strong);
+            li.appendChild(document.createTextNode(items[i].text));
             list.appendChild(li);
         }
 
