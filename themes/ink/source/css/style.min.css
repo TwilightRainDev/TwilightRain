@@ -255,6 +255,8 @@ button:active{
     padding: 10px;
     border-radius: 10px;
     flex-direction: column;
+    max-height: 40%;
+    overflow: hidden;
 }
 
 .article-info time {
@@ -263,12 +265,18 @@ button:active{
 
 .article-info span {
     font-size: var(--size-step-0);
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
 .article-excerpt {
     font-size: 0.75rem;
     margin: 4px 0 0 0;
-    line-height: 1.4;
+    line-height: 1.3;
     opacity: 0.85;
     overflow: hidden;
     text-overflow: ellipsis;
