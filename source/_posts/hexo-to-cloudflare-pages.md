@@ -124,7 +124,7 @@ HEAD is now at 8eb197c Site updated: 2026-07-13 18:25:29
 
 ## 最终效果
 
-博客成功部署到了 `twilightraindev-github-io.pages.dev`，构建和部署都自动完成。以后更新博客只需要：
+博客成功部署到了 `twilightrain.pages.dev`，构建和部署都自动完成。以后更新博客只需要：
 
 ```bash
 hexo new post "我的新文章"
