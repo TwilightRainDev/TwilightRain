@@ -127,8 +127,5 @@ sitemap:
   categories: true
 
 # Deployment
-## Docs: https://hexo.io/docs/one-command-deployment
-deploy:
-  type: git
-  repo: https://github.com/TwilightRainDev/TwilightRain.git
-  branch: gh-pages
+## 部署由 Cloudflare Pages 监听 GitHub main 分支自动完成（构建命令 npm run build，输出 public/）
+## 无本地部署；历史 hexo-deployer-git（gh-pages 分支）方案已废弃并移除
