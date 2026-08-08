@@ -1,0 +1,65 @@
+# 安全基线（CSP 与已知陷阱）
+
+本页是**线上安全策略的唯一事实来源**，改任何安全相关代码前先读。
+
+## 安全头机制
+
+`scripts/csp.js` 在 `after_generate` 阶段写入 `public/_headers`，Cloudflare Pages
+读取输出目录中的 `_headers` 文件并附加到响应。当前策略：
+
+| 指令 | 白名单 | 说明 |
+|---|---|---|
+| `default-src` | `'self'` | 兜底 |
+| `script-src` | `'self'` `https://giscus.app` `https://cdnjs.cloudflare.com` | 评论脚本 + CDN 脚本 |
+| `style-src` | `'self'` `'unsafe-inline'` `https://giscus.app` `https://cdnjs.cloudflare.com` | 见下方 giscus 陷阱 |
+| `img-src` | `'self'` `https:` `data:` | 外链图片与 data URI |
+| `font-src` | `'self'` | 字体全自托管，禁止外链字体 |
+| `frame-src` | `https://giscus.app` | 评论 iframe |
+| `connect-src` | `'self'` | 无第三方 XHR |
+| `base-uri` | `'self'` | 防 base 标签劫持 |
+
+同时附带 `X-Content-Type-Options: nosniff` 与 `Referrer-Policy: strict-origin-when-cross-origin`。
+
+**重要**：不要用 `source/_headers` + `skip_render` 的方案——Hexo 忽略下划线文件，
+该方案不可行。安全头必须通过 `scripts/csp.js` 的 after_generate 钩子写入。
+
+## 已知陷阱清单
+
+1. **csp.js 开发模式限制**：hexo-server 3.x 的 `server_middleware` 过滤器在
+   `scripts/` 的 load() 之前执行，开发模式中间件赶不上首轮请求——csp.js
+   不再注册开发头，仅靠 `public/_headers`（生产已验证生效）。本地预览无 CSP
+   是预期行为，不要试图修复。
+
+2. **giscus 必须进 CSP style-src 白名单**：giscus client.js 会注入
+   `https://giscus.app/default.css`（含 `.giscus-frame { width: 100% }`），
+   漏掉会导致评论 iframe 宽度回退 300px（postMessage 内联样式不受 CSP 管）。
+   删 `style-src` 里的 `https://giscus.app` 或 `'unsafe-inline'` 前，先在线上
+   验证评论宽度。
+
+3. **字体自托管约束**：`font-src 'self'` 意味着任何新字体必须放
+   `themes/ink/source/fonts/` 并子集化（现有两个：LXGWWenKai、HYWenHei 85W，
+   GB2312 约 7200 字符子集）。直接引 Google Fonts 会被 CSP 拦。
+
+4. **重定向与 404**：
+   - `scripts/redirects.js` 维护 301 重定向（目前：旧 hello-world → `/about/`，
+     带/不带尾斜杠两条规则，`_redirects` 规则按顺序第一条命中）。
+   - `source/404.md` 使用自定义 `layout: 404`，配合
+     `cloudflare pages` 确保不存在的路径返回**真实 404 状态**（而非 200）。
+     改动时不要退化成"返回 200 的软 404"。
+
+5. **搜索 XSS（已修复，勿回退）**：`themes/ink/source/js/search.js` 渲染搜索结果
+   时必须走文本节点/DOM 转义，不能把用户输入拼进 `innerHTML`。改搜索代码时
+   保持这一约束（历史上曾存在 DOM XSS，commit d6b5989 修复）。
+
+6. **依赖安全**：dependabot 每日检查 npm 依赖（`.github/dependabot.yml`），
+   PR 上限 20。合并依赖升级 PR 前跑 `npm run build` 验证。`package.json` 的
+   `overrides` 段（brace-expansion/minimatch 锁版）是已知漏洞的补丁，不要删。
+
+## 内容与仓库安全
+
+- 评论走 giscus（GitHub Discussions 作后端，主题配置见 [THEME.md](THEME.md#评论)）。
+- 提交身份用 noreply 邮箱（`TwilightRainDev@users.noreply.github.com`），
+  推送凭据不落库（在 `H:\work_zone\ApiKey`）。
+- `docs/BlogPrivate.txt` 是私人备忘，不入库（`.gitignore` 单独忽略）；
+  docs/ 其余内容可放心提交。
+- 不要在 `source/`、`themes/ink/` 中放任何密钥、Cookie、token 文本。
