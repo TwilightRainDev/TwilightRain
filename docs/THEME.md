@@ -47,10 +47,11 @@ themes/ink/layout/
 ## 封面图池（首页缩略图）
 
 - 位置：`source/img/covers/`（cover-01.jpg … cover-26.jpg，800×800 正方形 JPEG，居中裁切自本地壁纸库）。
-- 机制：`index.ejs` 顶部维护 `coverPool` 数组；文章 front-matter 未设 `cover` 时，
-  构建时随机取一张（行为与原外部 picsum 图源一致，2026-08-08 起不再依赖外站）。
+- 机制：`index.ejs` 对未设 `cover` 的文章输出 `<img data-random-cover>`（不带 src），
+  由 `ink.js` 在 DOMContentLoaded 时从前端封面池随机赋 src——**每次页面加载都重新随机**
+  （2026-08-08 起替代外部 picsum 图源，修复过"构建期随机导致刷新不变"的问题）。
 - **加新封面图**：裁切成 800×800 正方形放入 `source/img/covers/`，文件名按
-  `cover-NN.jpg` 连续编号，并同步更新 `index.ejs` 中 `coverPool` 的循环上界与补齐文件名。
+  `cover-NN.jpg` 连续编号，并同步更新 `ink.js` 中 `coverPool` 的循环上界。
 
 ## 修改主题的流程
 
