@@ -7,7 +7,7 @@
 ```
 themes/ink/layout/
 ├── layout.ejs        # 总骨架（head/header/footer 装配）
-├── index.ejs         # 首页文章流
+├── index.ejs         # 首页文章流（无 cover 文章从本地封面池随机取图，见下文）
 ├── post.ejs          # 文章页（TOC、阅读进度条、返回顶部、评论挂载点）
 ├── partial/
 │   ├── head.ejs      # <head>：SEO/OG/RSS 元信息、ink.js 引入、样式
@@ -43,6 +43,14 @@ themes/ink/layout/
 - 均为子集化 woff2（GB2312 约 7200 字符），CSP `font-src 'self'` 配合收紧。
 - 新增字体：子集化后放入该目录，更新 `style.min.css` 的 @font-face，不要引外链
   （会被 CSP 拦，见 [SECURITY.md](SECURITY.md#已知陷阱清单) 第 3 条）。
+
+## 封面图池（首页缩略图）
+
+- 位置：`source/img/covers/`（cover-01.jpg … cover-26.jpg，800×800 正方形 JPEG，居中裁切自本地壁纸库）。
+- 机制：`index.ejs` 顶部维护 `coverPool` 数组；文章 front-matter 未设 `cover` 时，
+  构建时随机取一张（行为与原外部 picsum 图源一致，2026-08-08 起不再依赖外站）。
+- **加新封面图**：裁切成 800×800 正方形放入 `source/img/covers/`，文件名按
+  `cover-NN.jpg` 连续编号，并同步更新 `index.ejs` 中 `coverPool` 的循环上界与补齐文件名。
 
 ## 修改主题的流程
 

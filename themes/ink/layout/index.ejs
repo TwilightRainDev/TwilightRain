@@ -1,10 +1,15 @@
+<% // 本地封面图池：文章未设 cover 时构建时随机取一张（原外部 picsum 图源已替换）
+   var coverPool = [];
+   for (var i = 1; i <= 26; i++) {
+     coverPool.push('/img/covers/cover-' + (i < 10 ? '0' + i : i) + '.jpg');
+   } %>
 <main>
   <div>
     <ul class="blog-posts">
       <% page.posts.forEach(function(item) { %>
         <li class="article-item">
           <a href="<%- url_for(item.path) %>" class="link">
-          <img src="<%- item.cover || 'https://picsum.photos/300/300?random=' + Math.random() %>" alt="<%- item.title %>" class="thumbnail" loading="lazy" />
+          <img src="<%- item.cover || coverPool[Math.floor(Math.random() * coverPool.length)] %>" alt="<%- item.title %>" class="thumbnail" loading="lazy" />
             <div class="article-info">
               <time><%- item.date.format('YYYY/MM/DD') %></time>
               <span><%- item.title || 'untitled' %></span>
