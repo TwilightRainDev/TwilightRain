@@ -4,7 +4,12 @@
       <% page.posts.forEach(function(item) { %>
         <li class="article-item">
           <a href="<%- url_for(item.path) %>" class="link">
-          <img src="<%- item.cover || 'https://picsum.photos/300/300?random=' + Math.random() %>" alt="<%- item.title %>" class="thumbnail" loading="lazy" />
+          <% if (item.cover) { %>
+          <img src="<%- item.cover %>" alt="<%- item.title %>" class="thumbnail" loading="lazy" />
+          <% } else { %>
+          <!-- 无 cover：由 ink.js 每次页面加载从前端封面池随机取图 -->
+          <img data-random-cover alt="<%- item.title %>" class="thumbnail" loading="lazy" />
+          <% } %>
             <div class="article-info">
               <time><%- item.date.format('YYYY/MM/DD') %></time>
               <span><%- item.title || 'untitled' %></span>

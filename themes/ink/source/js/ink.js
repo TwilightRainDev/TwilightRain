@@ -74,6 +74,16 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
+    // 首页无 cover 文章：每次页面加载从前端封面池随机取一张（替代原构建期随机的 picsum 图源）
+    // 加新封面：裁 800x800 放入 source/img/covers/ 连续编号，并同步更新下方 coverPool 循环上界
+    const coverPool = [];
+    for (let i = 1; i <= 26; i++) {
+        coverPool.push('/img/covers/cover-' + (i < 10 ? '0' + i : i) + '.jpg');
+    }
+    document.querySelectorAll('.thumbnail[data-random-cover]').forEach(img => {
+        img.src = coverPool[Math.floor(Math.random() * coverPool.length)];
+    });
+
     const thumbnails = document.querySelectorAll('.thumbnail');
 
     thumbnails.forEach(img => {
