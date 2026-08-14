@@ -1,8 +1,14 @@
 favicon: /img/icon.svg
 
+# 顶部导航：header.ejs 遍历本配置渲染；http(s) 开头视为外链（新标签打开）
 menu:
   文章: /
+  标签: /tags/
+  分类: /categories/
+  搜索: /search/
+  友链: /links/
   关于: /about/
+  设置: /settings/
   GitHub: https://github.com/TwilightRainDev
 
 # 首页公告条：留空则不显示

@@ -7,13 +7,13 @@
     </div>
     <p class="subtitle"><%= config.subtitle %></p>
     <nav class="main-nav">
-        <a href="/">文章</a>
-        <a href="/tags/">标签</a>
-        <a href="/categories/">分类</a>
-        <a href="/search/">搜索</a>
-        <a href="/links/">友链</a>
-        <a href="/about/">关于</a>
-        <a href="/settings/">设置</a>
-        <a href="https://github.com/TwilightRainDev" target="_blank" rel="noopener">GitHub</a>
+        <% for (var name in theme.menu) { %>
+            <% var url = theme.menu[name]; %>
+            <% if (url.indexOf('http') === 0) { %>
+            <a href="<%- url %>" target="_blank" rel="noopener"><%= name %></a>
+            <% } else { %>
+            <a href="<%- url_for(url) %>"><%= name %></a>
+            <% } %>
+        <% } %>
     </nav>
 </header>

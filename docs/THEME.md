@@ -14,7 +14,7 @@ themes/ink/layout/
 ├── archive.ejs       # 归档页（年份分组、月份折叠、全部展开/收缩）
 ├── partial/
 │   ├── head.ejs      # <head>：SEO/OG/RSS 元信息、ink.js 引入、样式
-│   ├── header.ejs    # 导航菜单（来源：主题 _config.yml menu）
+│   ├── header.ejs    # 导航菜单（遍历主题 _config.yml menu 渲染，外链自动新标签打开）
 │   ├── footer.ejs    # 页脚
 │   ├── comments.ejs  # giscus 评论挂载
 │   └── banner.ejs    # 头图横幅（文章页与普通页面共用）
@@ -27,7 +27,8 @@ themes/ink/layout/
 ## 配置（themes/ink/_config.yml）
 
 - `favicon`：`/img/icon.svg`
-- `menu`：文章 / 关于 / GitHub
+- `menu`：顶部导航（header.ejs 遍历渲染；http(s) 开头的值视为外链，
+  自动加 `target="_blank" rel="noopener"`；加导航项只改这里）
 - `notice`：首页公告条文本，留空 `''` 则不显示
 - `giscus`：评论系统开关与仓库 ID（`enabled`、`repo_id`、`category_id`）。
   若 GitHub Discussions 配置变动（重建仓库、改 Discussions 分类），
