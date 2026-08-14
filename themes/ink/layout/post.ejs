@@ -2,5 +2,21 @@
     <article>
         <%- page.content %>
     </article>
+    <% if (page.prev || page.next) { %>
+    <nav class="post-prevnext" aria-label="文章导航">
+        <% if (page.prev) { %>
+        <a class="post-prevnext-link prev" href="<%- url_for(page.prev.path) %>">
+            <span class="post-prevnext-label">上一篇</span>
+            <span class="post-prevnext-title"><%= page.prev.title %></span>
+        </a>
+        <% } %>
+        <% if (page.next) { %>
+        <a class="post-prevnext-link next" href="<%- url_for(page.next.path) %>">
+            <span class="post-prevnext-label">下一篇</span>
+            <span class="post-prevnext-title"><%= page.next.title %></span>
+        </a>
+        <% } %>
+    </nav>
+    <% } %>
     <%- partial('partial/comments') %>
 </main>

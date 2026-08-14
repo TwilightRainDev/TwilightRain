@@ -1228,3 +1228,47 @@ pre:hover .copy-btn {
 [data-theme="dark"] .archive-date {
     color: #999;
 }
+
+/* ======================== 文章导航（上一篇/下一篇） ======================== */
+.post-prevnext {
+    display: flex;
+    gap: 12px;
+    margin: 1.5rem 0;
+}
+
+.post-prevnext-link {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 14px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--color-dark);
+    transition: border-color 0.2s ease;
+    min-width: 0;
+}
+
+.post-prevnext-link:hover {
+    border-color: var(--color-primary, #1a8fe3);
+}
+
+.post-prevnext-link.next {
+    text-align: right;
+}
+
+.post-prevnext-label {
+    font-size: var(--size-step-0);
+    color: #999;
+}
+
+.post-prevnext-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+[data-theme="dark"] .post-prevnext-link {
+    border-color: rgba(255, 255, 255, 0.15);
+}
