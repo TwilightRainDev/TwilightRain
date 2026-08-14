@@ -66,6 +66,22 @@ themes/ink/layout/
 - **`pre code.hljs` 必须 `display: block`**：hljs 主题自带该规则，若去掉，
   `<code>` 是 inline 元素，代码行不撑满宽度（行号列与代码之间大片空白）。
   去 padding 规则时勿连 display 一起删。
+- **行号与代码必须同字号同行距**：Hexo 输出的 `<td class="code">` 带 `.code` 类，
+  落入 `code, .highlight, .code { font-size: 0.9em }` 字号链（td 0.9em -> pre 0.8em ->
+  code 0.9em），代码文字约 10.5px；而 `td.gutter` 无 `.code` 类，行号约 13px。
+  行多时 gutter 内容高于 code 内容，表格行高被 gutter 撑开，td 默认
+  `vertical-align: middle` 会把 code 整体下推半个行差——1663 行的代码块会下推
+  3.2k px，代码块前约 150 行只剩空背景（2026-08-14 定位的线上"前 144 行空白"事故）。
+  style.min.css 中 `figure.highlight td { font-size: inherit }` 与
+  `figure.highlight td.code code { font-size: inherit }` 统一两格字号，不可删。
+- **代码不换行 + 行号对齐**：`figure.highlight table` 设 `table-layout: fixed;
+  width: 100%`（防超长行把表格撑出 figure，同时固定 gutter 宽 43px），
+  `td.code code` 设 `white-space: pre`（超长行横向滚动，`pre code.hljs` 已有
+  `overflow-x: auto`）——折行会产生额外行盒，行号与代码行错位，折行与行号对齐
+  原理上不可兼得。
+- **Hexo 8 末尾双 `<br>`**：code 元素末尾输出两个 `<br>`，多出一个尾随空行盒，
+  行号与代码整体错位半行；`figure.highlight td.code code br:last-child { display: none }`
+  已处理（依赖 br 是 code 的最后一个子节点，改动 highlight 输出结构前先验证）。
 
 ## 归档页（archive.ejs）
 
