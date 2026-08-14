@@ -8,7 +8,8 @@
 themes/ink/layout/
 ├── layout.ejs        # 总骨架（head/header/footer 装配）
 ├── index.ejs         # 首页文章流（无 cover 文章从本地封面池随机取图，见下文）
-├── post.ejs          # 文章页（TOC、阅读进度条、返回顶部、评论挂载点）
+├── post.ejs          # 文章页（头图横幅、TOC、阅读进度条、返回顶部、评论挂载点）
+├── archive.ejs       # 归档页（年份分组、月份折叠、全部展开/收缩）
 ├── partial/
 │   ├── head.ejs      # <head>：SEO/OG/RSS 元信息、ink.js 引入、样式
 │   ├── header.ejs    # 导航菜单（来源：主题 _config.yml menu）
@@ -24,9 +25,30 @@ themes/ink/layout/
 
 - `favicon`：`/img/icon.svg`
 - `menu`：文章 / 关于 / GitHub
+- `notice`：首页公告条文本，留空 `''` 则不显示
 - `giscus`：评论系统开关与仓库 ID（`enabled`、`repo_id`、`category_id`）。
   若 GitHub Discussions 配置变动（重建仓库、改 Discussions 分类），
   需在 https://giscus.app/ 重新生成 ID 并同步更新，否则评论加载失败。
+
+## 文章页功能（post.ejs）
+
+- **头图横幅**：post front matter 设 `cover` 时渲染（图 + 渐变遮罩 + 标题叠放），
+  无 `cover` 则不渲染。注意横幅在 `<article>` 之外，不参与 TOC 与灯箱绑定。
+- **图片灯箱**：文章内图片点击放大（fancybox 3）。资源由 post.ejs 按页引入
+  （cdnjs + integrity，与 gallery.ejs 同款，CSP script-src/style-src 已含
+  cdnjs.cloudflare.com，改安全头前读 [SECURITY.md](SECURITY.md)）。
+  `ink.js` 在运行时给 article 内 img 加 `data-fancybox` 属性，fancybox 事件委托自动绑定。
+- **上一篇/下一篇**：`page.prev` / `page.next` 文本卡片导航，单边存在时占满整行。
+- **版权声明**：文章底部 CC BY-NC-SA 4.0 链接，零依赖。
+- **代码块复制**：复制按钮取 `.code pre` 文本（Hexo 8 highlight 输出结构为
+  `figure.highlight > table > td.code > pre > span.line`，行分隔为 `<br>`，
+  提取时手工拼接换行，勿改回 `code.textContent`——会拼成一行）。
+
+## 归档页（archive.ejs）
+
+- 主配置 `_config.yml` 中 `archive_generator.per_page: 0` 关闭归档分页，
+  单页列出全部文章（与页面"共 N 篇"统计一致）。
+- 交互：`ink.js` 的 `#archives-toggle` 按钮切换全部月份折叠状态。
 
 ## 样式与脚本
 
@@ -34,6 +56,8 @@ themes/ink/layout/
   bearblog 系样式代码）。改动时保持单文件约定，避免新增散装 css 引入点。
 - `source/js/ink.js`：**defer 加载**，主题偏好（theme-preference / font-preference）
   在 defer 阶段立即应用，兼容旧值（light/dark）。设置页选择会写入 localStorage。
+  模块清单：图片说明、随机封面、主题/字体偏好、返回顶部、阅读进度条、TOC、
+  悬停资料卡、图片灯箱绑定、代码块复制、归档折叠。
 - `source/js/search.js`：前端搜索（检索 searchdb 生成的 search.xml）。
   ⚠️ 渲染结果必须转义，防 DOM XSS（见 [SECURITY.md](SECURITY.md#已知陷阱清单)）。
 
