@@ -499,8 +499,9 @@ pre:hover .copy-btn {
 
 .toc-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
+    gap: 8px;
     margin-bottom: 6px;
 }
 
@@ -1151,4 +1152,622 @@ pre:hover .copy-btn {
 
 [data-theme="dark"] .settings-desc {
     color: #aaa;
+}
+
+/* ======================== 归档页 ======================== */
+.archive-total {
+    color: #888;
+    font-size: var(--size-step-0);
+    margin: 0 0 4px;
+}
+
+.archive-controls {
+    margin: 0 0 12px;
+    font-size: var(--size-step-0);
+}
+
+.archive-controls a {
+    color: var(--color-primary, #1a8fe3);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.archive-controls a:hover {
+    text-decoration: underline;
+}
+
+.archive-year {
+    margin: 20px 0 8px;
+    font-size: var(--size-step-2);
+}
+
+.archive-month {
+    margin: 0 0 6px;
+}
+
+.archive-month summary {
+    cursor: pointer;
+    font-size: var(--size-step-1);
+    padding: 4px 0;
+    user-select: none;
+}
+
+.archive-month summary:hover {
+    color: var(--color-primary, #1a8fe3);
+}
+
+.archive-list {
+    list-style: none;
+    margin: 4px 0 8px 1.2em;
+    padding: 0;
+}
+
+.archive-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.8em;
+    padding: 2px 0;
+}
+
+.archive-date {
+    color: #999;
+    font-size: var(--size-step-0);
+    flex-shrink: 0;
+}
+
+.archive-title {
+    color: var(--color-dark);
+    text-decoration: none;
+    word-break: break-all;
+}
+
+.archive-title:hover {
+    color: var(--color-primary, #1a8fe3);
+}
+
+[data-theme="dark"] .archive-total,
+[data-theme="dark"] .archive-date {
+    color: #999;
+}
+
+/* ======================== 文章导航（上一篇/下一篇） ======================== */
+.post-prevnext {
+    display: flex;
+    gap: 12px;
+    margin: 1.5rem 0;
+}
+
+.post-prevnext-link {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 14px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--color-dark);
+    transition: border-color 0.2s ease;
+    min-width: 0;
+}
+
+.post-prevnext-link:hover {
+    border-color: var(--color-primary, #1a8fe3);
+}
+
+.post-prevnext-link.next {
+    text-align: right;
+}
+
+.post-prevnext-label {
+    font-size: var(--size-step-0);
+    color: #999;
+}
+
+.post-prevnext-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+[data-theme="dark"] .post-prevnext-link {
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* ======================== 文章头图横幅 ======================== */
+.post-banner {
+    position: relative;
+    height: 30vh;
+    min-height: 180px;
+    overflow: hidden;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.post-banner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.post-banner-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.55));
+}
+
+.post-banner-title {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    margin: 0;
+    color: #fff;
+    font-size: var(--size-step-3);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* ======================== 文章版权声明 ======================== */
+.post-license {
+    margin: 1.5rem 0 0;
+    padding-top: 0.8rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    font-size: var(--size-step-0);
+    color: #999;
+}
+
+.post-license a {
+    color: #999;
+    text-decoration: none;
+}
+
+.post-license a:hover {
+    color: var(--color-primary, #1a8fe3);
+}
+
+[data-theme="dark"] .post-license {
+    border-top-color: rgba(255, 255, 255, 0.15);
+}
+
+/* ======================== 首页公告条 ======================== */
+.notice-bar {
+    background: rgba(26, 143, 227, 0.08);
+    border-left: 3px solid var(--color-primary, #1a8fe3);
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin-bottom: 1.2rem;
+    font-size: var(--size-step-0);
+    color: var(--color-dark);
+}
+
+[data-theme="dark"] .notice-bar {
+    background: rgba(26, 143, 227, 0.15);
+}
+
+/* ======================== 首页分页链接 ======================== */
+/* 原 button + 内联 onclick 被 CSP 拦截（script-src 无 unsafe-inline），
+   改为语义化 <a>，保留原按钮外观 */
+.post-nav-btn {
+    display: inline-block;
+    margin-left: 10px;
+    border-radius: 10px;
+    color: #4d4d4d;
+    background: var(--color-light);
+    font-size: 18px;
+    padding: 10px 20px;
+    box-shadow: -5px -5px 15px #AAA, 5px 5px 15px #EEE;
+    text-decoration: none;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.post-nav-btn:hover {
+    background: linear-gradient(145deg, #ffffff, #e6e6e6);
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3), -5px -5px 10px white;
+    color: #4d4d4d;
+}
+
+.post-nav-btn:active {
+    background: linear-gradient(145deg, #e6e6e6, #ffffff);
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3), -5px -5px 10px white;
+}
+
+/* ======================== 友链页 ======================== */
+.links-intro,
+.link-group-desc {
+    color: #888;
+    font-size: var(--size-step-0);
+}
+
+.link-group-title {
+    margin: 20px 0 6px;
+    font-size: var(--size-step-2);
+}
+
+.link-list {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.link-item a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--color-dark);
+    transition: border-color 0.2s ease;
+}
+
+.link-item a:hover {
+    border-color: var(--color-primary, #1a8fe3);
+}
+
+.link-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.link-name {
+    font-weight: 600;
+}
+
+.link-desc {
+    display: block;
+    font-size: var(--size-step-0);
+    color: #999;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+[data-theme="dark"] .link-item a {
+    border-color: rgba(255, 255, 255, 0.15);
+}
+/* 代码高亮（highlight.js 配色，深浅反色适配） */
+/* 浅色页面代码块为深底（--code-background-color 反色），用 github-dark 配色 */
+
+
+/*!
+  Theme: GitHub Dark
+  Description: Dark theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-dark
+  Current colors taken from GitHub's CSS
+*/
+.hljs {
+  color: #c9d1d9;
+  background: #0d1117
+}
+.hljs-doctag,
+.hljs-keyword,
+.hljs-meta .hljs-keyword,
+.hljs-template-tag,
+.hljs-template-variable,
+.hljs-type,
+.hljs-variable.language_ {
+  /* prettylights-syntax-keyword */
+  color: #ff7b72
+}
+.hljs-title,
+.hljs-title.class_,
+.hljs-title.class_.inherited__,
+.hljs-title.function_ {
+  /* prettylights-syntax-entity */
+  color: #d2a8ff
+}
+.hljs-attr,
+.hljs-attribute,
+.hljs-literal,
+.hljs-meta,
+.hljs-number,
+.hljs-operator,
+.hljs-variable,
+.hljs-selector-attr,
+.hljs-selector-class,
+.hljs-selector-id {
+  /* prettylights-syntax-constant */
+  color: #79c0ff
+}
+.hljs-regexp,
+.hljs-string,
+.hljs-meta .hljs-string {
+  /* prettylights-syntax-string */
+  color: #a5d6ff
+}
+.hljs-built_in,
+.hljs-symbol {
+  /* prettylights-syntax-variable */
+  color: #ffa657
+}
+.hljs-comment,
+.hljs-code,
+.hljs-formula {
+  /* prettylights-syntax-comment */
+  color: #8b949e
+}
+.hljs-name,
+.hljs-quote,
+.hljs-selector-tag,
+.hljs-selector-pseudo {
+  /* prettylights-syntax-entity-tag */
+  color: #7ee787
+}
+.hljs-subst {
+  /* prettylights-syntax-storage-modifier-import */
+  color: #c9d1d9
+}
+.hljs-section {
+  /* prettylights-syntax-markup-heading */
+  color: #1f6feb;
+  font-weight: bold
+}
+.hljs-bullet {
+  /* prettylights-syntax-markup-list */
+  color: #f2cc60
+}
+.hljs-emphasis {
+  /* prettylights-syntax-markup-italic */
+  color: #c9d1d9;
+  font-style: italic
+}
+.hljs-strong {
+  /* prettylights-syntax-markup-bold */
+  color: #c9d1d9;
+  font-weight: bold
+}
+.hljs-addition {
+  /* prettylights-syntax-markup-inserted */
+  color: #aff5b4;
+  background-color: #033a16
+}
+.hljs-deletion {
+  /* prettylights-syntax-markup-deleted */
+  color: #ffdcd7;
+  background-color: #67060c
+}
+.hljs-char.escape_,
+.hljs-link,
+.hljs-params,
+.hljs-property,
+.hljs-punctuation,
+.hljs-tag {
+  /* purposely ignored */
+  
+}
+/* 深色页面代码块为浅底，用 github 浅色配色（ink.js 深色时始终设置 html[data-theme=dark]） */
+[data-theme="dark"] /*!
+  Theme: GitHub
+  Description: Light theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-light
+  Current colors taken from GitHub's CSS
+*/
+.hljs{
+  color: #24292e;
+  background: #ffffff
+}[data-theme="dark"] .hljs-doctag, [data-theme="dark"] .hljs-keyword, [data-theme="dark"] .hljs-meta .hljs-keyword, [data-theme="dark"] .hljs-template-tag, [data-theme="dark"] .hljs-template-variable, [data-theme="dark"] .hljs-type, [data-theme="dark"] .hljs-variable.language_{
+  /* prettylights-syntax-keyword */
+  color: #d73a49
+}[data-theme="dark"] .hljs-title, [data-theme="dark"] .hljs-title.class_, [data-theme="dark"] .hljs-title.class_.inherited__, [data-theme="dark"] .hljs-title.function_{
+  /* prettylights-syntax-entity */
+  color: #6f42c1
+}[data-theme="dark"] .hljs-attr, [data-theme="dark"] .hljs-attribute, [data-theme="dark"] .hljs-literal, [data-theme="dark"] .hljs-meta, [data-theme="dark"] .hljs-number, [data-theme="dark"] .hljs-operator, [data-theme="dark"] .hljs-variable, [data-theme="dark"] .hljs-selector-attr, [data-theme="dark"] .hljs-selector-class, [data-theme="dark"] .hljs-selector-id{
+  /* prettylights-syntax-constant */
+  color: #005cc5
+}[data-theme="dark"] .hljs-regexp, [data-theme="dark"] .hljs-string, [data-theme="dark"] .hljs-meta .hljs-string{
+  /* prettylights-syntax-string */
+  color: #032f62
+}[data-theme="dark"] .hljs-built_in, [data-theme="dark"] .hljs-symbol{
+  /* prettylights-syntax-variable */
+  color: #e36209
+}[data-theme="dark"] .hljs-comment, [data-theme="dark"] .hljs-code, [data-theme="dark"] .hljs-formula{
+  /* prettylights-syntax-comment */
+  color: #6a737d
+}[data-theme="dark"] .hljs-name, [data-theme="dark"] .hljs-quote, [data-theme="dark"] .hljs-selector-tag, [data-theme="dark"] .hljs-selector-pseudo{
+  /* prettylights-syntax-entity-tag */
+  color: #22863a
+}[data-theme="dark"] .hljs-subst{
+  /* prettylights-syntax-storage-modifier-import */
+  color: #24292e
+}[data-theme="dark"] .hljs-section{
+  /* prettylights-syntax-markup-heading */
+  color: #005cc5;
+  font-weight: bold
+}[data-theme="dark"] .hljs-bullet{
+  /* prettylights-syntax-markup-list */
+  color: #735c0f
+}[data-theme="dark"] .hljs-emphasis{
+  /* prettylights-syntax-markup-italic */
+  color: #24292e;
+  font-style: italic
+}[data-theme="dark"] .hljs-strong{
+  /* prettylights-syntax-markup-bold */
+  color: #24292e;
+  font-weight: bold
+}[data-theme="dark"] .hljs-addition{
+  /* prettylights-syntax-markup-inserted */
+  color: #22863a;
+  background-color: #f0fff4
+}[data-theme="dark"] .hljs-deletion{
+  /* prettylights-syntax-markup-deleted */
+  color: #b31d28;
+  background-color: #ffeef0
+}[data-theme="dark"] .hljs-char.escape_, [data-theme="dark"] .hljs-link, [data-theme="dark"] .hljs-params, [data-theme="dark"] .hljs-property, [data-theme="dark"] .hljs-punctuation, [data-theme="dark"] .hljs-tag{
+  /* purposely ignored */
+  
+}
+.hljs { background: transparent; }
+[data-theme="dark"] .hljs { background: transparent; }
+
+/* hljs 代码必须块级：inline 会导致代码行不撑满宽度（官方主题自带，
+   此前去 padding 时误删整条规则，此处只补 display/overflow 不补 padding） */
+pre code.hljs {
+    display: block;
+    overflow-x: auto;
+}
+
+/* 代码块：行号与代码统一字号
+   Hexo 输出的 <td class="code"> 带 .code 类，落入 0.9em 字号链
+   （td 0.9em -> pre 0.8em -> code 0.9em），代码文字约 10.5px，
+   而 gutter 行号无 .code 类，约 13px；行多时 gutter 内容高于 code 内容，
+   表格行高被 gutter 撑开，td 默认 vertical-align:middle 把 code 整体下推半个行差
+   （1663 行下推 3.2k px，代码块前约 150 行只剩空背景）。
+   统一两格字号使行高一致，偏移归零。 */
+figure.highlight td {
+    font-size: inherit;
+}
+figure.highlight td.code code {
+    font-size: inherit;
+}
+
+/* 代码不换行，超长行横向滚动：行号与代码行严格一一对应。
+   pre-wrap 下超长行（如长 URL/长 token）折行会产生额外行盒，
+   行号与代码行错位；折行与行号对齐原理上不可兼得，故代码区禁用折行。 */
+figure.highlight table {
+    table-layout: fixed;
+    width: 100%;
+}
+figure.highlight td.gutter {
+    width: 43px;
+}
+figure.highlight td.code code {
+    white-space: pre;
+}
+/* Hexo 8 在 code 末尾输出双 <br>，多出一个尾随空行盒，行号与代码整体错位半行 */
+figure.highlight td.code code br:last-child {
+    display: none;
+}
+
+/* ======================== 二级菜单（header 导航） ======================== */
+/* _config.yml menu 值可为对象 { url, children }，header.ejs 渲染为 .has-sub。
+   桌面 hover 展开；触摸设备（hover: none）由 ink.js 点击切换 .open。 */
+.main-nav .has-sub {
+    position: relative;
+    display: inline-flex;
+}
+
+.main-nav .sub-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+}
+
+/* 展开指示箭头：CSS 边框三角，不依赖字体图标 */
+.main-nav .sub-trigger::after {
+    content: '';
+    display: inline-block;
+    margin-left: 2px;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid currentColor;
+    vertical-align: middle;
+}
+
+.main-nav .sub-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 20;
+    min-width: 140px;
+    padding: 4px 0;
+    margin: 0;
+    list-style: none;
+    background: var(--color-light);
+    border: 1px solid color-mix(in srgb, var(--color-dark) 20%, transparent);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.main-nav .has-sub:hover .sub-menu,
+.main-nav .has-sub.open .sub-menu {
+    display: block;
+}
+
+.main-nav .sub-menu a {
+    display: block;
+    padding: 6px 14px;
+    border-bottom: none;
+    white-space: nowrap;
+}
+
+.main-nav .sub-menu a:hover {
+    border-bottom: none;
+    background: rgba(26, 143, 227, 0.08);
+}
+
+/* ======================== 文章页头图 + TOC 双卡（banner→TOC 重构） ======================== */
+/* post.ejs 输出 .post-toc-row（图卡 + 目录槽），ink.js 将生成的 TOC 移入槽内。
+   原 30vh banner 仅文章页移除；banner 样式/模板保留给普通页面（about/links 等）。 */
+.post-toc-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    align-items: flex-start;
+}
+
+/* 目录卡占左 60% */
+.post-toc {
+    flex: 1 1 60%;
+    margin-bottom: 0;
+}
+
+/* 图卡占右 40%，固定高裁切（cover），边框与 TOC 卡同款 */
+.post-imgcard {
+    flex: 0 0 40%;
+    height: 160px;
+    margin: 0;
+    border-radius: 8px;
+    border: 1px solid #e8e8e8;
+    overflow: hidden;
+}
+
+.post-imgcard img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* 无 TOC 的文章（无 h2/h3）：图卡独立全宽 */
+.post-toc-row:not(:has(.post-toc)) .post-imgcard {
+    flex-basis: 100%;
+}
+
+/* 移动端：图卡全宽堆顶，目录卡在下 */
+@media (max-width: 767px) {
+    .post-toc-row {
+        flex-direction: column;
+    }
+    .post-imgcard {
+        flex-basis: auto;
+        width: 100%;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    .post-imgcard {
+        border-color: #333;
+    }
+}
+
+[data-theme="dark"] .post-imgcard {
+    border-color: #333;
 }

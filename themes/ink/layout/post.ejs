@@ -1,6 +1,40 @@
 <main>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha384-Q8BgkilbsFGYNNiDqJm69hvDS7NCJWOodvfK/cwTyQD4VQA0qKzuPpvqNER1UC0F" crossorigin="anonymous" />
+    <%# 文章页头图并入 TOC 双卡布局（取代原 30vh banner）：
+         图卡 + 目录卡并排；移动端图卡堆顶全宽。banner partial 保留给普通页面。 %>
+    <div class="post-toc-row">
+        <figure class="post-imgcard">
+            <% if (page.cover) { %>
+            <img src="<%- page.cover %>" alt="<%= page.title %>" />
+            <% } else { %>
+            <img data-random-cover alt="<%= page.title %>" />
+            <% } %>
+        </figure>
+        <div class="post-toc-slot"></div>
+    </div>
     <article>
         <%- page.content %>
+        <footer class="post-license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">知识共享 署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>
+        </footer>
     </article>
+    <% if (page.prev || page.next) { %>
+    <nav class="post-prevnext" aria-label="文章导航">
+        <% if (page.prev) { %>
+        <a class="post-prevnext-link prev" href="<%- url_for(page.prev.path) %>">
+            <span class="post-prevnext-label">上一篇</span>
+            <span class="post-prevnext-title"><%= page.prev.title %></span>
+        </a>
+        <% } %>
+        <% if (page.next) { %>
+        <a class="post-prevnext-link next" href="<%- url_for(page.next.path) %>">
+            <span class="post-prevnext-label">下一篇</span>
+            <span class="post-prevnext-title"><%= page.next.title %></span>
+        </a>
+        <% } %>
+    </nav>
+    <% } %>
     <%- partial('partial/comments') %>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha384-Zm+UU4tdcfAm29vg+MTbfu//q5B/lInMbMCr4T8c9rQFyOv6PlfQYpB5wItcXWe7" crossorigin="anonymous"></script>
 </main>

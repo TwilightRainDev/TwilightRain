@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
     for (let i = 1; i <= 26; i++) {
         coverPool.push('/img/covers/cover-' + (i < 10 ? '0' + i : i) + '.jpg');
     }
-    document.querySelectorAll('.thumbnail[data-random-cover]').forEach(img => {
+    document.querySelectorAll('img[data-random-cover]').forEach(img => {
         img.src = coverPool[Math.floor(Math.random() * coverPool.length)];
     });
 
@@ -321,7 +321,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     toc.appendChild(list);
-    article.insertBefore(toc, article.firstChild);
+    // 优先移入文章页的 .post-toc-slot（banner→TOC 双卡布局），无 slot 时退回旧行为
+    var tocSlot = document.querySelector('.post-toc-slot');
+    if (tocSlot) {
+        tocSlot.appendChild(toc);
+    } else {
+        article.insertBefore(toc, article.firstChild);
+    }
 
     // 折叠/展开
     toggleBtn.addEventListener('click', function() {
@@ -459,13 +465,59 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 })();
 
+// ======================== 友链主站可用性探测 ========================
+// 友链默认 href 指向 fallback（主站 DNS 不可达时保证可访问）。
+// 用 Image() 探测主站 favicon：img-src 允许 https，不受 CSP connect-src
+// 限制（fetch 会被 connect-src 'self' 拦截，不能用于探测）。
+// 探测成功（主站恢复）→ 把链接切回主站；失败 → 保持 fallback。
+(function() {
+    var links = document.querySelectorAll('a[data-probe]');
+    links.forEach(function(a) {
+        var probeUrl = a.getAttribute('data-probe');
+        var img = new Image();
+        img.onload = function() {
+            a.href = probeUrl;
+            a.classList.add('link-probed-live');
+        };
+        img.onerror = function() {
+            // 主站不可达，保持 fallback href
+        };
+        img.src = probeUrl + '/favicon.ico';
+    });
+})();
+
+// ======================== 文章内图片灯箱 ========================
+// 给 article 内 img 加 data-fancybox 属性，fancybox 3 通过事件委托
+// 自动绑定点击放大（资源由 post.ejs 按页引入，仅文章页加载）。
+// 文章页头图卡（.post-imgcard，banner→TOC 双卡布局）的图片同样支持放大。
+(function() {
+    var article = document.querySelector('article');
+    if (!article) return;
+    article.querySelectorAll('img').forEach(function(img) {
+        img.setAttribute('data-fancybox', 'article');
+    });
+    document.querySelectorAll('.post-imgcard img').forEach(function(img) {
+        img.setAttribute('data-fancybox', 'article');
+    });
+})();
+
 // ======================== 代码块一键复制 ========================
+// Hexo 8 highlight.js 输出结构：<figure class="highlight"><table>
+//   <td class="gutter"><pre>行号</pre></td><td class="code"><pre><span class="line">代码</span><br>...</pre></td>
+// 复制内容取 .code pre 的文本；行分隔是 <br>，textContent 不含 br，需手工拼接换行。
 document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('pre').forEach(function (pre) {
-        var code = pre.querySelector('code');
-        if (!code) return;
-        // 跳过已经处理过的
-        if (pre.querySelector('.copy-btn')) return;
+    // 递归提取代码文本：克隆后把 <br> 换成换行文本节点再取 textContent，
+    // 兼容 hljs: true 后 <br> 嵌套在 <code> 内部的结构（textContent 不含 br）。
+    function getCodeText(pre) {
+        var clone = pre.cloneNode(true);
+        clone.querySelectorAll('br').forEach(function (br) {
+            br.replaceWith(document.createTextNode('\n'));
+        });
+        return clone.textContent;
+    }
+
+    function bindCopy(pre) {
+        if (!pre || pre.querySelector('.copy-btn')) return;
 
         var btn = document.createElement('button');
         btn.className = 'copy-btn';
@@ -473,18 +525,20 @@ document.addEventListener('DOMContentLoaded', function () {
         btn.setAttribute('aria-label', '复制代码');
 
         btn.addEventListener('click', function () {
-            var text = code.textContent || code.innerText;
-            // 去掉首尾空行
-            text = text.replace(/^\n+/, '').replace(/\n+$/, '');
-            navigator.clipboard.writeText(text).then(function () {
+            var text = getCodeText(pre).replace(/^\n+/, '').replace(/\n+$/, '');
+            function done() {
                 btn.textContent = '已复制!';
                 btn.classList.add('copied');
                 setTimeout(function () {
                     btn.textContent = '复制';
                     btn.classList.remove('copied');
                 }, 2000);
-            }).catch(function () {
-                // 降级：fallback 到旧方法
+            }
+            function fail() {
+                btn.textContent = '复制失败';
+                setTimeout(function () { btn.textContent = '复制'; }, 2000);
+            }
+            function legacyCopy() {
                 try {
                     var ta = document.createElement('textarea');
                     ta.value = text;
@@ -494,21 +548,63 @@ document.addEventListener('DOMContentLoaded', function () {
                     ta.select();
                     document.execCommand('copy');
                     document.body.removeChild(ta);
-                    btn.textContent = '已复制!';
-                    btn.classList.add('copied');
-                    setTimeout(function () {
-                        btn.textContent = '复制';
-                        btn.classList.remove('copied');
-                    }, 2000);
+                    done();
                 } catch (e) {
-                    btn.textContent = '复制失败';
-                    setTimeout(function () { btn.textContent = '复制'; }, 2000);
+                    fail();
                 }
-            });
+            }
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(done).catch(legacyCopy);
+            } else {
+                legacyCopy();
+            }
         });
 
         // 让 pre 成为相对定位容器
         pre.style.position = 'relative';
         pre.appendChild(btn);
+    }
+
+    // Hexo 8 highlight 结构：按钮挂到代码列 pre（gutter 列无代码，不处理）
+    document.querySelectorAll('figure.highlight').forEach(function (figure) {
+        var codePre = figure.querySelector('.code pre');
+        if (codePre) bindCopy(codePre);
+    });
+    // 兜底：figure 外的裸 <pre><code>（非 hexo highlight 结构）
+    document.querySelectorAll('pre').forEach(function (pre) {
+        if (pre.closest('figure.highlight')) return;
+        if (pre.querySelector('code')) bindCopy(pre);
     });
 });
+
+// ======================== 归档页：全部展开/收缩 ========================
+(function() {
+    var toggle = document.getElementById('archives-toggle');
+    if (!toggle) return;
+    toggle.addEventListener('click', function() {
+        var months = document.querySelectorAll('.archive-month');
+        var allOpen = months.length > 0;
+        months.forEach(function(m) { if (!m.open) allOpen = false; });
+        months.forEach(function(m) { m.open = !allOpen; });
+    });
+})();
+// ======================== 二级菜单：触摸设备点击展开 ========================
+// 桌面（hover: none 为 false）由 CSS :hover 展开，不拦截父项链接跳转；
+// 触摸设备无 hover，点击父项切换 .open（CSS 展开），点击外部收起。
+(function() {
+    var coarse = window.matchMedia && window.matchMedia('(hover: none), (pointer: coarse)').matches;
+    if (!coarse) return;
+    document.addEventListener('click', function(e) {
+        var inWrap = e.target.closest('.has-sub');
+        document.querySelectorAll('.has-sub.open').forEach(function(el) {
+            if (el !== inWrap) el.classList.remove('open');
+        });
+        var trigger = e.target.closest('.sub-trigger');
+        if (!trigger) return;
+        var wrap = trigger.parentElement;
+        if (wrap && wrap.classList.contains('has-sub')) {
+            e.preventDefault();
+            wrap.classList.toggle('open');
+        }
+    });
+})();

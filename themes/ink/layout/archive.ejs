@@ -1,0 +1,32 @@
+<main>
+  <h1>归档</h1>
+  <p class="archive-total">共 <%= site.posts.length %> 篇文章</p>
+  <% if (site.posts.length) { %>
+  <p class="archive-controls"><a href="javascript:;" id="archives-toggle" aria-label="全部展开或收缩">全部展开/收缩</a></p>
+  <% var sorted = page.posts.sort('date', -1); %>
+  <% var lastYear = null; var lastMonth = null; %>
+  <% sorted.each(function(post, i) { %>
+    <% var year = date(post.date, 'YYYY'); %>
+    <% var month = date(post.date, 'MM'); %>
+    <% if (year !== lastYear) { %>
+      <% lastYear = year; lastMonth = null; %>
+      <h2 class="archive-year"><%= year %> 年</h2>
+    <% } %>
+    <% if (month !== lastMonth) { %>
+      <% lastMonth = month; %>
+      <details class="archive-month" open>
+        <summary><%= month %> 月</summary>
+        <ul class="archive-list">
+    <% } %>
+          <li class="archive-item">
+            <time class="archive-date"><%= date(post.date, 'MM-DD') %></time>
+            <a href="<%- url_for(post.path) %>" class="archive-title"><%= post.title %></a>
+          </li>
+    <% var next = sorted.eq(i + 1); %>
+    <% if (!next || month !== date(next.date, 'MM')) { %>
+        </ul>
+      </details>
+    <% } %>
+  <% }) %>
+  <% } %>
+</main>
