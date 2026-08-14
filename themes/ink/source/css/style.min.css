@@ -1343,3 +1343,30 @@ pre:hover .copy-btn {
 [data-theme="dark"] .notice-bar {
     background: rgba(26, 143, 227, 0.15);
 }
+
+/* ======================== 首页分页链接 ======================== */
+/* 原 button + 内联 onclick 被 CSP 拦截（script-src 无 unsafe-inline），
+   改为语义化 <a>，保留原按钮外观 */
+.post-nav-btn {
+    display: inline-block;
+    margin-left: 10px;
+    border-radius: 10px;
+    color: #4d4d4d;
+    background: var(--color-light);
+    font-size: 18px;
+    padding: 10px 20px;
+    box-shadow: -5px -5px 15px #AAA, 5px 5px 15px #EEE;
+    text-decoration: none;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.post-nav-btn:hover {
+    background: linear-gradient(145deg, #ffffff, #e6e6e6);
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3), -5px -5px 10px white;
+    color: #4d4d4d;
+}
+
+.post-nav-btn:active {
+    background: linear-gradient(145deg, #e6e6e6, #ffffff);
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3), -5px -5px 10px white;
+}

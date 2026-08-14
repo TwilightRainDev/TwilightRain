@@ -28,10 +28,10 @@
     
     <nav class="post-navigation">
       <% if(page.prev !== 0){ %>
-        <button onclick="location.href='<%- url_for(page.prev_link)%>'">上一页</button>
+        <a class="post-nav-btn" href="<%- url_for(page.prev_link)%>">上一页</a>
       <% } %>
       <% if(page.next !== 0){ %>
-        <button onclick="location.href='<%- url_for(page.next_link)%>'">下一页</button>
+        <a class="post-nav-btn" href="<%- url_for(page.next_link)%>">下一页</a>
       <% } %>
     </nav>
   </div>

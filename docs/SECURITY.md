@@ -55,6 +55,13 @@
    PR 上限 20。合并依赖升级 PR 前跑 `npm run build` 验证。`package.json` 的
    `overrides` 段（brace-expansion/minimatch 锁版）是已知漏洞的补丁，不要删。
 
+7. **内联事件处理器被 CSP 拦截（2026-08-14 踩坑）**：`script-src` 不含
+   `'unsafe-inline'`，任何 `onclick`/`onload` 等内联事件属性都会在浏览器端
+   被拒绝执行（点击无反应，控制台报 "Refused to execute inline event
+   handler"）。页面交互一律走外链 JS（ink.js）的 `addEventListener`，导航类
+   语义用 `<a>` 链接（分页按钮即因此从 button+onclick 改为 a）。新增任何
+   内联事件属性前先想清楚，改后需在线上验证。
+
 ## 内容与仓库安全
 
 - 评论走 giscus（GitHub Discussions 作后端，主题配置见 [THEME.md](THEME.md#评论)）。
