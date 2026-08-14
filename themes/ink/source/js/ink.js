@@ -460,12 +460,26 @@ document.addEventListener('DOMContentLoaded', function () {
 })();
 
 // ======================== 代码块一键复制 ========================
+// Hexo 8 highlight.js 输出结构：<figure class="highlight"><table>
+//   <td class="gutter"><pre>行号</pre></td><td class="code"><pre><span class="line">代码</span><br>...</pre></td>
+// 复制内容取 .code pre 的文本；行分隔是 <br>，textContent 不含 br，需手工拼接换行。
 document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('pre').forEach(function (pre) {
-        var code = pre.querySelector('code');
-        if (!code) return;
-        // 跳过已经处理过的
-        if (pre.querySelector('.copy-btn')) return;
+    function getCodeText(pre) {
+        var text = '';
+        pre.childNodes.forEach(function (node) {
+            if (node.nodeType === Node.TEXT_NODE) {
+                text += node.textContent;
+            } else if (node.nodeName === 'BR') {
+                text += '\n';
+            } else {
+                text += node.textContent;
+            }
+        });
+        return text;
+    }
+
+    function bindCopy(pre) {
+        if (!pre || pre.querySelector('.copy-btn')) return;
 
         var btn = document.createElement('button');
         btn.className = 'copy-btn';
@@ -473,18 +487,20 @@ document.addEventListener('DOMContentLoaded', function () {
         btn.setAttribute('aria-label', '复制代码');
 
         btn.addEventListener('click', function () {
-            var text = code.textContent || code.innerText;
-            // 去掉首尾空行
-            text = text.replace(/^\n+/, '').replace(/\n+$/, '');
-            navigator.clipboard.writeText(text).then(function () {
+            var text = getCodeText(pre).replace(/^\n+/, '').replace(/\n+$/, '');
+            function done() {
                 btn.textContent = '已复制!';
                 btn.classList.add('copied');
                 setTimeout(function () {
                     btn.textContent = '复制';
                     btn.classList.remove('copied');
                 }, 2000);
-            }).catch(function () {
-                // 降级：fallback 到旧方法
+            }
+            function fail() {
+                btn.textContent = '复制失败';
+                setTimeout(function () { btn.textContent = '复制'; }, 2000);
+            }
+            function legacyCopy() {
                 try {
                     var ta = document.createElement('textarea');
                     ta.value = text;
@@ -494,21 +510,31 @@ document.addEventListener('DOMContentLoaded', function () {
                     ta.select();
                     document.execCommand('copy');
                     document.body.removeChild(ta);
-                    btn.textContent = '已复制!';
-                    btn.classList.add('copied');
-                    setTimeout(function () {
-                        btn.textContent = '复制';
-                        btn.classList.remove('copied');
-                    }, 2000);
+                    done();
                 } catch (e) {
-                    btn.textContent = '复制失败';
-                    setTimeout(function () { btn.textContent = '复制'; }, 2000);
+                    fail();
                 }
-            });
+            }
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(done).catch(legacyCopy);
+            } else {
+                legacyCopy();
+            }
         });
 
         // 让 pre 成为相对定位容器
         pre.style.position = 'relative';
         pre.appendChild(btn);
+    }
+
+    // Hexo 8 highlight 结构：按钮挂到代码列 pre（gutter 列无代码，不处理）
+    document.querySelectorAll('figure.highlight').forEach(function (figure) {
+        var codePre = figure.querySelector('.code pre');
+        if (codePre) bindCopy(codePre);
+    });
+    // 兜底：figure 外的裸 <pre><code>（非 hexo highlight 结构）
+    document.querySelectorAll('pre').forEach(function (pre) {
+        if (pre.closest('figure.highlight')) return;
+        if (pre.querySelector('code')) bindCopy(pre);
     });
 });
