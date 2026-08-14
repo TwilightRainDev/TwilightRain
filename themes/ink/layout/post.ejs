@@ -1,12 +1,6 @@
 <main>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha384-Q8BgkilbsFGYNNiDqJm69hvDS7NCJWOodvfK/cwTyQD4VQA0qKzuPpvqNER1UC0F" crossorigin="anonymous" />
-    <% if (page.cover) { %>
-    <header class="post-banner">
-        <img class="post-banner-img" src="<%- page.cover %>" alt="<%= page.title %>" />
-        <div class="post-banner-overlay"></div>
-        <h1 class="post-banner-title"><%= page.title %></h1>
-    </header>
-    <% } %>
+    <%- partial('partial/banner', {item: page}) %>
     <article>
         <%- page.content %>
         <footer class="post-license">

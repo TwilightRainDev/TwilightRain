@@ -1,0 +1,11 @@
+<% if (item.title) { %>
+<header class="post-banner">
+    <% if (item.cover) { %>
+    <img class="post-banner-img" src="<%- item.cover %>" alt="<%= item.title %>" />
+    <% } else { %>
+    <img class="post-banner-img" data-random-cover alt="<%= item.title %>" />
+    <% } %>
+    <div class="post-banner-overlay"></div>
+    <h1 class="post-banner-title"><%= item.title %></h1>
+</header>
+<% } %>

@@ -9,12 +9,14 @@ themes/ink/layout/
 ├── layout.ejs        # 总骨架（head/header/footer 装配）
 ├── index.ejs         # 首页文章流（无 cover 文章从本地封面池随机取图，见下文）
 ├── post.ejs          # 文章页（头图横幅、TOC、阅读进度条、返回顶部、评论挂载点）
+├── page.ejs          # 普通页面（无显式 layout 的页面，如 /about/）
 ├── archive.ejs       # 归档页（年份分组、月份折叠、全部展开/收缩）
 ├── partial/
 │   ├── head.ejs      # <head>：SEO/OG/RSS 元信息、ink.js 引入、样式
 │   ├── header.ejs    # 导航菜单（来源：主题 _config.yml menu）
 │   ├── footer.ejs    # 页脚
-│   └── comments.ejs  # giscus 评论挂载
+│   ├── comments.ejs  # giscus 评论挂载
+│   └── banner.ejs    # 头图横幅（文章页与普通页面共用）
 ├── 404.ejs           # 404 页（source/404.md 指定 layout: 404）
 ├── settings.ejs      # 设置页（source/settings/index.md → 主题/字体偏好）
 ├── search.ejs        # 搜索页（source/search/index.md → search.js 前端检索）
@@ -32,8 +34,10 @@ themes/ink/layout/
 
 ## 文章页功能（post.ejs）
 
-- **头图横幅**：post front matter 设 `cover` 时渲染（图 + 渐变遮罩 + 标题叠放），
-  无 `cover` 则不渲染。注意横幅在 `<article>` 之外，不参与 TOC 与灯箱绑定。
+- **头图横幅**（`partial/banner.ejs`，文章页与普通页面共用）：front matter 设
+  `cover` 时用指定图，未设 `cover` 时输出 `data-random-cover` 由 ink.js 从封面池
+  随机取图（与首页缩略图同一机制）。注意横幅在 `<article>` 之外，不参与 TOC
+  与灯箱绑定。
 - **图片灯箱**：文章内图片点击放大（fancybox 3）。资源由 post.ejs 按页引入
   （cdnjs + integrity，与 gallery.ejs 同款，CSP script-src/style-src 已含
   cdnjs.cloudflare.com，改安全头前读 [SECURITY.md](SECURITY.md)）。

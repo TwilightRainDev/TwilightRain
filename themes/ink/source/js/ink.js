@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
     for (let i = 1; i <= 26; i++) {
         coverPool.push('/img/covers/cover-' + (i < 10 ? '0' + i : i) + '.jpg');
     }
-    document.querySelectorAll('.thumbnail[data-random-cover]').forEach(img => {
+    document.querySelectorAll('img[data-random-cover]').forEach(img => {
         img.src = coverPool[Math.floor(Math.random() * coverPool.length)];
     });
 
