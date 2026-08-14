@@ -9,8 +9,8 @@ themes/ink/layout/
 ├── layout.ejs        # 总骨架（head/header/footer 装配）
 ├── index.ejs         # 首页文章流（无 cover 文章从本地封面池随机取图，见下文）
 ├── post.ejs          # 文章页（头图横幅、TOC、阅读进度条、返回顶部、评论挂载点）
-├── page.ejs          # 普通页面（无显式 layout 的页面，如 /about/）
-├── links.ejs         # 友链页（source/links/index.md 的 front matter links 数据驱动）
+├── page.ejs          # 普通页面（无显式 layout 的页面，如 /about/，含评论挂载）
+├── links.ejs         # 友链页（source/links/index.md 的 front matter links 数据驱动，含评论挂载）
 ├── archive.ejs       # 归档页（年份分组、月份折叠、全部展开/收缩）
 ├── partial/
 │   ├── head.ejs      # <head>：SEO/OG/RSS 元信息、ink.js 引入、样式
@@ -63,6 +63,9 @@ themes/ink/layout/
   时用 github 浅色配色（ink.js 深色时始终设置 html[data-theme=dark]，
   无需 media query 分支）。`.hljs` 背景透明，由 pre 背景控制。
 - 行号 gutter 颜色继承 `.highlight` 的 color（--code-color 反色），无需单独样式。
+- **`pre code.hljs` 必须 `display: block`**：hljs 主题自带该规则，若去掉，
+  `<code>` 是 inline 元素，代码行不撑满宽度（行号列与代码之间大片空白）。
+  去 padding 规则时勿连 display 一起删。
 
 ## 归档页（archive.ejs）
 

@@ -1,10 +1,10 @@
 ---
 layout: links
 title: 友链
-comments: false
+comments: true
 links:
   - group: 朋友们
-    desc: 交换友链请在评论区或邮件联系
+    desc: 交换友链请在下方评论区留言
     items:
       - name: 猫正离子
         url: https://ccat.tech

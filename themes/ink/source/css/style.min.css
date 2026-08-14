@@ -1613,3 +1613,10 @@ pre:hover .copy-btn {
 }
 .hljs { background: transparent; }
 [data-theme="dark"] .hljs { background: transparent; }
+
+/* hljs 代码必须块级：inline 会导致代码行不撑满宽度（官方主题自带，
+   此前去 padding 时误删整条规则，此处只补 display/overflow 不补 padding） */
+pre code.hljs {
+    display: block;
+    overflow-x: auto;
+}
