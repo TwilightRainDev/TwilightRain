@@ -538,3 +538,15 @@ document.addEventListener('DOMContentLoaded', function () {
         if (pre.querySelector('code')) bindCopy(pre);
     });
 });
+
+// ======================== 归档页：全部展开/收缩 ========================
+(function() {
+    var toggle = document.getElementById('archives-toggle');
+    if (!toggle) return;
+    toggle.addEventListener('click', function() {
+        var months = document.querySelectorAll('.archive-month');
+        var allOpen = months.length > 0;
+        months.forEach(function(m) { if (!m.open) allOpen = false; });
+        months.forEach(function(m) { m.open = !allOpen; });
+    });
+})();
