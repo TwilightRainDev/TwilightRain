@@ -499,8 +499,9 @@ pre:hover .copy-btn {
 
 .toc-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
+    gap: 8px;
     margin-bottom: 6px;
 }
 
@@ -1651,4 +1652,122 @@ figure.highlight td.code code {
 /* Hexo 8 在 code 末尾输出双 <br>，多出一个尾随空行盒，行号与代码整体错位半行 */
 figure.highlight td.code code br:last-child {
     display: none;
+}
+
+/* ======================== 二级菜单（header 导航） ======================== */
+/* _config.yml menu 值可为对象 { url, children }，header.ejs 渲染为 .has-sub。
+   桌面 hover 展开；触摸设备（hover: none）由 ink.js 点击切换 .open。 */
+.main-nav .has-sub {
+    position: relative;
+    display: inline-flex;
+}
+
+.main-nav .sub-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+}
+
+/* 展开指示箭头：CSS 边框三角，不依赖字体图标 */
+.main-nav .sub-trigger::after {
+    content: '';
+    display: inline-block;
+    margin-left: 2px;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid currentColor;
+    vertical-align: middle;
+}
+
+.main-nav .sub-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 20;
+    min-width: 140px;
+    padding: 4px 0;
+    margin: 0;
+    list-style: none;
+    background: var(--color-light);
+    border: 1px solid color-mix(in srgb, var(--color-dark) 20%, transparent);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.main-nav .has-sub:hover .sub-menu,
+.main-nav .has-sub.open .sub-menu {
+    display: block;
+}
+
+.main-nav .sub-menu a {
+    display: block;
+    padding: 6px 14px;
+    border-bottom: none;
+    white-space: nowrap;
+}
+
+.main-nav .sub-menu a:hover {
+    border-bottom: none;
+    background: rgba(26, 143, 227, 0.08);
+}
+
+/* ======================== 文章页头图 + TOC 双卡（banner→TOC 重构） ======================== */
+/* post.ejs 输出 .post-toc-row（图卡 + 目录槽），ink.js 将生成的 TOC 移入槽内。
+   原 30vh banner 仅文章页移除；banner 样式/模板保留给普通页面（about/links 等）。 */
+.post-toc-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    align-items: flex-start;
+}
+
+/* 目录卡占左 60% */
+.post-toc {
+    flex: 1 1 60%;
+    margin-bottom: 0;
+}
+
+/* 图卡占右 40%，固定高裁切（cover），边框与 TOC 卡同款 */
+.post-imgcard {
+    flex: 0 0 40%;
+    height: 160px;
+    margin: 0;
+    border-radius: 8px;
+    border: 1px solid #e8e8e8;
+    overflow: hidden;
+}
+
+.post-imgcard img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* 无 TOC 的文章（无 h2/h3）：图卡独立全宽 */
+.post-toc-row:not(:has(.post-toc)) .post-imgcard {
+    flex-basis: 100%;
+}
+
+/* 移动端：图卡全宽堆顶，目录卡在下 */
+@media (max-width: 767px) {
+    .post-toc-row {
+        flex-direction: column;
+    }
+    .post-imgcard {
+        flex-basis: auto;
+        width: 100%;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    .post-imgcard {
+        border-color: #333;
+    }
+}
+
+[data-theme="dark"] .post-imgcard {
+    border-color: #333;
 }

@@ -1,6 +1,17 @@
 <main>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha384-Q8BgkilbsFGYNNiDqJm69hvDS7NCJWOodvfK/cwTyQD4VQA0qKzuPpvqNER1UC0F" crossorigin="anonymous" />
-    <%- partial('partial/banner', {item: page}) %>
+    <%# 文章页头图并入 TOC 双卡布局（取代原 30vh banner）：
+         图卡 + 目录卡并排；移动端图卡堆顶全宽。banner partial 保留给普通页面。 %>
+    <div class="post-toc-row">
+        <figure class="post-imgcard">
+            <% if (page.cover) { %>
+            <img src="<%- page.cover %>" alt="<%= page.title %>" />
+            <% } else { %>
+            <img data-random-cover alt="<%= page.title %>" />
+            <% } %>
+        </figure>
+        <div class="post-toc-slot"></div>
+    </div>
     <article>
         <%- page.content %>
         <footer class="post-license">

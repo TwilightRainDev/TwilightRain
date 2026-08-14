@@ -47,6 +47,24 @@
 
     <script src="/js/ink.js" defer></script>
     <link rel="shortcut icon" href="<%= url_for(theme.favicon) %>" type="image/x-icon" />
+
+    <%# MathJax 按需加载：仅正文含公式标记的页注入。
+         front matter math: true / false 可显式强制开/关；
+         否则自动检测（剔除代码块后匹配 $、\(、\[，代码块内的 $ 不算）。 %>
+    <% var mathjaxOn = false; %>
+    <% if (page.content) { %>
+        <% if (page.math === true) { %>
+            <% mathjaxOn = true; %>
+        <% } else if (page.math !== false) { %>
+            <% var mjContent = page.content.replace(/<pre[\s\S]*?<\/pre>/gi, ''); %>
+            <% mathjaxOn = /\$|\\\(|\\\[/.test(mjContent); %>
+        <% } %>
+    <% } %>
+    <% if (mathjaxOn) { %>
+        <script src="/js/mathjax-config.js" defer></script>
+        <script src="/js/mathjax/tex-chtml.js" defer></script>
+    <% } %>
+
     <title>
         <% if (page.title) { %>
             <%= page.title %> | <% } %><%= config.title %>

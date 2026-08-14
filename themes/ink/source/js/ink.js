@@ -321,7 +321,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     toc.appendChild(list);
-    article.insertBefore(toc, article.firstChild);
+    // 优先移入文章页的 .post-toc-slot（banner→TOC 双卡布局），无 slot 时退回旧行为
+    var tocSlot = document.querySelector('.post-toc-slot');
+    if (tocSlot) {
+        tocSlot.appendChild(toc);
+    } else {
+        article.insertBefore(toc, article.firstChild);
+    }
 
     // 折叠/展开
     toggleBtn.addEventListener('click', function() {
@@ -483,10 +489,14 @@ document.addEventListener('DOMContentLoaded', function () {
 // ======================== 文章内图片灯箱 ========================
 // 给 article 内 img 加 data-fancybox 属性，fancybox 3 通过事件委托
 // 自动绑定点击放大（资源由 post.ejs 按页引入，仅文章页加载）。
+// 文章页头图卡（.post-imgcard，banner→TOC 双卡布局）的图片同样支持放大。
 (function() {
     var article = document.querySelector('article');
     if (!article) return;
     article.querySelectorAll('img').forEach(function(img) {
+        img.setAttribute('data-fancybox', 'article');
+    });
+    document.querySelectorAll('.post-imgcard img').forEach(function(img) {
         img.setAttribute('data-fancybox', 'article');
     });
 })();
@@ -576,5 +586,25 @@ document.addEventListener('DOMContentLoaded', function () {
         var allOpen = months.length > 0;
         months.forEach(function(m) { if (!m.open) allOpen = false; });
         months.forEach(function(m) { m.open = !allOpen; });
+    });
+})();
+// ======================== 二级菜单：触摸设备点击展开 ========================
+// 桌面（hover: none 为 false）由 CSS :hover 展开，不拦截父项链接跳转；
+// 触摸设备无 hover，点击父项切换 .open（CSS 展开），点击外部收起。
+(function() {
+    var coarse = window.matchMedia && window.matchMedia('(hover: none), (pointer: coarse)').matches;
+    if (!coarse) return;
+    document.addEventListener('click', function(e) {
+        var inWrap = e.target.closest('.has-sub');
+        document.querySelectorAll('.has-sub.open').forEach(function(el) {
+            if (el !== inWrap) el.classList.remove('open');
+        });
+        var trigger = e.target.closest('.sub-trigger');
+        if (!trigger) return;
+        var wrap = trigger.parentElement;
+        if (wrap && wrap.classList.contains('has-sub')) {
+            e.preventDefault();
+            wrap.classList.toggle('open');
+        }
     });
 })();

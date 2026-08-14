@@ -8,7 +8,7 @@
 themes/ink/layout/
 ├── layout.ejs        # 总骨架（head/header/footer 装配）
 ├── index.ejs         # 首页文章流（无 cover 文章从本地封面池随机取图，见下文）
-├── post.ejs          # 文章页（头图横幅、TOC、阅读进度条、返回顶部、评论挂载点）
+├── post.ejs          # 文章页（头图并入 TOC 双卡、阅读进度条、返回顶部、评论挂载点）
 ├── page.ejs          # 普通页面（无显式 layout 的页面，如 /about/，含评论挂载）
 ├── links.ejs         # 友链页（source/links/index.md 的 front matter links 数据驱动，含评论挂载）
 ├── archive.ejs       # 归档页（年份分组、月份折叠、全部展开/收缩）
@@ -28,7 +28,9 @@ themes/ink/layout/
 
 - `favicon`：`/img/icon.svg`
 - `menu`：顶部导航（header.ejs 遍历渲染；http(s) 开头的值视为外链，
-  自动加 `target="_blank" rel="noopener"`；加导航项只改这里）
+  自动加 `target="_blank" rel="noopener"`；加导航项只改这里）。
+  支持二级菜单：值写成对象 `{ url: 父链接, children: { 子名: 链接 } }`，
+  `url` 可省略（父项仅作展开按钮），详见下文「二级菜单」章节。
 - `notice`：首页公告条文本，留空 `''` 则不显示
 - `giscus`：评论系统开关与仓库 ID（`enabled`、`repo_id`、`category_id`）。
   若 GitHub Discussions 配置变动（重建仓库、改 Discussions 分类），
@@ -36,10 +38,17 @@ themes/ink/layout/
 
 ## 文章页功能（post.ejs）
 
-- **头图横幅**（`partial/banner.ejs`，文章页与普通页面共用）：front matter 设
-  `cover` 时用指定图，未设 `cover` 时输出 `data-random-cover` 由 ink.js 从封面池
-  随机取图（与首页缩略图同一机制）。注意横幅在 `<article>` 之外，不参与 TOC
-  与灯箱绑定。
+- **头图横幅**（`partial/banner.ejs`）：**仅普通页面使用**（about/links 等，
+  `page.ejs` 引用）；**文章页已弃用**（2026-08-14 重构）：post.ejs 不再引用
+  banner，改为「头图并入 TOC 双卡」布局（见下文）。
+- **文章页头图 + TOC 双卡**（post.ejs 输出 `.post-toc-row`）：图卡
+  （`.post-imgcard`，40% 宽 160px 高，cover 裁切，front matter `cover` 或
+  `data-random-cover` 随机封面池）+ 目录槽（`.post-toc-slot`，ink.js 生成的
+  TOC 移入其中），桌面并排、移动端（<768px）图卡全宽堆顶。无 h2/h3 的文章
+  不生成 TOC 卡，图卡自动全宽（`:not(:has(.post-toc))` 规则）。图卡图片与
+  文章内图片同样绑定 fancybox 灯箱。TOC 头部「目录 [折叠]」整体左对齐。
+  改动双卡结构时注意：TOC 由 ink.js 运行时生成并移入槽位，`figure.highlight`
+  等文章结构不受影响。
 - **图片灯箱**：文章内图片点击放大（fancybox 3）。资源由 post.ejs 按页引入
   （cdnjs + integrity，与 gallery.ejs 同款，CSP script-src/style-src 已含
   cdnjs.cloudflare.com，改安全头前读 [SECURITY.md](SECURITY.md)）。
@@ -83,6 +92,52 @@ themes/ink/layout/
   行号与代码整体错位半行；`figure.highlight td.code code br:last-child { display: none }`
   已处理（依赖 br 是 code 的最后一个子节点，改动 highlight 输出结构前先验证）。
 
+## MathJax 按需加载
+
+- **机制**：构建时在 `partial/head.ejs` 按页检测，仅正文含公式标记的页面
+  注入两个脚本（`/js/mathjax-config.js` + `/js/mathjax/tex-chtml.js`），
+  其余页面零 MathJax 痕迹（不加载不请求）。
+- **开关（front matter `math` 字段）**：`math: true` 强制加载；`math: false`
+  强制不加载；缺省自动检测。
+- **自动检测规则**：把 `page.content` 中 `<pre>...</pre>` 代码块整体剔除后，
+  匹配 `$`、`\(`、`\[` 任意一个即视为含公式——代码块里的美元符号/反斜杠
+  不会误触发（bilicompact-source-v2 那种满屏 `$` 的源码文章安全）。
+- **公式分隔符**：行内 `$...$` 与 `$$...$$`（显示公式），`\(...\)` 也受支持。
+  **注意**：markdown-it 的 backslash escape 会把源文件里 `\(` `\)` `\[` `\]`
+  的反斜杠吞掉（`\(` 属于可转义标点），文章里写 `\(...\)` 会渲染成 `(a ne b)`
+  这类字面文本——**写文章一律用 `$...$` / `$$...$$`**。检测与配置保留
+  `\(` `\[` 分支是为兼容手动注入的 HTML。
+- **资源自托管**：`source/js/mathjax/`（tex-chtml.js 1.2M + `output/chtml/fonts/
+  woff-v2/` 23 个字体 388K，合计约 1.5M，仅公式页按需下载，gzip 后约 250K）。
+  与 CSP 全兼容（`script-src 'self'`、`font-src 'self'`、MathJax 3 运行时
+  注入的 `<style>` 由 `style-src 'unsafe-inline'` 放行），**无需改 csp.js**。
+  若换 CDN 版 MathJax，font-src 会拦 CHTML 字体导致符号渲染退化，勿改。
+- **更新 MathJax**：`cd H:\work_zone\Temp && npm pack mathjax@<版本>`，
+  解压取 `es5/tex-chtml.js` 与 `es5/output/chtml/fonts/woff-v2/` 整目录覆盖
+  `source/js/mathjax/`（目录结构即字体相对路径，勿平铺）。
+- **mathjax-config.js 独立文件原因**：CSP `script-src` 无 `'unsafe-inline'`，
+  配置不能内联 `<script>`；该文件必须位于 tex-chtml.js 之前（defer 按文档
+  顺序执行，`window.MathJax` 要先注册）。改动配置时勿合并进 ink.js——
+  那样无公式页也会带上配置代码，违背按需纪律。
+
+## 二级菜单（header 导航）
+
+- **配置**：`_config.yml` 的 `menu` 值两种形态——
+  - 字符串：普通链接（现状不变）
+  - 对象：`{ url: /父链接/, children: { 子名: /链接/ } }`。`url` 可省略，
+    省略时父项仅作展开按钮（渲染为 `href="#"`，点击由 JS 接管）。
+    子项与普通项一样，http(s) 开头视为外链新标签打开。
+- **渲染**：`partial/header.ejs` 对对象值输出
+  `<span class="has-sub"><a class="sub-trigger">…</a><ul class="sub-menu">…</ul></span>`。
+- **交互**：
+  - 桌面（`(hover: none)` 为 false）：CSS `:hover` 展开，父项带 `url` 时
+    点击正常跳转，不拦截。
+  - 触摸设备：`ink.js` 事件委托拦截父项点击，切换 `.open` 类展开/收起，
+    点击外部自动收起；子菜单项点击正常跳转。仅支持两级，子项不支持再嵌套。
+- **样式**：`style.min.css` 末尾「二级菜单」段——下拉面板绝对定位
+  （`position: absolute; top: 100%`），`.has-sub:hover` 与 `.has-sub.open`
+  两种展开入口；展开箭头是 CSS 边框三角（不依赖图标字体）。
+
 ## 归档页（archive.ejs）
 
 - 主配置 `_config.yml` 中 `archive_generator.per_page: 0` 关闭归档分页，
@@ -96,7 +151,8 @@ themes/ink/layout/
 - `source/js/ink.js`：**defer 加载**，主题偏好（theme-preference / font-preference）
   在 defer 阶段立即应用，兼容旧值（light/dark）。设置页选择会写入 localStorage。
   模块清单：图片说明、随机封面、主题/字体偏好、返回顶部、阅读进度条、TOC、
-  悬停资料卡、图片灯箱绑定、代码块复制、归档折叠、友链主站探测。
+  悬停资料卡、图片灯箱绑定、代码块复制、归档折叠、友链主站探测、
+  二级菜单触摸交互。
 
 ## 友链页（links.ejs）
 
