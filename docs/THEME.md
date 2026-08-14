@@ -47,8 +47,22 @@ themes/ink/layout/
 - **上一篇/下一篇**：`page.prev` / `page.next` 文本卡片导航，单边存在时占满整行。
 - **版权声明**：文章底部 CC BY-NC-SA 4.0 链接，零依赖。
 - **代码块复制**：复制按钮取 `.code pre` 文本（Hexo 8 highlight 输出结构为
-  `figure.highlight > table > td.code > pre > span.line`，行分隔为 `<br>`，
-  提取时手工拼接换行，勿改回 `code.textContent`——会拼成一行）。
+  `figure.highlight > table > td.code > pre > code.hljs > span`，行分隔为
+  `<br>`）。提取用克隆后递归替换 `<br>` 为换行文本节点再取 textContent，
+  `hljs: true` 后 `<br>` 嵌套在 `<code>` 内部，直接 textContent 会拼成一行。
+
+## 代码高亮（highlight.js）
+
+- 构建时渲染（`syntax_highlighter: highlight.js`，`hljs: true`），无客户端 JS、
+  无第三方 CDN——配色直接内联在 style.min.css（自托管，单文件纪律）。
+- `auto_detect: true`：未标注语言的代码块由 highlight.js 构建时自动检测
+  （历史上 74% 的代码块无标注）。**已知误检**：纯文本/进度条类内容可能被
+  误识别为某种语言（如 erlang-repl），显式标注语言（```js 等）可覆盖。
+- **深浅反色适配**：代码块背景是主题反色（浅色页面深底、深色页面浅底），
+  所以配色反向匹配——默认（浅色页面）用 github-dark 配色，`[data-theme="dark"]`
+  时用 github 浅色配色（ink.js 深色时始终设置 html[data-theme=dark]，
+  无需 media query 分支）。`.hljs` 背景透明，由 pre 背景控制。
+- 行号 gutter 颜色继承 `.highlight` 的 color（--code-color 反色），无需单独样式。
 
 ## 归档页（archive.ejs）
 

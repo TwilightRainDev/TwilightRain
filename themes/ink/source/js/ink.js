@@ -496,18 +496,14 @@ document.addEventListener('DOMContentLoaded', function () {
 //   <td class="gutter"><pre>行号</pre></td><td class="code"><pre><span class="line">代码</span><br>...</pre></td>
 // 复制内容取 .code pre 的文本；行分隔是 <br>，textContent 不含 br，需手工拼接换行。
 document.addEventListener('DOMContentLoaded', function () {
+    // 递归提取代码文本：克隆后把 <br> 换成换行文本节点再取 textContent，
+    // 兼容 hljs: true 后 <br> 嵌套在 <code> 内部的结构（textContent 不含 br）。
     function getCodeText(pre) {
-        var text = '';
-        pre.childNodes.forEach(function (node) {
-            if (node.nodeType === Node.TEXT_NODE) {
-                text += node.textContent;
-            } else if (node.nodeName === 'BR') {
-                text += '\n';
-            } else {
-                text += node.textContent;
-            }
+        var clone = pre.cloneNode(true);
+        clone.querySelectorAll('br').forEach(function (br) {
+            br.replaceWith(document.createTextNode('\n'));
         });
-        return text;
+        return clone.textContent;
     }
 
     function bindCopy(pre) {
