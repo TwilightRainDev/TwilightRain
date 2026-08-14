@@ -5,6 +5,9 @@ menu:
   关于: /about/
   GitHub: https://github.com/TwilightRainDev
 
+# 首页公告条：留空则不显示
+notice: ''
+
 # Giscus 评论系统配置
 # 启用方法：
 #   1. 在 https://github.com/apps/giscus 安装 App 到仓库

@@ -1,5 +1,8 @@
 <main>
   <div>
+    <% if (theme.notice) { %>
+    <div class="notice-bar"><%= theme.notice %></div>
+    <% } %>
     <ul class="blog-posts">
       <% page.posts.forEach(function(item) { %>
         <li class="article-item">

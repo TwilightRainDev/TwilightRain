@@ -1328,3 +1328,18 @@ pre:hover .copy-btn {
 [data-theme="dark"] .post-license {
     border-top-color: rgba(255, 255, 255, 0.15);
 }
+
+/* ======================== 首页公告条 ======================== */
+.notice-bar {
+    background: rgba(26, 143, 227, 0.08);
+    border-left: 3px solid var(--color-primary, #1a8fe3);
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin-bottom: 1.2rem;
+    font-size: var(--size-step-0);
+    color: var(--color-dark);
+}
+
+[data-theme="dark"] .notice-bar {
+    background: rgba(26, 143, 227, 0.15);
+}
