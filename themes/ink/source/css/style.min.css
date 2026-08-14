@@ -1370,3 +1370,65 @@ pre:hover .copy-btn {
     background: linear-gradient(145deg, #e6e6e6, #ffffff);
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3), -5px -5px 10px white;
 }
+
+/* ======================== 友链页 ======================== */
+.links-intro,
+.link-group-desc {
+    color: #888;
+    font-size: var(--size-step-0);
+}
+
+.link-group-title {
+    margin: 20px 0 6px;
+    font-size: var(--size-step-2);
+}
+
+.link-list {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.link-item a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--color-dark);
+    transition: border-color 0.2s ease;
+}
+
+.link-item a:hover {
+    border-color: var(--color-primary, #1a8fe3);
+}
+
+.link-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.link-name {
+    font-weight: 600;
+}
+
+.link-desc {
+    display: block;
+    font-size: var(--size-step-0);
+    color: #999;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+[data-theme="dark"] .link-item a {
+    border-color: rgba(255, 255, 255, 0.15);
+}

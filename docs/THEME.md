@@ -10,6 +10,7 @@ themes/ink/layout/
 ├── index.ejs         # 首页文章流（无 cover 文章从本地封面池随机取图，见下文）
 ├── post.ejs          # 文章页（头图横幅、TOC、阅读进度条、返回顶部、评论挂载点）
 ├── page.ejs          # 普通页面（无显式 layout 的页面，如 /about/）
+├── links.ejs         # 友链页（source/links/index.md 的 front matter links 数据驱动）
 ├── archive.ejs       # 归档页（年份分组、月份折叠、全部展开/收缩）
 ├── partial/
 │   ├── head.ejs      # <head>：SEO/OG/RSS 元信息、ink.js 引入、样式
@@ -61,7 +62,17 @@ themes/ink/layout/
 - `source/js/ink.js`：**defer 加载**，主题偏好（theme-preference / font-preference）
   在 defer 阶段立即应用，兼容旧值（light/dark）。设置页选择会写入 localStorage。
   模块清单：图片说明、随机封面、主题/字体偏好、返回顶部、阅读进度条、TOC、
-  悬停资料卡、图片灯箱绑定、代码块复制、归档折叠。
+  悬停资料卡、图片灯箱绑定、代码块复制、归档折叠、友链主站探测。
+
+## 友链页（links.ejs）
+
+- 数据源：`source/links/index.md` 的 front matter `links` 数组（分组 + 条目）。
+- 条目字段：`name`、`url`（主站）、`fallback`（可选，主站不可达时的备用链接）、
+  `img`（头像，自托管）、`desc`。
+- **DNS 回退机制**：默认 href 指向 `fallback`；ink.js 用 `Image()` 探测主站
+  favicon（`img-src` 允许 https，不受 `connect-src 'self'` 限制，fetch 不可用），
+  探测成功自动把链接切回主站。加新友链时若主站 DNS 未配置，填 `fallback` 即可。
+- 头像图片放 `source/img/links/`。
 - `source/js/search.js`：前端搜索（检索 searchdb 生成的 search.xml）。
   ⚠️ 渲染结果必须转义，防 DOM XSS（见 [SECURITY.md](SECURITY.md#已知陷阱清单)）。
 

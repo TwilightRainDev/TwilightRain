@@ -459,6 +459,27 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 })();
 
+// ======================== 友链主站可用性探测 ========================
+// 友链默认 href 指向 fallback（主站 DNS 不可达时保证可访问）。
+// 用 Image() 探测主站 favicon：img-src 允许 https，不受 CSP connect-src
+// 限制（fetch 会被 connect-src 'self' 拦截，不能用于探测）。
+// 探测成功（主站恢复）→ 把链接切回主站；失败 → 保持 fallback。
+(function() {
+    var links = document.querySelectorAll('a[data-probe]');
+    links.forEach(function(a) {
+        var probeUrl = a.getAttribute('data-probe');
+        var img = new Image();
+        img.onload = function() {
+            a.href = probeUrl;
+            a.classList.add('link-probed-live');
+        };
+        img.onerror = function() {
+            // 主站不可达，保持 fallback href
+        };
+        img.src = probeUrl + '/favicon.ico';
+    });
+})();
+
 // ======================== 文章内图片灯箱 ========================
 // 给 article 内 img 加 data-fancybox 属性，fancybox 3 通过事件委托
 // 自动绑定点击放大（资源由 post.ejs 按页引入，仅文章页加载）。

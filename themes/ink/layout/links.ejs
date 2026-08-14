@@ -1,0 +1,29 @@
+<main>
+  <h1>友链</h1>
+  <p class="links-intro">欢迎交换友链。</p>
+  <% if (page.links) { %>
+    <% page.links.forEach(function(group) { %>
+      <h2 class="link-group-title"><%= group.group %></h2>
+      <% if (group.desc) { %>
+      <p class="link-group-desc"><%= group.desc %></p>
+      <% } %>
+      <ul class="link-list">
+        <% group.items.forEach(function(item) { %>
+          <li class="link-item">
+            <!-- 默认 href 用 fallback（主站 DNS 不可达时保证可访问），
+                 ink.js 探测到主站恢复后自动切回 url -->
+            <a href="<%- item.fallback || item.url %>"<% if (item.url) { %> data-probe="<%- item.url %>"<% } %> target="_blank" rel="noopener">
+              <img class="link-avatar" src="<%- item.img %>" alt="<%= item.name %>" loading="lazy" />
+              <span class="link-name"><%= item.name %></span>
+              <% if (item.desc) { %>
+              <span class="link-desc"><%= item.desc %></span>
+              <% } %>
+            </a>
+          </li>
+        <% }) %>
+      </ul>
+    <% }) %>
+  <% } else { %>
+    <p>暂无友链。</p>
+  <% } %>
+</main>
