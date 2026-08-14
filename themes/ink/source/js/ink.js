@@ -459,6 +459,17 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 })();
 
+// ======================== 文章内图片灯箱 ========================
+// 给 article 内 img 加 data-fancybox 属性，fancybox 3 通过事件委托
+// 自动绑定点击放大（资源由 post.ejs 按页引入，仅文章页加载）。
+(function() {
+    var article = document.querySelector('article');
+    if (!article) return;
+    article.querySelectorAll('img').forEach(function(img) {
+        img.setAttribute('data-fancybox', 'article');
+    });
+})();
+
 // ======================== 代码块一键复制 ========================
 // Hexo 8 highlight.js 输出结构：<figure class="highlight"><table>
 //   <td class="gutter"><pre>行号</pre></td><td class="code"><pre><span class="line">代码</span><br>...</pre></td>
