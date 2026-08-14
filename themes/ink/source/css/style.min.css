@@ -1272,3 +1272,37 @@ pre:hover .copy-btn {
 [data-theme="dark"] .post-prevnext-link {
     border-color: rgba(255, 255, 255, 0.15);
 }
+
+/* ======================== 文章头图横幅 ======================== */
+.post-banner {
+    position: relative;
+    height: 30vh;
+    min-height: 180px;
+    overflow: hidden;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.post-banner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.post-banner-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.55));
+}
+
+.post-banner-title {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    margin: 0;
+    color: #fff;
+    font-size: var(--size-step-3);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
