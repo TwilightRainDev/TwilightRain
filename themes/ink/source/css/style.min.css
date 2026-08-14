@@ -1306,3 +1306,25 @@ pre:hover .copy-btn {
     font-size: var(--size-step-3);
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
+
+/* ======================== 文章版权声明 ======================== */
+.post-license {
+    margin: 1.5rem 0 0;
+    padding-top: 0.8rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    font-size: var(--size-step-0);
+    color: #999;
+}
+
+.post-license a {
+    color: #999;
+    text-decoration: none;
+}
+
+.post-license a:hover {
+    color: var(--color-primary, #1a8fe3);
+}
+
+[data-theme="dark"] .post-license {
+    border-top-color: rgba(255, 255, 255, 0.15);
+}
