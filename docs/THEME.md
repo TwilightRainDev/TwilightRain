@@ -42,9 +42,14 @@ themes/ink/layout/
   `page.ejs` 引用）；**文章页已弃用**（2026-08-14 重构）：post.ejs 不再引用
   banner，改为「头图并入 TOC 双卡」布局（见下文）。
 - **文章页头图 + TOC 双卡**（post.ejs 输出 `.post-toc-row`）：图卡
-  （`.post-imgcard`，40% 宽 160px 高，cover 裁切，front matter `cover` 或
-  `data-random-cover` 随机封面池）+ 目录槽（`.post-toc-slot`，ink.js 生成的
-  TOC 移入其中），桌面并排、移动端（<768px）图卡全宽堆顶。无 h2/h3 的文章
+  （`.post-imgcard`，40% 宽，高度为图片自然比例——封面池方图即方卡，
+  front matter `cover` 或 `data-random-cover` 随机封面池）+ 目录槽
+  （`.post-toc-slot`，ink.js 生成的 TOC 移入其中），桌面并排、移动端
+  （<768px）图卡全宽堆顶。**目录卡与图卡等高**：ink.js 用 ResizeObserver
+  同步 `toc.style.height = 图卡高`——目录内容少于图卡高时填充留白（等高
+  卡片），内容超出时卡片内滚动（`overflow-y: auto`，2026-08-15 修复
+  "长目录 557px 撑高" 问题）。图卡高度随图片解码与窗口宽度变化，RO 自动
+  跟随；`h > 0` 保护防止图片加载失败时目录卡高度归零。无 h2/h3 的文章
   不生成 TOC 卡，图卡自动全宽（`:not(:has(.post-toc))` 规则）。图卡图片与
   文章内图片同样绑定 fancybox 灯箱。TOC 头部「目录 [折叠]」整体左对齐。
   改动双卡结构时注意：TOC 由 ink.js 运行时生成并移入槽位，`figure.highlight`

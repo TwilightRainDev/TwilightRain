@@ -1723,16 +1723,16 @@ figure.highlight td.code code br:last-child {
     align-items: flex-start;
 }
 
-/* 目录卡占左 60% */
+/* 目录卡占左 60%，高度由 ink.js 同步为图卡高度（max-height 内联），超出滚动 */
 .post-toc {
     flex: 1 1 60%;
     margin-bottom: 0;
+    overflow-y: auto;
 }
 
 /* 图卡占右 40%，固定高裁切（cover），边框与 TOC 卡同款 */
 .post-imgcard {
     flex: 0 0 40%;
-    height: 160px;
     margin: 0;
     border-radius: 8px;
     border: 1px solid #e8e8e8;
@@ -1741,7 +1741,7 @@ figure.highlight td.code code br:last-child {
 
 .post-imgcard img {
     width: 100%;
-    height: 100%;
+    height: auto;
     object-fit: cover;
     display: block;
 }
