@@ -325,6 +325,29 @@ document.addEventListener('DOMContentLoaded', function () {
     var tocSlot = document.querySelector('.post-toc-slot');
     if (tocSlot) {
         tocSlot.appendChild(toc);
+        // 目录卡与图卡等高：max-height 跟随图卡实际高度（图片自然比例，
+        // 随宽度与图片加载时机变化），目录内容超出后卡片内滚动。
+        // 图卡高度为 0（图片未加载/加载失败）时不设限，避免目录卡消失。
+        var imgcard = document.querySelector('.post-imgcard');
+        if (imgcard) {
+            // 目录卡高度与图卡等高（height 同步）：目录内容少于图卡高时
+            // 填充留白（等高卡片），内容超出时卡片内滚动（overflow-y: auto）。
+            // 图片解码完成、窗口缩放等任何图卡高度变化都由 ResizeObserver
+            // 同步（img 未解码时高度会塌陷，RO 在解码完成后自动修正；
+            // h > 0 防止图片加载失败时目录卡高度归零）。
+            var syncTocHeight = function () {
+                var h = imgcard.offsetHeight;
+                if (h > 0) toc.style.height = h + 'px';
+            };
+            syncTocHeight();
+            if (typeof ResizeObserver !== 'undefined') {
+                new ResizeObserver(syncTocHeight).observe(imgcard);
+            }
+            window.addEventListener('resize', function () {
+                clearTimeout(syncTocHeight._timer);
+                syncTocHeight._timer = setTimeout(syncTocHeight, 100);
+            });
+        }
     } else {
         article.insertBefore(toc, article.firstChild);
     }
