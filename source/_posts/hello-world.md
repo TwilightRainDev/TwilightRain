@@ -1,5 +1,6 @@
 ---
 title: 关于我
+excerpt: 写代码的 TwilightRain：前端 JS/TS、桌面端 C# .NET，博客记录技术探索与日常思考，欢迎评论区打招呼。
 date: 2026-07-13 17:44:00
 updated: 2026-07-25
 tags:
@@ -15,8 +16,6 @@ comments: true
 网名 **TwilightRain**，写点前端也写点桌面端。前端主要用 JavaScript / TypeScript，桌面端用 C# .NET 搞些 WinForms 小工具。平时会鼓捣一些脚本、工具、小项目。
 
 这个博客主要用来记录技术探索和日常思考。
-
-<!-- more -->
 
 ## 做过什么
 

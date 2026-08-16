@@ -1,5 +1,6 @@
 ---
 title: 告别散装脚本：我写了一个 Windows 文本处理工具箱
+excerpt: TwilightRainTextTool 诞生记：把散落四处的批处理与 PowerShell 文本处理脚本，统一成一个 C# WinForms 图形化工具箱。
 date: 2026-07-25 13:00:00
 tags:
   - TextTool
@@ -18,8 +19,6 @@ categories:
 写代码的人大概都经历过这样的时刻：手头有一批文本文件需要处理，合并短行、拼接文件、修复莫名其妙被截断的中文、批量替换标点符号。需求本身不复杂，但每次都要翻出零散的批处理脚本、PowerShell 命令，或者临时写一段 C# 控制台程序，用完就扔，下次再从头来过。
 
 这些碎片化的处理方式困扰了我很久。于是我把它们攒到了一起，做成了一个 Windows 桌面工具，**TwilightRainTextTool**。
-
-<!-- more -->
 
 ## 为什么会有这个工具
 

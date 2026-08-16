@@ -29,6 +29,7 @@ category_dir: categories
 code_dir: downloads/code
 i18n_dir: :lang
 skip_render:
+  - 'egg/**' # 彩蛋页：原样拷贝，不套主题布局、不进 sitemap
 
 # Writing
 new_post_name: :title.md # File name of new posts
