@@ -177,11 +177,27 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // 首页列数偏好：auto（默认，响应式：宽屏 3 列/平板 2 列/手机 1 列）或 '1'-'4'（全端统一）
+    // 实现：在 .blog-posts 上写 --cols，CSS 侧 width 用 var(--cols, 断点默认值)，
+    // 未设置时各断点取各自兜底（现状），设置了则所有媒体查询内都解析为设置值（全端跟随）。
+    function applyColumns(pref) {
+        var list = document.querySelector('.blog-posts');
+        if (!list) return;
+        if (pref === '1' || pref === '2' || pref === '3' || pref === '4') {
+            list.style.setProperty('--cols', pref);
+        } else {
+            // auto 或非法值：回退响应式现状
+            list.style.removeProperty('--cols');
+        }
+    }
+
     var storedTheme = localStorage.getItem('theme-preference') || 'auto';
     var storedFont = localStorage.getItem('font-preference') || 'lxgw';
+    var storedColumns = localStorage.getItem('columns-preference') || 'auto';
 
     applyTheme(storedTheme);
     applyFont(storedFont);
+    applyColumns(storedColumns);
 
     // 设置页控件绑定（无控件时静默跳过）
     document.addEventListener('DOMContentLoaded', function() {
@@ -209,6 +225,19 @@ document.addEventListener('DOMContentLoaded', function () {
                     applyFont(storedFont);
                 });
             })(fontRadios[j]);
+        }
+
+        var columnsRadios = document.querySelectorAll('input[name="columns"]');
+        for (var k = 0; k < columnsRadios.length; k++) {
+            (function(r) {
+                r.checked = r.value === storedColumns;
+                r.addEventListener('change', function() {
+                    if (!r.checked) return;
+                    storedColumns = r.value;
+                    localStorage.setItem('columns-preference', storedColumns);
+                    applyColumns(storedColumns);
+                });
+            })(columnsRadios[k]);
         }
     });
 })();

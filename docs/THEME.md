@@ -19,7 +19,7 @@ themes/ink/layout/
 │   ├── comments.ejs  # giscus 评论挂载
 │   └── banner.ejs    # 头图横幅（文章页与普通页面共用）
 ├── 404.ejs           # 404 页（source/404.md 指定 layout: 404）
-├── settings.ejs      # 设置页（source/settings/index.md → 主题/字体偏好）
+├── settings.ejs      # 设置页（source/settings/index.md → 主题/字体/首页列数偏好）
 ├── search.ejs        # 搜索页（source/search/index.md → search.js 前端检索）
 ├── categories.ejs / tags.ejs / gallery.ejs
 ```
@@ -153,11 +153,21 @@ themes/ink/layout/
 
 - 全部样式在 `source/css/style.min.css` 单文件中（原主题特色：可直接套用
   bearblog 系样式代码）。改动时保持单文件约定，避免新增散装 css 引入点。
-- `source/js/ink.js`：**defer 加载**，主题偏好（theme-preference / font-preference）
-  在 defer 阶段立即应用，兼容旧值（light/dark）。设置页选择会写入 localStorage。
-  模块清单：图片说明、随机封面、主题/字体偏好、返回顶部、阅读进度条、TOC、
+- `source/js/ink.js`：**defer 加载**，主题偏好（theme-preference / font-preference /
+  columns-preference）在 defer 阶段立即应用，兼容旧值（light/dark）。设置页选择
+  会写入 localStorage。
+  模块清单：图片说明、随机封面、主题/字体/列数偏好、返回顶部、阅读进度条、TOC、
   悬停资料卡、图片灯箱绑定、代码块复制、归档折叠、友链主站探测、
   二级菜单触摸交互。
+
+## 首页列数（设置页 → 全端统一）
+
+- 设置项 `columns-preference`：`auto`（默认，响应式现状）/ `1`-`4`（全端统一）。
+- 实现：ink.js 在 `.blog-posts` 上写 CSS 变量 `--cols`，样式表 `.article-item`
+  宽度为 `calc(100% / var(--cols, 断点兜底) - 20px)`；三档媒体查询
+  （基础 3 / ≤768px 2 / ≤480px 1）的 `var()` 兜底值不同——未设置时各断点取
+  各自默认列数（现状行为），显式设置后所有断点内都解析为设置值（全端跟随）。
+- 只作用于首页：归档/标签等页用独立列表结构，不受影响。
 
 ## 友链页（links.ejs）
 

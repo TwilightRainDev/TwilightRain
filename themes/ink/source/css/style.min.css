@@ -222,8 +222,11 @@ button:active{
 }
 
 .article-item {
-    position: relative; 
-    width: calc(33.33% - 20px);
+    position: relative;
+    /* 列数由 --cols 控制（ink.js 按用户设置写入 .blog-posts）：
+       未设置时取 3 列（默认现状）；媒体查询内的 var() 兜底值不同，
+       显式设置了 --cols 则全端统一跟随该值（断点不再降列） */
+    width: calc(100% / var(--cols, 3) - 20px);
     padding: 0;
     aspect-ratio: 1;
     background-size: cover;
@@ -366,7 +369,7 @@ pre {
 
 @media (max-width: 768px) {
     .article-item {
-        width: calc(50% - 20px);
+        width: calc(100% / var(--cols, 2) - 20px);
     }
 
     .gallery {
@@ -380,7 +383,7 @@ pre {
 
 @media (max-width: 480px) {
     .article-item {
-        width: 100%;
+        width: calc(100% / var(--cols, 1) - 20px);
     }
 }
 
