@@ -166,6 +166,8 @@ document.addEventListener('DOMContentLoaded', function () {
             document.documentElement.removeAttribute('data-theme');
         }
         giscusTheme(actual);
+        // 通知依赖主题的组件（mermaid 图表按新主题重渲染）
+        document.dispatchEvent(new CustomEvent('theme-change', { detail: { theme: actual } }));
     }
 
     // 字体偏好：lxgw（默认）/ system / hywenhei
@@ -625,6 +627,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // 兜底：figure 外的裸 <pre><code>（非 hexo highlight 结构）
     document.querySelectorAll('pre').forEach(function (pre) {
         if (pre.closest('figure.highlight')) return;
+        if (pre.closest('.mermaid')) return; // mermaid 源码容器（渲染后即替换为 SVG）
         if (pre.querySelector('code')) bindCopy(pre);
     });
 });
@@ -658,5 +661,109 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
             wrap.classList.toggle('open');
         }
+    });
+})();
+
+// ======================== Mermaid 图表（```mermaid 按需渲染） ========================
+// marked 扩展（scripts/marked-mermaid.js）把 ```mermaid 代码块渲染为
+// .mermaid 容器（内含源码 pre code）。本模块：
+// - 页面无 .mermaid 时零开销（不加载库）；
+// - 动态加载自托管 mermaid.min.js（script-src 'self' 放行，无需扩 CSP 白名单）；
+// - 渲染成功后 SVG 替换容器内容，源码存 el.dataset.code 供主题切换重渲染；
+// - 主题切换（theme-change 事件，偏好模块 dispatch）时按新主题全部重渲染。
+(function() {
+    var MERMAID_SRC = '/js/mermaid.min.js';
+    var hasMermaid = !!document.querySelector('.mermaid');
+    var libraryLoading = false;
+
+    function currentTheme() {
+        return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default';
+    }
+
+    function renderError(err) {
+        document.querySelectorAll('.mermaid').forEach(function (el) {
+            if (el.querySelector('.mermaid-error')) return;
+            var msg = document.createElement('p');
+            msg.className = 'mermaid-error';
+            msg.textContent = '图表渲染失败：' + (err && err.message ? err.message : '未知错误');
+            el.appendChild(msg);
+        });
+        console.error('Mermaid:', err);
+    }
+
+    function loadLibrary(onload) {
+        if (window.mermaid) { onload(); return; }
+        if (libraryLoading) {
+            // 已在加载中：轮询等待，避免重复注入脚本
+            var tries = 0;
+            var timer = setInterval(function () {
+                tries++;
+                if (window.mermaid) { clearInterval(timer); onload(); }
+                else if (tries > 100) {
+                    clearInterval(timer);
+                    renderError(new Error('mermaid.min.js 加载超时'));
+                }
+            }, 100);
+            return;
+        }
+        libraryLoading = true;
+        var script = document.createElement('script');
+        script.src = MERMAID_SRC;
+        script.onload = function () { libraryLoading = false; onload(); };
+        script.onerror = function () {
+            libraryLoading = false;
+            renderError(new Error('mermaid.min.js 加载失败'));
+        };
+        document.head.appendChild(script);
+    }
+
+    function renderAll(force) {
+        var elements = document.querySelectorAll('.mermaid');
+        if (!elements.length) return;
+        if (!window.mermaid || typeof window.mermaid.render !== 'function') return;
+        if (renderAll._rendering) return;
+        renderAll._rendering = true;
+
+        window.mermaid.initialize({
+            startOnLoad: false,
+            theme: currentTheme(),
+            themeVariables: { fontFamily: 'inherit', fontSize: '15px' },
+            // strict：不执行图表内的 HTML/click 指令，防注入（Twilight 用 loose，不迁移）
+            securityLevel: 'strict',
+            logLevel: 'error'
+        });
+
+        var tasks = [];
+        elements.forEach(function (el, idx) {
+            if (el.classList.contains('mermaid-rendered') && !force) return;
+            var code;
+            if (el.dataset.code) {
+                code = el.dataset.code;
+            } else {
+                var srcCode = el.querySelector('code');
+                if (!srcCode || !srcCode.textContent.trim()) return;
+                code = srcCode.textContent;
+                el.dataset.code = code;
+            }
+            tasks.push(window.mermaid.render('mermaid-' + idx + '-' + Date.now(), code)
+                .then(function (res) {
+                    el.innerHTML = res.svg;
+                    el.classList.add('mermaid-rendered');
+                })
+                .catch(function (err) { renderError(err); }));
+        });
+        Promise.all(tasks).then(function () { renderAll._rendering = false; });
+    }
+
+    if (hasMermaid) {
+        loadLibrary(function () { renderAll(false); });
+    }
+    document.addEventListener('theme-change', function () {
+        if (hasMermaid) renderAll(true);
+    });
+    // DOMContentLoaded 兜底（极端时序下保证渲染）
+    document.addEventListener('DOMContentLoaded', function () {
+        if (!hasMermaid) hasMermaid = !!document.querySelector('.mermaid');
+        if (hasMermaid) loadLibrary(function () { renderAll(false); });
     });
 })();

@@ -20,6 +20,7 @@ themes/ink/layout/
 │   └── banner.ejs    # 头图横幅（文章页与普通页面共用）
 ├── 404.ejs           # 404 页（source/404.md 指定 layout: 404）
 ├── settings.ejs      # 设置页（source/settings/index.md → 主题/字体/首页列数偏好）
+├── post.ejs          # 文章页正文头部含阅读时间（scripts/reading-time.js 注入）
 ├── search.ejs        # 搜索页（source/search/index.md → search.js 前端检索）
 ├── categories.ejs / tags.ejs / gallery.ejs
 ```
@@ -158,7 +159,9 @@ themes/ink/layout/
   会写入 localStorage。
   模块清单：图片说明、随机封面、主题/字体/列数偏好、返回顶部、阅读进度条、TOC、
   悬停资料卡、图片灯箱绑定、代码块复制、归档折叠、友链主站探测、
-  二级菜单触摸交互。
+  二级菜单触摸交互、Mermaid 图表按需渲染（见下）。
+  **主题变更通知**：偏好模块 `applyTheme` 末尾 dispatch `theme-change` 事件
+  （detail.theme = 实际主题），依赖主题的组件监听它（当前仅 mermaid 重渲染）。
 
 ## 首页列数（设置页 → 全端统一）
 
@@ -168,6 +171,52 @@ themes/ink/layout/
   （基础 3 / ≤768px 2 / ≤480px 1）的 `var()` 兜底值不同——未设置时各断点取
   各自默认列数（现状行为），显式设置后所有断点内都解析为设置值（全端跟随）。
 - 只作用于首页：归档/标签等页用独立列表结构，不受影响。
+
+## 提示块（admonitions）
+
+- **语法**：`:::note` / `:::tip` / `:::important` / `:::warning` / `:::caution`
+  包裹内容，`:::类型[自定义标题]` 可指定标题（缺省显示类型名，如 Note）。
+  渲染为 `<blockquote class="admonition bdm-类型" data-callout="类型">` +
+  `.bdm-title`（Twilight 迁移，语法与 markdown-it-container / remark-directive 一致）。
+- **实现**：`scripts/marked-admonitions.js` 注册 **marked:use** 过滤器——hexo-renderer-marked
+  每次渲染前执行该过滤器（lib/renderer.js:235 `execFilterSync('marked:use', marked.use)`），
+  用 marked 块级扩展（tokenizer 二次解析块内内容 + renderer）实现，无需切换渲染器、
+  不影响既有 Markdown 解析。未闭合的 `:::` 块原样输出（写错时显眼暴露）。
+- **样式**：style.min.css「提示块」段——每类型 `--bdm-accent` 变量（五色）+ 标题前
+  mask 图标（SVG data URI，走 `img-src data:` 白名单）+ 左右双主题背景色。
+  注意覆盖博客全局 blockquote 的 italic 样式（admonition 设 `font-style: normal`）。
+- **安全**：标题文本 HTML 转义（防注入）；图标只经 CSS mask 显示，无脚本。
+
+## Mermaid 图表
+
+- **语法**：````mermaid 围栏代码块 → `<div class="mermaid"><pre><code>源码</code></pre></div>`，
+  源码保留在 DOM（无 JS 可见、可复制）；ink.js 按需加载自托管
+  `themes/ink/source/js/mermaid.min.js`（v11.16.1，约 3.6MB 未压缩 / gzip 约 1MB）
+  渲染为 SVG 替换容器；渲染失败显示错误信息并保留源码。
+- **实现关键（2026-08-16 踩坑）**：**不能做成 marked 扩展**——hexo 内置
+  `backtick_code_block` before_post_render 过滤器（priority 10）会在 marked 渲染前
+  把源文里所有围栏代码块整体替换为占位符，marked 扩展的 tokenizer 永远看不到
+  ```mermaid（扩展注册成功但完全不命中）。`scripts/marked-mermaid.js` 因此改为
+  **before_post_render 预处理**（priority 9，先于 backtick_code_block）：把 mermaid
+  围栏直接替换为 HTML 容器，围栏结构消失后 backtick 过滤器不再匹配，其余代码块
+  不受影响（highlight.js 构建时高亮路径不变）。
+  **限制**：列表/引用缩进内（`> ` / `- ` 前缀）的 mermaid 围栏不支持——预处理正则
+  只匹配顶格（`^ {0,3}`），缩进的会被 backtick 接管走代码高亮，文章里图表一律顶格写。
+- **主题跟随**：ink.js 监听偏好模块 dispatch 的 `theme-change` 事件，按
+  `html[data-theme]` 用 mermaid 的 default/dark 主题重渲染（渲染前把源码存入
+  `el.dataset.code`，重渲染不依赖 DOM 源码）。渲染配置 `securityLevel: 'strict'`
+  （不执行图表内 HTML/click 指令，Twilight 原方案 loose 未迁移）。
+- **CSP**：无新增白名单——库自托管（`script-src 'self'`）、mermaid 不请求外链
+  （图表内嵌 img 走 `img-src https:`）。**更新库**：`npm pack mermaid@版本` 取
+  `dist/mermaid.min.js` 覆盖 `themes/ink/source/js/`。
+
+## 阅读时间
+
+- **实现**：`scripts/reading-time.js` —— after_post_render 过滤器用 hexo-util
+  `stripHTML` 去标签统计字符数（中文约 400 字/分钟，下限 1 分钟），注入
+  `post.readingMinutes`。构建期计算、零前端开销、结果直接进 HTML。
+- **显示**：post.ejs 正文头部「阅读约 N 分钟」（`.post-reading-meta`，右下角小字）。
+- 代码块文本计入统计（与 Twilight 的 reading-time 行为一致）。
 
 ## 友链页（links.ejs）
 

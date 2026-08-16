@@ -56,6 +56,37 @@ cover: /img/xxx.jpg            # 可选：封面图（og:image 也用它）
 - 文章会自动进 feed（atom.xml，限 20 篇）、搜索（search.xml）与 sitemap，无需额外操作。
 - 提交信息建议带类型前缀（仓库历史惯例：`feat:` / `fix:` / `security:` / `chore:` / `docs:`）。
 
+## 文章内扩展语法（2026-08-16 起，Twilight 迁移）
+
+- **提示块**（五类彩色块，语法与 markdown-it-container 一致）：
+
+  ```markdown
+  :::note
+  内容，支持 **Markdown** 与代码块
+  :::
+
+  :::tip[自定义标题]
+  内容
+  :::
+  ```
+
+  类型：`note` / `tip` / `important` / `warning` / `caution`；`[标题]` 省略时
+  显示类型名。样式与图标见 [THEME.md → 提示块](THEME.md#提示块admonitions)。
+  未闭合的 `:::` 会原样输出为文本（写错时显眼暴露）。
+
+- **Mermaid 图表**（围栏代码块渲染为图）：
+
+  ````markdown
+  ```mermaid
+  graph TD
+      A[开始] --> B{判断}
+  ```
+  ````
+
+  仅含图表的页面按需加载 mermaid.min.js（约 1MB gzip），无图表页面零开销。
+  图表跟随深浅主题。**限制**：列表/引用缩进内的 mermaid 围栏不支持（会被
+  Hexo 代码块预处理接管走代码高亮），图表一律顶格写。
+
 ## 提交与推送（重要）
 
 仓库在 Windows 本机、**无 gh CLI、无 SSH 密钥**，推送凭据走
