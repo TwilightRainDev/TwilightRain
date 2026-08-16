@@ -62,6 +62,14 @@
    语义用 `<a>` 链接（分页按钮即因此从 button+onclick 改为 a）。新增任何
    内联事件属性前先想清楚，改后需在线上验证。
 
+8. **source/ 下的可渲染扩展名会被当页面处理（2026-08-16 踩坑）**：Hexo 8
+   的 asset processor 对 `source/` 中**无 front-matter** 的 `.html`/`.json`
+   等"有渲染器"的文件仍走 `processPage`——会被套上主题布局、进入 `site.pages`
+   （进而出现在 sitemap）。要原样静态拷贝必须加入 `_config.yml` 的
+   `skip_render`（例：彩蛋页 `egg/**`，含 index.html/main.js/importmap.json/本地
+   化 three.js，全走原样拷贝，URL 为 `/egg/`）。注意：**改 `skip_render` 后必须
+   `hexo clean` 再 build**，否则 db.json 缓存会让旧产物（已套布局的版本）残留。
+
 ## 内容与仓库安全
 
 - 评论走 giscus（GitHub Discussions 作后端，主题配置见 [THEME.md](THEME.md#评论)）。

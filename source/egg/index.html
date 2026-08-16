@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, touch-action=manipulation" />
+    <title>虎鲸？</title>
+    <style>
+        /* ---------- 样式完全保留 ---------- */
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'STKaiti', 'KaiTi', '楷体', 'Segoe UI', 'Arial', sans-serif;
+            background-color: #e8dfd2;
+        }
+        #info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: rgba(60, 40, 30, 0.85);
+            background: rgba(240, 232, 215, 0.7);
+            padding: 10px 24px;
+            border-radius: 40px;
+            backdrop-filter: blur(10px);
+            pointer-events: none;
+            z-index: 10;
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            border: 1px solid rgba(80, 50, 30, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        #info::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #3a2520;
+            border-radius: 50%;
+            margin-right: 8px;
+            vertical-align: middle;
+            opacity: 0.7;
+        }
+        #scroll-menu {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 130px;
+            background: #f7f3e9;
+            border: 2px solid #6b5a4a;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+            font-family: 'STKaiti', 'KaiTi', '楷体';
+            z-index: 20;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+        .scroll-title {
+            text-align: center;
+            padding: 12px 5px;
+            border-bottom: 1px solid #6b5a4a;
+            color: #3a2520;
+            font-size: 15px;
+            letter-spacing: 2px;
+            background: #e8dcc8;
+            font-weight: bold;
+        }
+        .fish-drag-item {
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 5px;
+            border-bottom: 1px dashed #b8a38b;
+            transition: background 0.2s;
+            user-select: none;
+            font-size: 15px;
+            color: #3a2520;
+        }
+        .fish-drag-item:active {
+            cursor: grabbing;
+            background: #d4c4aa;
+        }
+        .fish-drag-item:last-child {
+            border-bottom: none;
+        }
+        .drop-icon {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+        #hit-counter-panel {
+            position: absolute;
+            top: 215px;
+            right: 20px;
+            width: 130px;
+            background: #f7f3e9;
+            border: 2px solid #6b5a4a;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+            font-family: 'STKaiti', 'KaiTi', '楷体';
+            z-index: 20;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            text-align: center;
+            padding: 10px 5px;
+        }
+        .hit-title {
+            color: #3a2520;
+            font-size: 13px;
+            letter-spacing: 2px;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+        .hit-count {
+            color: #8b3a3a;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            transition: transform 0.15s ease;
+            display: inline-block;
+        }
+        .hit-count.pop {
+            transform: scale(1.4);
+        }
+        #music-panel {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            width: 160px;
+            background: rgba(247, 243, 233, 0.88);
+            border: 2px solid #6b5a4a;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+            font-family: 'STKaiti', 'KaiTi', '楷体';
+            z-index: 20;
+            backdrop-filter: blur(6px);
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .music-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .music-btn {
+            cursor: pointer;
+            background: none;
+            border: 1px solid #6b5a4a;
+            border-radius: 20px;
+            padding: 5px 12px;
+            font-family: inherit;
+            font-size: 13px;
+            letter-spacing: 1px;
+            color: #3a2520;
+            background: #e8dcc8;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        .music-btn:hover {
+            background: #d4c4aa;
+        }
+        .music-label {
+            font-size: 12px;
+            letter-spacing: 1px;
+            color: #3a2520;
+            font-weight: bold;
+        }
+        .volume-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .volume-row span {
+            font-size: 11px;
+            color: #5a4a3a;
+            flex-shrink: 0;
+        }
+        .volume-slider {
+            -webkit-appearance: none;
+            flex: 1;
+            height: 4px;
+            border-radius: 2px;
+            background: #c4b8a8;
+            outline: none;
+            cursor: pointer;
+        }
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #6b5a4a;
+            border: 2px solid #e8dcc8;
+            cursor: pointer;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+        }
+        .volume-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #6b5a4a;
+            border: 2px solid #e8dcc8;
+            cursor: pointer;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+        }
+        #speech-bubble {
+            position: absolute;
+            background: rgba(255, 252, 240, 0.92);
+            border: 2px solid #5c4a3d;
+            border-radius: 20px;
+            padding: 8px 20px;
+            color: #3a2520;
+            font-family: 'STKaiti', 'KaiTi', '楷体';
+            font-size: 18px;
+            letter-spacing: 2px;
+            pointer-events: none;
+            z-index: 30;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            white-space: nowrap;
+        }
+        #speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 10px solid rgba(255, 252, 240, 0.92);
+        }
+        @media (max-width: 600px) {
+            #info {
+                top: 10px;
+                left: 10px;
+                font-size: 11px;
+                padding: 6px 16px;
+            }
+            #scroll-menu {
+                width: 110px;
+                top: 10px;
+                right: 10px;
+            }
+            #hit-counter-panel {
+                width: 110px;
+                top: 185px;
+                right: 10px;
+            }
+            #music-panel {
+                width: 135px;
+                bottom: 12px;
+                left: 12px;
+                padding: 8px 10px;
+                gap: 5px;
+            }
+            .scroll-title {
+                font-size: 12px;
+                padding: 8px;
+            }
+            .fish-drag-item {
+                font-size: 13px;
+                padding: 8px;
+            }
+            .drop-icon {
+                width: 14px;
+                height: 14px;
+            }
+            .hit-title {
+                font-size: 11px;
+            }
+            .hit-count {
+                font-size: 20px;
+            }
+            .music-btn {
+                font-size: 11px;
+                padding: 4px 10px;
+            }
+            .music-label {
+                font-size: 10px;
+            }
+            .volume-slider {
+                height: 3px;
+            }
+            .volume-slider::-webkit-slider-thumb {
+                width: 14px;
+                height: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="info">做题鲸</div>
+
+    <div id="scroll-menu">
+        <div class="scroll-title">来做题吧</div>
+        <div class="fish-drag-item" draggable="true" data-type="flash">
+            <svg class="drop-icon" viewBox="0 0 24 24" fill="#c0c0c0"><path d="M12 2c-4 6-8 9-8 13 0 4.4 3.6 8 8 8s8-3.6 8-8c0-4-4-7-8-13z"/></svg>
+            小题
+        </div>
+        <div class="fish-drag-item" draggable="true" data-type="pro">
+            <svg class="drop-icon" viewBox="0 0 24 24" fill="#5a5a5a"><path d="M12 2c-4 6-8 9-8 13 0 4.4 3.6 8 8 8s8-3.6 8-8c0-4-4-7-8-13z"/></svg>
+            大题
+        </div>
+    </div>
+
+    <div id="hit-counter-panel">
+        <div class="hit-title">做掉了：</div>
+        <div class="hit-count" id="hit-count">0</div>
+    </div>
+
+    <div id="music-panel">
+        <div class="music-header">
+            <span class="music-label">配乐</span>
+            <button class="music-btn" id="music-btn">奏乐</button>
+        </div>
+        <div class="volume-row">
+            <span>低</span>
+            <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="50" title="音量调节" />
+            <span>高</span>
+        </div>
+    </div>
+
+    <div id="speech-bubble">我明白了！</div>
+
+<script type="importmap" src="./importmap.json"></script>
+<script type="module" src="./main.js"></script>
+</body>
+</html>
