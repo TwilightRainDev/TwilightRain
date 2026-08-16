@@ -31,7 +31,7 @@ npm install        # 首次或依赖变更后
 ---
 title: 文章标题
 date: 2026-08-08 14:00:00     # 决定 URL 与排序（:year/:month/:day/:title/）
-excerpt: 一句话摘要           # 可选：首页摘要；不写则用 <!-- more --> 截断
+excerpt: 一句话摘要           # 首页摘要：一律手写（见下方说明，不用 <!-- more -->）
 tags:
   - 标签1
 categories:
@@ -47,6 +47,9 @@ cover: /img/xxx.jpg            # 可选：封面图（og:image 也用它）
   文件名即 URL slug（permalink `:year/:month/:day/:title/`），中文名会产出
   百分号编码的长 URL。中文标题写进 front-matter `title` 即可；改文件名会变
   URL，需同步在 `scripts/redirects.js` 加 301（2026-08-16 统一改名先例）。
+- **excerpt 一律 front matter 手写**（`excerpt: 一句话摘要`）：不要用
+  `<!-- more -->` 自然截断——截断点可能落在代码中间（曾导致摘要里出现
+  HTML 实体乱码），且截断摘要只是开头段复制，不是真正的摘要。
 - **date 即永久链接**：发文后改日期会改变 URL，造成死链。定稿后再定日期。
 - 图片放 `source/img/`，正文用 `/img/xxx.jpg` 绝对路径引用。
 - `external_link` 已开启，外链自动新标签打开。
