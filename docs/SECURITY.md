@@ -66,9 +66,18 @@
    的 asset processor 对 `source/` 中**无 front-matter** 的 `.html`/`.json`
    等"有渲染器"的文件仍走 `processPage`——会被套上主题布局、进入 `site.pages`
    （进而出现在 sitemap）。要原样静态拷贝必须加入 `_config.yml` 的
-   `skip_render`（例：彩蛋页 `egg/**`，含 index.html/main.js/importmap.json/本地
-   化 three.js，全走原样拷贝，URL 为 `/egg/`）。注意：**改 `skip_render` 后必须
-   `hexo clean` 再 build**，否则 db.json 缓存会让旧产物（已套布局的版本）残留。
+   `skip_render`（例：彩蛋页 `egg/**`，全走原样拷贝，URL 为 `/egg/`）。
+   注意：**改 `skip_render` 后必须 `hexo clean` 再 build**，否则 db.json 缓存
+   会让旧产物（已套布局的版本）残留。
+
+9. **外置 import map 不可靠（2026-08-16 踩坑）**：`<script type="importmap"
+   src="...">` 在 Chromium 系（Edge 151 实测）不生效——脚本标签不发请求，
+   裸模块标识符全部解析失败（页面表现为：纯 HTML 界面正常、模块渲染的 3D
+   场景全无）。**不要用 import map**：本地库一律改**相对路径导入**
+   （彩蛋页 main.js 直接 `./lib/three.module.js`；vendored OrbitControls.js
+   的 `from 'three'` 已补丁为 `from '../three.module.js'`，见文件头部
+   [PATCH] 注释）。内联 import map 可用但被 CSP `script-src` 拦（无
+   `'unsafe-inline'`），也不可取。
 
 ## 内容与仓库安全
 

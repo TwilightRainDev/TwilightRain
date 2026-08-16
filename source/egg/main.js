@@ -1,5 +1,5 @@
-        import * as THREE from 'three';
-        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import * as THREE from './lib/three.module.js';
+        import { OrbitControls } from './lib/addons/controls/OrbitControls.js';
 
         // ============================================================
         //  1. 虎鲸配置 (完全不变)

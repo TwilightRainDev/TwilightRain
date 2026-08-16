@@ -182,6 +182,7 @@
         .volume-slider {
             -webkit-appearance: none;
             flex: 1;
+            min-width: 0;
             height: 4px;
             border-radius: 2px;
             background: #c4b8a8;
@@ -261,6 +262,9 @@
                 padding: 8px 10px;
                 gap: 5px;
             }
+            .volume-row {
+                gap: 4px;
+            }
             .scroll-title {
                 font-size: 12px;
                 padding: 8px;
@@ -331,7 +335,6 @@
 
     <div id="speech-bubble">我明白了！</div>
 
-<script type="importmap" src="./importmap.json"></script>
 <script type="module" src="./main.js"></script>
 </body>
 </html>
