@@ -51,11 +51,16 @@
         keyLight.shadow.camera.top = 10;
         keyLight.shadow.camera.bottom = -8;
         scene.add(keyLight);
-        scene.add(new THREE.DirectionalLight(0xc8c0b5, 0.55).position.set(-4, 2, 4));
-        scene.add(new THREE.DirectionalLight(0xddd8cf, 0.45).position.set(-5, 1, -5));
-        scene.add(new THREE.DirectionalLight(0xbfb8ad, 0.5).position.set(-2, -0.5, -5));
-        scene.add(new THREE.DirectionalLight(0xe8e3da, 0.4).position.set(0, 6, 0));
-        scene.add(new THREE.DirectionalLight(0xa09890, 0.35).position.set(0, -3, 1));
+        function addFillLight(color, intensity, x, y, z) {
+            const light = new THREE.DirectionalLight(color, intensity);
+            light.position.set(x, y, z);
+            scene.add(light);
+        }
+        addFillLight(0xc8c0b5, 0.55, -4, 2, 4);
+        addFillLight(0xddd8cf, 0.45, -5, 1, -5);
+        addFillLight(0xbfb8ad, 0.5, -2, -0.5, -5);
+        addFillLight(0xe8e3da, 0.4, 0, 6, 0);
+        addFillLight(0xa09890, 0.35, 0, -3, 1);
 
         const gmCanvas = document.createElement('canvas');
         gmCanvas.width = 9;
