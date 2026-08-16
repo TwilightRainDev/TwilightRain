@@ -1,5 +1,6 @@
 ---
 title: 带上她的眼睛。
+excerpt: Claude Code 底层套着 DeepSeek，看得见代码却看不见图。8 月 7 号给她装上 llm-vision-mcp，让她有了眼睛。
 date: 2026-08-13 11:10:00
 tags:
   - AI

@@ -1,5 +1,6 @@
 ---
 title: 把踩过的坑编译成技能
+excerpt: 在 Windows + exFAT + 中文路径 + PowerShell 的环境里，每踩一个坑就把结论写成规则，攒成了技能仓库 claude-skills。
 date: 2026-08-13 15:00:00
 tags:
   - Claude Code
