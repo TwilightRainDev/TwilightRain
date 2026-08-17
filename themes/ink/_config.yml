@@ -17,6 +17,12 @@ menu:
       随笔: /categories/随笔/
   搜索: /search/
   相册: /gallery/
+  展柜:
+    url: /projects/
+    children:
+      项目: /projects/
+      技能: /skills/
+      时间线: /timeline/
   友链: /links/
   关于: /about/
   设置: /settings/

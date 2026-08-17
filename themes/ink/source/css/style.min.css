@@ -1973,3 +1973,98 @@ a.card-github:hover {
 [data-theme="dark"] .gc-meta {
     color: #aaa;
 }
+
+/* ======================== 展柜页（项目 / 技能 / 时间线） ======================== */
+.projects-grid,
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+    margin-block: var(--spacing);
+}
+.project-card {
+    display: block;
+    padding: 14px 16px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 10px;
+    text-decoration: none;
+    color: inherit;
+    background: rgba(0, 0, 0, 0.03);
+    transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.15s ease;
+}
+.project-card:hover {
+    border-color: var(--color-primary, #1a8fe3);
+    background: rgba(0, 0, 0, 0.06);
+    transform: translateY(-1px);
+}
+.project-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+.project-name {
+    font-weight: 600;
+    color: var(--color-primary, #1a8fe3);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.project-lang,
+.skill-name {
+    font-size: var(--size-step-0);
+    color: #999;
+    flex-shrink: 0;
+}
+.project-desc,
+.skill-desc {
+    margin-block: 6px 0;
+    font-size: var(--size-step-0);
+    color: #888;
+}
+.skill-card {
+    padding: 14px 16px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.03);
+}
+.skill-card .skill-name {
+    color: inherit;
+    font-weight: 600;
+}
+[data-theme="dark"] .project-card,
+[data-theme="dark"] .skill-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+[data-theme="dark"] .project-card:hover {
+    background: rgba(255, 255, 255, 0.09);
+}
+/* 时间线 */
+.timeline-year {
+    margin: 24px 0 8px;
+    font-size: var(--size-step-2);
+}
+.timeline-item {
+    display: flex;
+    gap: 14px;
+    margin-block: 10px;
+    align-items: baseline;
+}
+.timeline-date {
+    flex-shrink: 0;
+    font-size: var(--size-step-0);
+    color: #999;
+    min-width: 3em;
+}
+.timeline-body {
+    min-width: 0;
+}
+.timeline-title {
+    font-weight: 600;
+}
+.timeline-desc {
+    margin-block: 4px 0;
+    font-size: var(--size-step-0);
+    color: #888;
+}

@@ -1,0 +1,16 @@
+<main>
+    <h1>技能</h1>
+    <p class="skills-intro">技术栈速览（来自公开项目与博客内容，欢迎讨论）。</p>
+    <% if (page.skills && page.skills.length > 0) { %>
+    <div class="skills-grid">
+        <% page.skills.forEach(function(s) { %>
+        <div class="skill-card">
+            <span class="skill-name"><%= s.name %></span>
+            <p class="skill-desc"><%= s.desc %></p>
+        </div>
+        <% }) %>
+    </div>
+    <% } else { %>
+    <p>暂无技能数据。</p>
+    <% } %>
+</main>

@@ -105,10 +105,16 @@ ignore:
 theme: ink
 
 # Feed
+## 2026-08-17 起双格式：atom.xml + rss2.xml（hexo-generator-feed 4 支持
+## type 数组；rss2 兼容性最广，atom 为现行标准，双输出覆盖各阅读器）
 feed:
   enable: true
-  type: atom
-  path: atom.xml
+  type:
+    - atom
+    - rss2
+  path:
+    - atom.xml
+    - rss2.xml
   limit: 20
   hub:
   content: true

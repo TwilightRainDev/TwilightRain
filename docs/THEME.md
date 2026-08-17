@@ -245,6 +245,20 @@ themes/ink/layout/
   卡片 HTML 带 `data-repo` 属性与 `.gc-meta` 槽位（`.gc-meta:empty` 隐藏）。
 - 样式：style.min.css「GitHub 仓库卡片」段（背景 + 边框 + hover 变色 + meta 行，深浅主题适配）。
 
+## 展柜页（projects / skills / timeline）
+
+- 2026-08-17 新增三个独立页：`/projects/`、`/skills/`、`/timeline/`，
+  数据在各自 source 目录的 index.md front matter（`projects` / `skills` /
+  `items` 数组），布局 projects.ejs / skills.ejs / timeline.ejs（卡片网格 /
+  年份分组时间线）。
+- 导航：主题 `_config.yml` `menu` 的「展柜」二级菜单（url 指向 /projects/，
+  子项三个）。
+- **踩坑（2026-08-17）**：front matter 数组内 `date: 2026-07-30` 会被 YAML
+  解析为 Date 对象（裸日期是 YAML timestamp 类型），模板里 `.substring()`
+  直接崩溃、页面输出 0 字节——**日期值必须加引号**（`date: "2026-07-30"`）。
+- 项目初始数据来自 GitHub 公开仓库列表；skills 初始数据来自仓库语言与博客
+  内容（均为可证实来源，可直接编辑 index.md 修改）。
+
 ## 相册页（gallery.ejs）
 
 - 2026-08-17 激活（布局此前已存在但未启用）：数据源 `source/gallery/index.md`

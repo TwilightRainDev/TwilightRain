@@ -42,8 +42,9 @@
         <% }); %>
     <% } %>
 
-    <!-- RSS -->
+    <!-- RSS（2026-08-17 起双格式：atom + rss2） -->
     <link rel="alternate" type="application/atom+xml" title="<%= config.title %>" href="<%= url_for('atom.xml') %>">
+    <link rel="alternate" type="application/rss+xml" title="<%= config.title %>" href="<%= url_for('rss2.xml') %>">
 
     <script src="/js/ink.js" defer></script>
     <link rel="shortcut icon" href="<%= url_for(theme.favicon) %>" type="image/x-icon" />
