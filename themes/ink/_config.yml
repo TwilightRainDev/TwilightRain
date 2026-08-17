@@ -7,7 +7,6 @@ favicon: /img/icon.svg
 #                   children 为子项名 -> 链接（http(s) 开头同样视为外链）
 menu:
   文章: /
-  标签: /tags/
   分类:
     url: /categories/
     children:
@@ -15,6 +14,8 @@ menu:
       安全研究: /categories/安全研究/
       项目故事: /categories/项目故事/
       随笔: /categories/随笔/
+      标签云: /tags/
+      全量归档: /archives/
   搜索: /search/
   展柜:
     url: /projects/
