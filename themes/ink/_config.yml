@@ -16,17 +16,20 @@ menu:
       项目故事: /categories/项目故事/
       随笔: /categories/随笔/
   搜索: /search/
-  相册: /gallery/
   展柜:
     url: /projects/
     children:
       项目: /projects/
       技能: /skills/
       时间线: /timeline/
-  友链: /links/
-  关于: /about/
+      相册: /gallery/
+  关于:
+    url: /about/
+    children:
+      自己: /about/
+      友链: /links/
+      GitHub: https://github.com/TwilightRainDev
   设置: /settings/
-  GitHub: https://github.com/TwilightRainDev
 
 # 首页公告条：留空则不显示
 notice: ''
