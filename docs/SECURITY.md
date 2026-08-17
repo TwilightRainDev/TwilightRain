@@ -94,7 +94,7 @@ fetch 前先评估（默认收紧取向）；若卡片功能移除，此行一�
 
 - 评论走 giscus（GitHub Discussions 作后端，主题配置见 [THEME.md](THEME.md#评论)）。
 - 提交身份用 noreply 邮箱（`TwilightRainDev@users.noreply.github.com`），
-  推送凭据不落库（在 `H:\work_zone\ApiKey`）。
+  推送凭据不落库（在 `A:\work_zone\ApiKey`）。
 - `docs/BlogPrivate.txt` 是私人备忘，不入库（`.gitignore` 单独忽略）；
   docs/ 其余内容可放心提交。
 - 不要在 `source/`、`themes/ink/` 中放任何密钥、Cookie、token 文本。

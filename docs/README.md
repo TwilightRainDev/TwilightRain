@@ -6,7 +6,7 @@ TwilightRain 博客源码仓库的维护文档。本目录从 2026-08-08 起纳�
 ## 三个必须记住的事实
 
 1. **站点**：https://twilightrain.pages.dev —— 由 Cloudflare Pages 托管。
-2. **源码**：`H:\work_zone\Blog\blog`（本地）↔ `https://github.com/TwilightRainDev/TwilightRain`（远程，`main` 分支装源码）。
+2. **源码**：`A:\work_zone\Blog\blog`（本地）↔ `https://github.com/TwilightRainDev/TwilightRain`（远程，`main` 分支装源码）。
 3. **⚠️ Cloudflare 构建只认 `main` 分支的源码**：推送必须推 `main`。不要推 `gh-pages`（那是 GitHub Pages 时代的残留，`_config.yml` 的 `deploy` 段已废弃，不要使用）。
 
 ## 文档地图
@@ -21,7 +21,7 @@ TwilightRain 博客源码仓库的维护文档。本目录从 2026-08-08 起纳�
 ## 快速上手（新维护者）
 
 ```bash
-cd H:/work_zone/Blog/blog
+cd A:/work_zone/Blog/blog
 npm run server        # 本地预览 → http://localhost:4000
 npm run build         # 生成 public/（构建产物）
 ```

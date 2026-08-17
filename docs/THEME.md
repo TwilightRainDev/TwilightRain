@@ -123,7 +123,7 @@ themes/ink/layout/
   与 CSP 全兼容（`script-src 'self'`、`font-src 'self'`、MathJax 3 运行时
   注入的 `<style>` 由 `style-src 'unsafe-inline'` 放行），**无需改 csp.js**。
   若换 CDN 版 MathJax，font-src 会拦 CHTML 字体导致符号渲染退化，勿改。
-- **更新 MathJax**：`cd H:\work_zone\Temp && npm pack mathjax@<版本>`，
+- **更新 MathJax**：`cd A:\work_zone\Temp && npm pack mathjax@<版本>`，
   解压取 `es5/tex-chtml.js` 与 `es5/output/chtml/fonts/woff-v2/` 整目录覆盖
   `source/js/mathjax/`（目录结构即字体相对路径，勿平铺）。
 - **mathjax-config.js 独立文件原因**：CSP `script-src` 无 `'unsafe-inline'`，
