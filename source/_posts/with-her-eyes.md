@@ -8,6 +8,7 @@ tags:
   - Claude Code
 categories:
   - 技术笔记
+cover: /img/covers/with-her-eyes.jpg
 ---
 
 # 带上她的眼睛。

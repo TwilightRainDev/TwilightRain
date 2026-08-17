@@ -1,5 +1,5 @@
 ---
-title: 三AI单向质量门禁法：我给 Vibe Coding 建了一条不可逆的流水线
+title: 三AI单向门禁的流水线
 excerpt: 三 AI 单向质量门禁法：找 bug、修 bug、审核的 AI 各司其职互不对话，建一条不可逆的 Vibe Coding 质量流水线。
 date: 2026-07-30 14:00:00
 tags:
