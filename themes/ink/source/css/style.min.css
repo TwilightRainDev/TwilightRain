@@ -1877,3 +1877,83 @@ blockquote.admonition.bdm-caution .bdm-title::before {
 [data-theme="dark"] .post-reading-meta {
     color: #aaa;
 }
+
+/* ======================== GitHub 仓库卡片 ========================
+   ::github{repo="owner/repo" desc="可选"}（scripts/marked-github-card.js），
+   静态卡片：不调 API，不展示动态数据；样式参考 Twilight a.card-github。 */
+a.card-github {
+    display: block;
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 0.5rem;
+    padding: 0.9rem 1.1rem;
+    margin-block: var(--spacing);
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.2s ease;
+}
+a.card-github:hover {
+    border-color: var(--color-primary, #1a8fe3);
+}
+.gc-titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+.gc-titlebar-left {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-width: 0;
+}
+.gc-owner,
+.gc-divider {
+    color: #999;
+}
+.gc-repo {
+    font-weight: 600;
+    color: var(--color-primary, #1a8fe3);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.github-logo {
+    flex-shrink: 0;
+    color: #666;
+    display: inline-flex;
+}
+.gc-description {
+    margin-top: 0.4rem;
+    font-size: var(--size-step-0);
+    color: #888;
+}
+.github-card-error {
+    color: var(--admonitions-color-caution);
+    font-size: var(--size-step-0);
+}
+[data-theme="dark"] a.card-github {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+[data-theme="dark"] .github-logo {
+    color: #bbb;
+}
+
+/* ======================== 友链卡片增强 ========================
+   纯边框卡片 → 浅背景 + hover 浮起（Twilight friends 卡片风格） */
+.link-item a {
+    background: rgba(0, 0, 0, 0.03);
+    transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.15s ease;
+}
+.link-item a:hover {
+    background: rgba(0, 0, 0, 0.06);
+    border-color: var(--color-primary, #1a8fe3);
+    transform: translateY(-1px);
+}
+[data-theme="dark"] .link-item a {
+    background: rgba(255, 255, 255, 0.05);
+}
+[data-theme="dark"] .link-item a:hover {
+    background: rgba(255, 255, 255, 0.09);
+}

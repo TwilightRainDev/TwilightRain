@@ -223,7 +223,40 @@ themes/ink/layout/
 - **显示**：post.ejs 正文头部「阅读约 N 分钟」（`.post-reading-meta`，右下角小字）。
 - 代码块文本计入统计（与 Twilight 的 reading-time 行为一致）。
 
+## 文章置顶（index.ejs）
+
+- 文章 front matter `pinned: true` 时首页排最前（其余按日期降序）。
+  实现：index.ejs 对 `page.posts` 先 `toArray().sort()`（pinned 优先，同 pinned
+  内按日期降序）再渲染；只影响首页当前分页内顺序（置顶文章通常在第一页）。
+- 草稿：Hexo 原生 `source/_drafts` + `render_drafts: false`（现状），无需处理。
+
+## GitHub 仓库卡片
+
+- 语法（单行）：`::github{repo="owner/repo" desc="可选描述"}`，渲染为
+  `<a class="card-github">`（owner/repo + GitHub 图标 + 可选描述），点击跳转
+  仓库页。repo 无 "/" 或缺失时输出可见错误提示（`[WARN]`）。
+- 实现：`scripts/marked-github-card.js` 注册 marked:use 扩展（同提示块模式）。
+- **设计取舍**：静态卡片，**不调 GitHub API**——博客 CSP `connect-src 'self'`
+  （fetch 被拦）且无 token 的 API 有 IP 限流（60 次/小时）；Twilight 原实现是
+  内联脚本 + api.github.com（与 CSP 不兼容，未迁移）。卡片不显示 stars/forks
+  等动态数据，需要时在 `desc` 里说明。若未来要动态数据：构建期 API（CF Pages
+  构建环境）或扩 CSP 白名单二选一，需重新评估。
+- 样式：style.min.css「GitHub 仓库卡片」段（背景 + 边框 + hover 变色，深浅主题适配）。
+
+## 相册页（gallery.ejs）
+
+- 2026-08-17 激活（布局此前已存在但未启用）：数据源 `source/gallery/index.md`
+  的 front matter `photos` 数组（`src` / `title` / `date`），Fancybox 灯箱由
+  gallery.ejs 自行引入（cdnjs + integrity）。
+- **加照片**：编辑 `photos` 数组即可，图片放 `source/img/`（建议 `img/photos/`
+  子目录）后引用 `/img/photos/xxx.jpg`。当前内容为封面池示例图占位，待替换。
+- 导航入口在主题 `_config.yml` `menu`（`相册: /gallery/`）。
+
 ## 友链页（links.ejs）
+
+- 2026-08-17 增强：卡片从纯边框升级为浅背景 + hover 浮起（Twilight friends
+  卡片风格），深浅主题各一套背景；数据结构（分组 + name/url/fallback/img/desc）
+  未变。
 
 - 数据源：`source/links/index.md` 的 front matter `links` 数组（分组 + 条目）。
 - 条目字段：`name`、`url`（主站）、`fallback`（可选，主站不可达时的备用链接）、

@@ -38,6 +38,7 @@ categories:
   - 分类1
 comments: true                 # 默认开评论；不需要则 false
 cover: /img/xxx.jpg            # 可选：封面图（og:image 也用它）
+pinned: true                   # 可选：置顶到首页最前（不写则按日期排序）
 ---
 ```
 
@@ -86,6 +87,16 @@ cover: /img/xxx.jpg            # 可选：封面图（og:image 也用它）
   仅含图表的页面按需加载 mermaid.min.js（约 1MB gzip），无图表页面零开销。
   图表跟随深浅主题。**限制**：列表/引用缩进内的 mermaid 围栏不支持（会被
   Hexo 代码块预处理接管走代码高亮），图表一律顶格写。
+
+- **GitHub 仓库卡片**（单行指令）：
+
+  ```markdown
+  ::github{repo="TwilightRainDev/TwilightRain" desc="博客仓库"}
+  ```
+
+  渲染为仓库卡片（owner/repo + GitHub 图标 + 可选描述），点击跳转仓库页。
+  静态卡片，不调 API（不显示 stars 等动态数据）；repo 格式错误时输出
+  可见的 `[WARN]` 提示。
 
 ## 提交与推送（重要）
 

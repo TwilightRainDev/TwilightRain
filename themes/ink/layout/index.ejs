@@ -4,7 +4,15 @@
     <div class="notice-bar"><%= theme.notice %></div>
     <% } %>
     <ul class="blog-posts">
-      <% page.posts.forEach(function(item) { %>
+      <%# 置顶：front matter pinned: true 的文章排最前，其余按日期降序
+           （草稿用 source/_drafts，Hexo 原生支持，无需处理） %>
+      <% var sortedPosts = page.posts.toArray().sort(function(a, b) {
+          var pa = a.pinned ? 1 : 0;
+          var pb = b.pinned ? 1 : 0;
+          if (pa !== pb) return pb - pa;
+          return b.date.diff(a.date);
+      }); %>
+      <% sortedPosts.forEach(function(item) { %>
         <li class="article-item">
           <a href="<%- url_for(item.path) %>" class="link">
           <% if (item.cover) { %>
