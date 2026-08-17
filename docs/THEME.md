@@ -59,6 +59,11 @@ themes/ink/layout/
   （cdnjs + integrity，与 gallery.ejs 同款，CSP script-src/style-src 已含
   cdnjs.cloudflare.com，改安全头前读 [SECURITY.md](SECURITY.md)）。
   `ink.js` 在运行时给 article 内 img 加 `data-fancybox` 属性，fancybox 事件委托自动绑定。
+  **已知陷阱（2026-08-17 修复）**：fancybox 3.5.7 对直接 `<img>` 触发（无 `<a>`
+  包裹）会把原图移动进灯箱，关闭时放回但残留 `style="display: none"`——文章页
+  头图关闭灯箱后"消失"。ink.js 监听 jQuery 的 `afterClose.fb` 事件恢复内联
+  display（文章页才有 jQuery；若未来文章正文加图同样适用）。改动灯箱绑定方式
+  （如改为 `<a>` 包裹走 image 类型克隆路径）前先验证此机制。
 - **上一篇/下一篇**：`page.prev` / `page.next` 文本卡片导航，单边存在时占满整行。
 - **版权声明**：文章底部 CC BY-NC-SA 4.0 链接，零依赖。
 - **代码块复制**：复制按钮取 `.code pre` 文本（Hexo 8 highlight 输出结构为

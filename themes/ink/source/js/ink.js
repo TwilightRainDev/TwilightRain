@@ -555,6 +555,23 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 })();
 
+// ======================== fancybox 关闭后恢复头图显示 ========================
+// fancybox 3.5.7 对直接 <img> 触发（无 <a> 包裹）时会把原图移动进灯箱
+// （原位置插隐藏占位符），关闭时放回原位但残留 style="display: none"，
+// 导致文章页头图"消失"（2026-08-17 复现：点开灯箱再关闭即不可见）。
+// 文章页有 jQuery（post.ejs 引入 cdnjs），监听 fancybox 的 afterClose.fb
+// 事件，恢复被置 none 的头图/正文图内联样式；首页无 jQuery 时自然跳过。
+(function() {
+    if (!window.jQuery) return;
+    window.jQuery(document).on('afterClose.fb', function () {
+        document.querySelectorAll('.post-imgcard img, article img').forEach(function (img) {
+            if (img.style.display === 'none') {
+                img.style.removeProperty('display');
+            }
+        });
+    });
+})();
+
 // ======================== 代码块一键复制 ========================
 // Hexo 8 highlight.js 输出结构：<figure class="highlight"><table>
 //   <td class="gutter"><pre>行号</pre></td><td class="code"><pre><span class="line">代码</span><br>...</pre></td>
