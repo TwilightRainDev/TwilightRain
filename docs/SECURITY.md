@@ -50,6 +50,10 @@ fetch 前先评估（默认收紧取向）；若卡片功能移除，此行一�
 4. **重定向与 404**：
    - `scripts/redirects.js` 维护 301 重定向（目前：旧 hello-world → `/about/`，
      带/不带尾斜杠两条规则，`_redirects` 规则按顺序第一条命中）。
+   - `functions/_middleware.js` 整站 301：`twilightrain.pages.dev` → `https://twilightrain.com`
+     （保留路径与查询串）。**不能用 `_redirects` 实现**——规则不区分来源域名，
+     会把目标域名也一并重定向形成循环，故 hosts 判断放在 Pages Functions 中间件层。
+     preview 部署（`<hash>.twilightrain.pages.dev`）不在匹配范围，保持可访问。
    - `source/404.md` 使用自定义 `layout: 404`，配合
      `cloudflare pages` 确保不存在的路径返回**真实 404 状态**（而非 200）。
      改动时不要退化成"返回 200 的软 404"。
