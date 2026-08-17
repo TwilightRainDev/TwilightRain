@@ -1,5 +1,5 @@
 ---
-title: 从 GitHub Pages 迁移到 Cloudflare Pages：Hexo 博客部署全记录
+title: Hexo博客从GHP到CFP迁移记录
 excerpt: Hexo 博客从 GitHub Pages 迁到 Cloudflare Pages 的全记录：动机、建项目、以及两次部署踩坑（package.json 推错、分支名）。
 date: 2026-07-21 14:45:00
 tags:

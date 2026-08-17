@@ -1,5 +1,5 @@
 ---
-title: 给 AI 装了个写歌的技能，然后它开始跟 2002 年的 MIDI 干架
+title: AI写歌，怒怼老资历MIDI
 excerpt: 让 AI 写 MIDI 的半天：装技能、发 issue，被 2002 年的 MIDI 老文件里的陈年数据坑到怀疑人生，最后居然全解决了。
 date: 2026-08-08 22:00:00
 tags:

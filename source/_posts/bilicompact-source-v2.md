@@ -14,6 +14,8 @@ categories:
 > 以下为 BiliCompact 用户脚本 v2.6.0 的完整源码，MIT 协议，可自由使用、修改、分发。
 > 安装方法：复制到 Tampermonkey / Violentmonkey 新建脚本中保存即可。
 
+::github{repo="TwilightRainDev/TwilightRainBiliCompact" desc="BiliCompact 官方仓库：完整源码、版本发布与 issue 追踪"}
+
 ```javascript
 // ==UserScript==
 // @name         网页端B站主页精简~ BiliCompact
