@@ -1957,3 +1957,19 @@ a.card-github:hover {
 [data-theme="dark"] .link-item a:hover {
     background: rgba(255, 255, 255, 0.09);
 }
+
+/* GitHub 卡片动态数据行（ink.js 用 API 填充；无数据时整行隐藏） */
+.gc-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-top: 0.4rem;
+    font-size: var(--size-step-0);
+    color: #888;
+}
+.gc-meta:empty {
+    display: none;
+}
+[data-theme="dark"] .gc-meta {
+    color: #aaa;
+}

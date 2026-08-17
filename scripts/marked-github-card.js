@@ -6,10 +6,12 @@
  * 渲染为 <a class="card-github">：owner/repo 标题 + GitHub 图标 + 可选描述，
  * 点击跳转仓库页（新标签）。
  *
- * 设计：静态卡片，不调 GitHub API——博客 CSP connect-src 仅 'self'（fetch
- * 会被拦），且无 token 的 API 有 IP 限流；卡片不展示 stars/forks 等动态
- * 数据（Twilight 用内联脚本 + api.github.com，与 CSP 不兼容，未迁移）。
- * repo 格式校验（必须含 "/"），无效时输出可见错误提示。
+ * 设计：卡片静态渲染基础信息（owner/repo/链接/可选 desc），动态数据
+ * （stars/forks/language/license/description）由 ink.js 前端调 GitHub API
+ * 填充——CSP connect-src 已放行 api.github.com（用户拍板的自包含例外，
+ * 博客唯一第三方 fetch，见 SECURITY.md）。localStorage 缓存 1 小时防限流，
+ * 请求失败静默回退静态内容（渐进增强）。repo 格式校验（必须含 "/"），
+ * 无效时输出可见错误提示。
  *
  * 机制：注册 marked:use 过滤器（同 scripts/marked-admonitions.js），
  * marked 块级扩展。注意：本语法是行内指令非围栏代码块，不受 hexo
@@ -58,11 +60,12 @@ var githubCardExtension = {
     var slash = repo.indexOf('/');
     var owner = repo.slice(0, slash);
     var name = repo.slice(slash + 1);
+    // 静态 desc（语法传）优先显示；未传时由 ink.js 用 API description 填充
     var desc = token.desc
       ? '<div class="gc-description">' + escapeHtml(token.desc) + '</div>'
-      : '';
+      : '<div class="gc-description" data-gc-desc></div>';
     return '<a class="card-github" href="https://github.com/' + escapeHtml(repo) +
-      '" target="_blank" rel="noopener">' +
+      '" target="_blank" rel="noopener" data-repo="' + escapeHtml(repo) + '">' +
       '<div class="gc-titlebar">' +
       '<div class="gc-titlebar-left">' +
       '<span class="gc-owner">' + escapeHtml(owner) + '</span>' +
@@ -72,6 +75,14 @@ var githubCardExtension = {
       '<span class="github-logo">' + GITHUB_LOGO_SVG + '</span>' +
       '</div>' +
       desc +
+      // 动态数据槽位：ink.js 用 GitHub API 填充（stars/forks/language/license），
+      // 无数据时整行隐藏（.gc-meta 无内容不显示）
+      '<div class="gc-meta">' +
+      '<span class="gc-stars"></span>' +
+      '<span class="gc-forks"></span>' +
+      '<span class="gc-language"></span>' +
+      '<span class="gc-license"></span>' +
+      '</div>' +
       '</a>';
   }
 };

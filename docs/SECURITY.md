@@ -15,8 +15,15 @@
 | `img-src` | `'self'` `https:` `data:` | 外链图片与 data URI |
 | `font-src` | `'self'` | 字体全自托管，禁止外链字体 |
 | `frame-src` | `https://giscus.app` | 评论 iframe |
-| `connect-src` | `'self'` | 无第三方 XHR |
+| `connect-src` | `'self'` `https://api.github.com` | 唯一第三方 fetch：GitHub 仓库卡片数据（见下） |
 | `base-uri` | `'self'` | 防 base 标签劫持 |
+
+**connect-src 例外（2026-08-17 起，用户拍板）**：`https://api.github.com`
+是博客唯一第三方 fetch 白名单，服务于 GitHub 仓库卡片（ink.js 拉取
+stars/forks/language/license/description）。缓解措施：localStorage 缓存
+1 小时（防无 token 的 60 次/小时/IP 限流）、请求失败静默回退静态内容
+（渐进增强）、只 GET 公开只读接口、不发送任何本地数据。新增其他第三方
+fetch 前先评估（默认收紧取向）；若卡片功能移除，此行一并删除。
 
 同时附带 `X-Content-Type-Options: nosniff` 与 `Referrer-Policy: strict-origin-when-cross-origin`。
 

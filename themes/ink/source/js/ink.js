@@ -572,6 +572,73 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 })();
 
+// ======================== GitHub 仓库卡片数据 ========================
+// 卡片由 marked 扩展静态渲染（owner/repo/链接/可选 desc），本模块用
+// GitHub API 补充 stars/forks/language/license 与 description（无静态
+// desc 时）。CSP connect-src 已放行 api.github.com（唯一第三方 fetch
+// 例外，见 SECURITY.md）。无 token 限流 60 次/小时/IP：localStorage
+// 缓存 1 小时；请求失败（限流/网络）静默保留静态内容，渐进增强。
+(function() {
+    var CARDS = document.querySelectorAll('a.card-github[data-repo]');
+    if (!CARDS.length) return;
+
+    var CACHE_TTL = 3600000; // 1 小时
+
+    function getRepoData(repo) {
+        var key = 'gh-repo-cache:' + repo;
+        try {
+            var hit = localStorage.getItem(key);
+            if (hit) {
+                var parsed = JSON.parse(hit);
+                if (parsed && parsed.ts && Date.now() - parsed.ts < CACHE_TTL) {
+                    return Promise.resolve(parsed.data);
+                }
+            }
+        } catch (e) { /* 缓存不可用则直接请求 */ }
+        return fetch('https://api.github.com/repos/' + encodeURIComponent(repo))
+            .then(function (res) {
+                if (!res.ok) throw new Error('GitHub API ' + res.status);
+                return res.json();
+            })
+            .then(function (data) {
+                try {
+                    localStorage.setItem(key, JSON.stringify({ ts: Date.now(), data: data }));
+                } catch (e) { /* 存储失败忽略 */ }
+                return data;
+            });
+    }
+
+    function fmt(n) {
+        if (typeof n !== 'number') return '';
+        if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+        return String(n);
+    }
+
+    function setText(el, text) {
+        if (el && text) el.textContent = text;
+    }
+
+    CARDS.forEach(function (card) {
+        var repo = card.getAttribute('data-repo');
+        getRepoData(repo).then(function (data) {
+            // data.message 为 API 错误响应（如仓库不存在/被限流时仍 200 的 404 响应）
+            if (!data || data.message) return;
+            setText(card.querySelector('.gc-stars'), 'stars ' + fmt(data.stargazers_count));
+            setText(card.querySelector('.gc-forks'), 'forks ' + fmt(data.forks_count));
+            setText(card.querySelector('.gc-language'), 'lang ' + data.language);
+            setText(card.querySelector('.gc-license'), data.license && data.license.spdx_id);
+            // 静态 desc 优先（语法 desc 有值则不动），无静态 desc 时用 API 描述
+            var descEl = card.querySelector('.gc-description');
+            if (descEl && !descEl.textContent.trim() && data.description) {
+                descEl.textContent = data.description;
+            }
+        }).catch(function (err) {
+            // 限流/网络失败：静默保留静态内容（渐进增强）
+            console.warn('GitHub card data unavailable for ' + repo + ':', err.message);
+        });
+    });
+})();
+
 // ======================== 代码块一键复制 ========================
 // Hexo 8 highlight.js 输出结构：<figure class="highlight"><table>
 //   <td class="gutter"><pre>行号</pre></td><td class="code"><pre><span class="line">代码</span><br>...</pre></td>

@@ -235,13 +235,15 @@ themes/ink/layout/
 - 语法（单行）：`::github{repo="owner/repo" desc="可选描述"}`，渲染为
   `<a class="card-github">`（owner/repo + GitHub 图标 + 可选描述），点击跳转
   仓库页。repo 无 "/" 或缺失时输出可见错误提示（`[WARN]`）。
-- 实现：`scripts/marked-github-card.js` 注册 marked:use 扩展（同提示块模式）。
-- **设计取舍**：静态卡片，**不调 GitHub API**——博客 CSP `connect-src 'self'`
-  （fetch 被拦）且无 token 的 API 有 IP 限流（60 次/小时）；Twilight 原实现是
-  内联脚本 + api.github.com（与 CSP 不兼容，未迁移）。卡片不显示 stars/forks
-  等动态数据，需要时在 `desc` 里说明。若未来要动态数据：构建期 API（CF Pages
-  构建环境）或扩 CSP 白名单二选一，需重新评估。
-- 样式：style.min.css「GitHub 仓库卡片」段（背景 + 边框 + hover 变色，深浅主题适配）。
+- 实现：`scripts/marked-github-card.js` 注册 marked:use 扩展（同提示块模式）
+  静态渲染基础信息；`ink.js`「GitHub 仓库卡片数据」模块前端调 GitHub API
+  补充动态数据（stars/forks/language/license，无静态 desc 时补 description）。
+- **API 与 CSP**（2026-08-17 用户拍板）：`connect-src` 放行
+  `https://api.github.com`——博客唯一第三方 fetch 例外（安全细节见
+  [SECURITY.md](SECURITY.md#安全头机制)）。限流缓解：localStorage 缓存 1 小时
+  （`gh-repo-cache:{repo}`）；请求失败（限流/网络）静默保留静态内容（渐进增强）。
+  卡片 HTML 带 `data-repo` 属性与 `.gc-meta` 槽位（`.gc-meta:empty` 隐藏）。
+- 样式：style.min.css「GitHub 仓库卡片」段（背景 + 边框 + hover 变色 + meta 行，深浅主题适配）。
 
 ## 相册页（gallery.ejs）
 
