@@ -334,6 +334,12 @@ article code,
 article a {
     overflow-wrap: anywhere;
 }
+/* 表格单元格：td/th 内长串（举报编号、哈希、URL）在窄屏下同样需要
+   可断行；否则单元格内容撑破列宽溢出页面 */
+article table td,
+article table th {
+    overflow-wrap: anywhere;
+}
 code {
 	padding:2px 3px;
 }
