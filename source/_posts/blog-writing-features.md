@@ -103,7 +103,7 @@ $$\int_0^1 x^2 \, dx = \frac{1}{3}$$
 
 ::github{repo="hexojs/hexo" desc="Hexo 博客框架"}
 
-卡片是静态的（不调 API，不显示 stars 等动态数据），点击跳转仓库页。
+卡片由构建期静态渲染（仓库名、描述、链接），页面加载后前端从 GitHub API 补充 stars / forks / 语言 / 协议等动态数据（localStorage 缓存 1 小时防限流，请求失败时静默保留静态内容），点击跳转仓库页。
 
 ## 使用建议
 
