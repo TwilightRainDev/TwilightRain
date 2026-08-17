@@ -327,6 +327,13 @@ code, .highlight, .code {
     white-space: pre-wrap;
     word-wrap: break-word;
 }
+/* 正文行内长串换行：code 无断点长串（路径、token、哈希）与长链接文本
+   默认不换行，移动端溢出页面；anywhere 仅在该单元超出容器时打断，
+   正常单词与中文不受影响（对比 word-break: break-all 的暴力拆词） */
+article code,
+article a {
+    overflow-wrap: anywhere;
+}
 code {
 	padding:2px 3px;
 }
