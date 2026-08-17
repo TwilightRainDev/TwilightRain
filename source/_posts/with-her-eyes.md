@@ -69,7 +69,7 @@ llm-vision-mcp 是 me9rez 写的一个 MCP server，stdio 类型，起一个 nod
 
 装第三方东西之前，我习惯把源码拉下来审计一遍。克隆到 H 盘，npm ci 一跑就挂死，25 分钟，最后 ENOTEMPTY。H 盘是 exFAT，撑不起 node_modules 这种碎文件森林。依赖挪到 C 盘的 NTFS 上装，上游测试 70/70 全过，才敢正式接上。
 
-审计副本留在我电脑里， H:\work_zone\Tools\llm-vision-mcp，我想看随时能看。
+审计副本留在我电脑里，我想看随时能看。
 
 ---
 
