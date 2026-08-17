@@ -81,3 +81,5 @@ llm-vision-mcp 是 me9rez 写的一个 MCP server，stdio 类型，起一个 nod
 现在她能看见我发过去的东西了。报错截图，设计稿，别人转来的图表，都不用我再口述。剩下的事情反而简单。额度用完了怎么办，哪天 DeepSeek 自己长出视觉模型，这双借来的眼睛就该退休了。
 
 在那之前，先戴着吧。
+
+![](/img/with-her-eyes-3.jpg)
