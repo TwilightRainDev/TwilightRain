@@ -253,10 +253,11 @@ button:active{
     left: 0;
     right: 0;
     backdrop-filter: blur(10px);
-    /* 浅色封面可读性：模糊之上垫一层半透明黑（背景图像层不受
-       ink.js 取色 backgroundColor 覆盖影响），白字在浅色封面
-       上不再发虚；深色封面下仅略加深，无副作用 */
-    background-image: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35));
+    /* 半透明黑底（浅色封面可读性）：ink.js 会对浅色封面（如白底漫画）
+       写入 rgba(255,255,255,0.4) 的 inline backgroundColor，白字在其上
+       发虚。background-image 黑层叠加白底效果不足（有效背景仍偏白），
+       故用 !important 统一压成半透明黑。深色封面下黑底亦无副作用。 */
+    background-color: rgba(0, 0, 0, 0.4) !important;
     display: flex;
     margin: 5px;
     padding: 10px;
