@@ -17,7 +17,8 @@
     <!-- Open Graph -->
     <meta property="og:title" content="<%= page.title ? page.title + ' | ' : '' %><%= config.title %>">
     <meta property="og:type" content="<%= page.type === 'tags' || page.type === 'categories' ? 'website' : 'article' %>">
-    <meta property="og:url" content="<%= page.permalink || url_for(page.path) %>">
+    <meta property="og:url" content="<%= page.permalink || (config.url + url_for(page.path)) %>">
+    <link rel="canonical" href="<%= page.permalink || (config.url + url_for(page.path)) %>">
     <meta property="og:site_name" content="<%= config.title %>">
     <meta property="og:locale" content="zh_CN">
     <% if (page.description) { %>
