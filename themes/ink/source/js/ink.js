@@ -216,6 +216,24 @@ document.addEventListener('DOMContentLoaded', function () {
             })(themeRadios[i]);
         }
 
+        // header 日/月切换按钮：与上方 radio 同构，读写同一 theme-preference。
+        // auto 偏好下按钮显示当前实际主题，点击则显式切到相反值（写死偏好）。
+        var toggleBtn = document.getElementById('theme-toggle-btn');
+        if (toggleBtn) {
+            var syncToggleBtn = function () {
+                toggleBtn.setAttribute('aria-checked',
+                    String(resolveTheme(storedTheme) === 'dark'));
+            };
+            toggleBtn.addEventListener('click', function () {
+                var next = resolveTheme(storedTheme) === 'dark' ? 'light' : 'dark';
+                storedTheme = next;
+                localStorage.setItem('theme-preference', storedTheme);
+                applyTheme(storedTheme);
+            });
+            document.addEventListener('theme-change', syncToggleBtn);
+            syncToggleBtn();
+        }
+
         var fontRadios = document.querySelectorAll('input[name="font"]');
         for (var j = 0; j < fontRadios.length; j++) {
             (function(r) {
