@@ -17,7 +17,7 @@
 │       （构建命令 npm run build，输出 public/）             │
 └────────────────────────────────────────────────────────────┘
         ▼
-  https://twilightrain.pages.dev（Cloudflare 边缘分发）
+  https://twilightrain.com（Cloudflare 边缘分发；pages.dev 已 301 到此）
 ```
 
 **要点**：构建发生在 Cloudflare 云端（监听 main 分支），不是本地 `hexo deploy`。
@@ -76,7 +76,7 @@ blog/
 ## 站点配置速览（`_config.yml`）
 
 - 站点：TwilightRain，zh-CN，Asia/Shanghai
-- URL：`https://twilightrain.pages.dev`，永久链接格式 `:year/:month/:day/:title/`
+- URL：`https://twilightrain.com`（旧域名 `twilightrain.pages.dev` 已整站 301），永久链接格式 `:year/:month/:day/:title/`
 - 首页分页：10 篇/页
 - `updated_option: mtime`（文章更新时间取文件修改时间）
 - 语法高亮：highlight.js（行号开）

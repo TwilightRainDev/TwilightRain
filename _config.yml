@@ -13,7 +13,7 @@ timezone: Asia/Shanghai
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: https://twilightrain.pages.dev
+url: https://twilightrain.com
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:
@@ -30,6 +30,7 @@ code_dir: downloads/code
 i18n_dir: :lang
 skip_render:
   - 'egg/**' # 彩蛋页：原样拷贝，不套主题布局、不进 sitemap
+  - 'BingSiteAuth.xml' # Bing 站点验证文件：原样拷贝到根路径，不得套主题布局或改内容
 
 # Writing
 new_post_name: :title.md # File name of new posts

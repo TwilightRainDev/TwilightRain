@@ -1,7 +1,7 @@
 # TwilightRain 博客
 
 TwilightRain 的个人博客，记录技术探索与日常思考。
-在线站点：<https://twilightrain.pages.dev>（Cloudflare Pages 托管）
+在线站点：<https://twilightrain.com>（Cloudflare Pages 托管）
 
 ## 技术栈
 
@@ -31,4 +31,4 @@ npm run build    # 构建产物 → public/
 ## 仓库
 
 - 源码仓库：<https://github.com/TwilightRainDev/TwilightRain>（main 分支，Cloudflare 只认它）
-- 站点：<https://twilightrain.pages.dev>
+- 站点：<https://twilightrain.com>
