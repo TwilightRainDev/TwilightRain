@@ -6,7 +6,7 @@ favicon: /img/icon.svg
 #   对象            二级菜单：url 为父项链接（可选，缺省时父项仅作展开按钮），
 #                   children 为子项名 -> 链接（http(s) 开头同样视为外链）
 menu:
-  文章: /
+  首页: /
   分类:
     url: /categories/
     children:
