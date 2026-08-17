@@ -595,7 +595,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
         } catch (e) { /* 缓存不可用则直接请求 */ }
-        return fetch('https://api.github.com/repos/' + encodeURIComponent(repo))
+        // 注意：不能整串 encodeURIComponent(repo)——"/" 变 %2F 后 GitHub API
+        // 不返回 CORS 头，预检被拒（2026-08-17 实测）；owner/repo 各段编码
+        // （GitHub 命名规则字母数字 . _ -，编码结果与原值一致）
+        return fetch('https://api.github.com/repos/' + repo.split('/').map(encodeURIComponent).join('/'))
             .then(function (res) {
                 if (!res.ok) throw new Error('GitHub API ' + res.status);
                 return res.json();
