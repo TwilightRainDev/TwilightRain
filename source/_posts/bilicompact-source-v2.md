@@ -9,6 +9,7 @@ tags:
   - 源码
 categories:
   - 代码仓库
+cover: /img/covers/bilicompact-source-v2.jpg
 ---
 
 > 以下为 BiliCompact 用户脚本 v2.6.0 的完整源码，MIT 协议，可自由使用、修改、分发。
