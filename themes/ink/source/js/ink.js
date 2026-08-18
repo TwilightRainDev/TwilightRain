@@ -972,3 +972,22 @@ document.addEventListener('DOMContentLoaded', function () {
         figure.appendChild(btn);
     });
 });
+
+// ======================== 标签页 tabs 切换（2026-08-18，Reimu 批二迁移） ========================
+// scripts/marked-tabs.js 渲染 .tabs（nav 按钮 + 面板），本模块事件委托切换
+// is-active / aria-selected。无框架依赖；页面无 .tabs 时零开销（事件委托挂 document）。
+document.addEventListener('click', function (e) {
+    var btn = e.target && e.target.closest ? e.target.closest('.tabs-tab') : null;
+    if (!btn) return;
+    var root = btn.closest('.tabs');
+    if (!root) return;
+    var idx = btn.getAttribute('data-tab');
+    root.querySelectorAll('.tabs-tab').forEach(function (b) {
+        var active = b.getAttribute('data-tab') === idx;
+        b.classList.toggle('is-active', active);
+        b.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+    root.querySelectorAll('.tabs-panel').forEach(function (p) {
+        p.classList.toggle('is-active', p.getAttribute('data-tab') === idx);
+    });
+});

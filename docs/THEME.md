@@ -403,6 +403,38 @@ themes/ink/layout/
   直接显示 page.updated 是假数据——post.ejs 仅当 updatedSet 为真才输出
   "更新于"小字；过期提示条（warning 配色）输出在阅读时间 meta 下。
 
+## Reimu 批二迁移（2026-08-18）
+
+- **通用链接卡片**：`scripts/marked-link-card.js`，语法
+  `::link{url="https://..." title="可选" desc="可选"}`，渲染 `<a class="card-link">`
+  （link 图标 + 标题 + 右端域名 + 可选描述），样式与 GitHub 卡片同款。
+  **纯静态**：不调 API、无前端 JS、CSP 零新增。**安全**：url 仅放行 http/https
+  （防 javascript: 伪协议注入，renderer 里正则校验），全部文本 escapeHtml 转义；
+  title 缺省取域名。无效语法输出可见 `[WARN]`。
+- **标签页 tabs**：`scripts/marked-tabs.js`，语法（与提示块 ::: 体系统一）：
+
+  ```markdown
+  :::tabs
+  --- 方案A
+  内容 A（完整 Markdown）
+  --- 方案B
+  内容 B
+  :::
+  ```
+
+  渲染 `.tabs`（tabs-nav 按钮条 + 各 tabs-panel，默认激活第一个）；
+  ink.js 事件委托切换（is-active / aria-selected），无框架依赖。
+  块内用 `this.lexer.blockTokens` 二次解析（列表/代码块/强调均支持）。
+  注意：`--- 标题` 分隔符要求顶格且 `---` 后跟标题文本，与 Markdown 水平线
+  （顶格 `---` 后无文本）不冲突；无子 tab 的块输出可见 `[WARN]`。
+- **首页分类胶囊**：index.ejs 在文章流上方输出全站分类
+  （`site.categories.each`，名称 + 文章数，链接分类页），flex-wrap 响应式，
+  与首页列数设置（作用于 .blog-posts）互不影响。分类顺序为 hexo 内部顺序
+  （当前按名称），如需按文章数排序需在模板内 sort（中文排序需注意）。
+- **pangu 中英文空格：降级为写作约定，不做自动机制**——HTML 级文本处理
+  风险高（易破坏链接 href/代码块/MathJax 公式），收益可被写作规范替代
+  （写文章时中英文间手加空格；见 WORKFLOW.md 写作规范）。
+
 ## 修改主题的流程
 
 1. 改布局/样式/脚本（保持 LF 行尾）。
