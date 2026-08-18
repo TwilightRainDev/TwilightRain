@@ -17,6 +17,12 @@
   // 透明背景：canvas 悬浮于页面深浅主题之上，显式保证不渲染场景背景
   if (viewer.scene) viewer.scene.background = null;
 
+  // skinview3d 按构造参数把 width/height 写成 canvas 内联样式（优先级高于
+  // 样式表，会让 CSS 尺寸失效）；清空内联宽高改由 CSS 控制显示尺寸，
+  // 渲染缓冲保持高分辨率不变
+  canvas.style.width = "";
+  canvas.style.height = "";
+
   // 默认不旋转（autoRotate 默认 false）
 
   // 点击切换自动旋转：按下与松开位移 < 5px 视为点击，

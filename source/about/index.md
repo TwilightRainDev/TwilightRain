@@ -30,7 +30,7 @@ date: 2026-07-24
 }
 .mc-skin-widget canvas {
   display: block;
-  width: 110px;
+  width: 210px;
   height: auto;
   cursor: grab;
   pointer-events: auto;
@@ -38,7 +38,7 @@ date: 2026-07-24
 .mc-skin-widget canvas:active { cursor: grabbing; }
 @media (max-width: 640px) {
   .mc-skin-widget { left: 12px; bottom: 12px; }
-  .mc-skin-widget canvas { width: 75px; }
+  .mc-skin-widget canvas { width: 150px; }
 }
 </style>
 <div class="mc-skin-widget">
