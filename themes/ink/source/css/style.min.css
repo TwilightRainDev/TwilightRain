@@ -2123,6 +2123,78 @@ a.card-github:hover {
   flex-shrink: 0;
 }
 
+/* ======================== Glass 玻璃光标（2026-08-18 加入） ========================
+   资源：themes/ink/source/img/cursors/（Windows Glass 光标集 .ani 帧提取，
+   64x64 半透明 PNG，text 为 32x64）。
+   实现说明：
+   - CSS cursor url() 不支持动画帧（Chrome/Edge/Safari 均取静态图），故从每套
+     动画中取最完整的一帧做静态光标，全浏览器生效。
+   - url 后的坐标是热点（光标功能点：箭头顶端、手型指尖、I-beam 中线、
+     resize 箭头中心），由帧像素分析确定。
+   - 光标全部集中在 :root 变量，替换光标集只需改 url 与热点坐标。
+   - giscus iframe 内评论区的光标不受本站 CSS 控制（iframe 独立文档）。 */
+:root {
+    --cursor-default:     url('/img/cursors/glass-arrow.png') 2 1, default;
+    --cursor-pointer:     url('/img/cursors/glass-link.png') 18 2, pointer;
+    --cursor-text:        url('/img/cursors/glass-text.png') 16 41, text;
+    --cursor-help:        url('/img/cursors/glass-helps.png') 2 1, help;
+    --cursor-wait:        url('/img/cursors/glass-busy.png') 28 30, wait;
+    --cursor-progress:    url('/img/cursors/glass-working.png') 26 32, progress;
+    --cursor-move:        url('/img/cursors/glass-move.png') 32 31, move;
+    --cursor-not-allowed: url('/img/cursors/glass-unavail.png') 27 24, not-allowed;
+    --cursor-crosshair:   url('/img/cursors/glass-precision.png') 32 30, crosshair;
+    --cursor-n-resize:    url('/img/cursors/glass-vertical.png') 31 32, n-resize;
+    --cursor-e-resize:    url('/img/cursors/glass-horizontal.png') 31 32, e-resize;
+    --cursor-nw-resize:   url('/img/cursors/glass-diagonal-1.png') 31 32, nw-resize;
+    --cursor-ne-resize:   url('/img/cursors/glass-diagonal-2.png') 31 33, ne-resize;
+}
+
+/* 基础态：页面默认光标 */
+html,
+body {
+    cursor: var(--cursor-default);
+}
+
+/* 可点击元素：链接、按钮、可折叠摘要、role=button */
+a,
+button,
+summary,
+[role='button'] {
+    cursor: var(--cursor-pointer);
+}
+
+/* 文本输入元素（checkbox/radio/range/select 保持系统默认） */
+input[type='text'],
+input[type='search'],
+input[type='email'],
+input[type='url'],
+input[type='tel'],
+input[type='number'],
+input[type='password'],
+textarea,
+[contenteditable='true'] {
+    cursor: var(--cursor-text);
+}
+
+/* 带 tooltip 的元素：帮助光标（交互元素除外，交互元素优先显示自身光标） */
+[title]:not(a):not(button):not(summary) {
+    cursor: var(--cursor-help);
+}
+
+/* 禁用控件 */
+button:disabled,
+input:disabled,
+textarea:disabled,
+select:disabled {
+    cursor: var(--cursor-not-allowed);
+}
+
+/* 全局加载态（JS 给容器加 .is-loading 时生效） */
+.is-loading,
+.is-loading * {
+    cursor: var(--cursor-progress) !important;
+}
+
 .theme-toggle__container {
   position: relative;
   width: 100%;

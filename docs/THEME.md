@@ -77,7 +77,7 @@ themes/ink/layout/
   无第三方 CDN——配色直接内联在 style.min.css（自托管，单文件纪律）。
 - `auto_detect: true`：未标注语言的代码块由 highlight.js 构建时自动检测
   （历史上 74% 的代码块无标注）。**已知误检**：纯文本/进度条类内容可能被
-  误识别为某种语言（如 erlang-repl），显式标注语言（```js 等）可覆盖。
+  误识别为某种语言（如 erlang-repl），显式标注语言（\`\`\`js 等）可覆盖。
 - **深浅反色适配**：代码块背景是主题反色（浅色页面深底、深色页面浅底），
   所以配色反向匹配——默认（浅色页面）用 github-dark 配色，`[data-theme="dark"]`
   时用 github 浅色配色（ink.js 深色时始终设置 html[data-theme=dark]，
@@ -194,14 +194,14 @@ themes/ink/layout/
 
 ## Mermaid 图表
 
-- **语法**：````mermaid 围栏代码块 → `<div class="mermaid"><pre><code>源码</code></pre></div>`，
+- **语法**：mermaid 围栏代码块 → `<div class="mermaid"><pre><code>源码</code></pre></div>`，
   源码保留在 DOM（无 JS 可见、可复制）；ink.js 按需加载自托管
   `themes/ink/source/js/mermaid.min.js`（v11.16.1，约 3.6MB 未压缩 / gzip 约 1MB）
   渲染为 SVG 替换容器；渲染失败显示错误信息并保留源码。
 - **实现关键（2026-08-16 踩坑）**：**不能做成 marked 扩展**——hexo 内置
   `backtick_code_block` before_post_render 过滤器（priority 10）会在 marked 渲染前
   把源文里所有围栏代码块整体替换为占位符，marked 扩展的 tokenizer 永远看不到
-  ```mermaid（扩展注册成功但完全不命中）。`scripts/marked-mermaid.js` 因此改为
+  \`\`\`mermaid（扩展注册成功但完全不命中）。`scripts/marked-mermaid.js` 因此改为
   **before_post_render 预处理**（priority 9，先于 backtick_code_block）：把 mermaid
   围栏直接替换为 HTML 容器，围栏结构消失后 backtick 过滤器不再匹配，其余代码块
   不受影响（highlight.js 构建时高亮路径不变）。
@@ -299,6 +299,21 @@ themes/ink/layout/
   （2026-08-08 起替代外部 picsum 图源，修复过"构建期随机导致刷新不变"的问题）。
 - **加新封面图**：裁切成 800×800 正方形放入 `source/img/covers/`，文件名按
   `cover-NN.jpg` 连续编号，并同步更新 `ink.js` 中 `coverPool` 的循环上界。
+
+## Glass 鼠标光标（2026-08-18 加入）
+
+- 位置：`themes/ink/source/img/cursors/`（13 个 64x64 半透明 PNG，text 为 32x64）。
+  素材取自 `A:\work_zone\Resourse\Glass` 的 Windows Glass 光标集（.ani 格式，
+  每套 2-9 帧动画，内嵌 PNG 帧），用脚本提取每套最完整的一帧。
+- 机制：`style.min.css` 末尾 `:root` 的 `--cursor-*` 变量定义全部光标（url + 热点），
+  元素规则按交互状态映射：链接/按钮→手型、文本输入→I-beam、`[title]`→帮助、
+  禁用控件→禁行、`.is-loading`→进度。
+- **动画限制**：CSS `cursor: url()` 不支持动画（Chrome/Edge/Safari 均取静态帧），
+  故本主题只用静态帧；真动画需 JS 跟随方案，曾评估后弃用（副作用大）。
+- **热点坐标**：url 后数字为光标功能点（箭头顶端 2,1、手型指尖 18,2、I-beam 中线
+  16,41、resize 中心 31,32 等），由帧像素分析确定，**替换光标图片时必须同步改**。
+- **替换光标集**：只改 `:root` 内 13 个变量的 url 与热点即可，无需动元素规则。
+- **注意事项**：giscus 评论 iframe 内光标不受本站 CSS 控制（iframe 独立文档）。
 
 ## 修改主题的流程
 
