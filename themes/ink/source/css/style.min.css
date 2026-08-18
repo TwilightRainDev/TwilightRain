@@ -2195,6 +2195,95 @@ select:disabled {
     cursor: var(--cursor-progress) !important;
 }
 
+/* ======================== SanYeCao 移植（2026-08-18） ========================
+   1. Markdown details 折叠块样式（来源：SanYeCao-blog src/styles/posts.css）
+   2. 块级公式过长时独立横向滚动（MathJax 3 CHTML 适配，来源同上）
+   选择器限定 article（文章正文容器），不影响归档页 summary 折叠。 */
+
+/* 1. details 折叠块：顶部粗边框 + 圆角 + summary 箭头旋转 */
+article details {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin: 1.5rem 0;
+    overflow: hidden;
+    border-top: 2px solid var(--color-primary);
+    border-radius: 0 0 0.5rem 0.5rem;
+    background: rgba(128, 128, 128, 0.14);
+}
+
+article details summary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0.8rem 0.9rem;
+    cursor: pointer;
+    font-weight: 600;
+    user-select: none;
+    list-style: none;
+}
+
+article details summary::-webkit-details-marker {
+    display: none;
+}
+
+article details summary::before {
+    content: '>';
+    display: inline-block;
+    flex: 0 0 auto;
+    font-size: 1.25rem;
+    line-height: 1;
+    transition: transform 0.2s ease;
+}
+
+article details[open] summary::before {
+    transform: rotate(90deg);
+}
+
+article details > :not(summary) {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-right: 1rem;
+}
+
+article details > ol,
+article details > ul {
+    padding: 0.6rem 1rem 1rem 3rem;
+}
+
+article details li {
+    margin: 0.8rem 0;
+}
+
+[data-theme="dark"] article details {
+    border-top-color: #6ab0f3;
+    background: rgba(160, 160, 160, 0.16);
+}
+
+/* 2. 块级公式过长时独立横向滚动（MathJax 3 的 display 公式输出） */
+article mjx-container[display="true"] {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    box-sizing: border-box;
+    padding: 0.25rem 0;
+    -webkit-overflow-scrolling: touch;
+}
+
+article mjx-container[display="true"] > mjx-math {
+    display: inline-block;
+    min-width: max-content;
+    white-space: nowrap;
+}
+
 .theme-toggle__container {
   position: relative;
   width: 100%;

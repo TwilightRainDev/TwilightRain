@@ -317,6 +317,24 @@ themes/ink/layout/
 - **替换光标集**：只改 `:root` 内 13 个变量的 url 与热点即可，无需动元素规则。
 - **注意事项**：giscus 评论 iframe 内光标不受本站 CSS 控制（iframe 独立文档）。
 
+## SanYeCao 移植（2026-08-18 加入）
+
+来源：`A:\work_zone\Resourse\SanYeCao-blog`（Astro 模板，搬思路）；完整分析在
+`A:\work_zone\Docs\SanYeCao-*.md` 四件套。
+
+- **details 折叠块样式**：`article details` 规则（顶部主色粗边框 + 圆角 +
+  summary `>` 箭头旋转动画 + 列表缩进），深色模式适配。文章内写原生
+  `<details><summary>标题</summary>内容</details>` 即生效；选择器限定
+  article，不影响归档页 summary 折叠。注意与提示块（:::note，渲染为
+  blockquote.admonition）互不干扰。
+- **长公式横向滚动**：`article mjx-container[display="true"]` 加
+  overflow-x: auto + max-width 100%（MathJax 3 CHTML 输出），超宽块级公式
+  独立横向滚动，不撑破正文。
+- **JSON-LD BlogPosting**：head.ejs 按 `page.layout === 'post'` 输出
+  schema.org 结构化数据（JSON.stringify 输出防标题含引号破坏结构；
+  cover 相对路径自动拼接 config.url；封面池随机图无显式 cover 时不输出
+  image）。普通页面（about/links 等）不输出。
+
 ## 修改主题的流程
 
 1. 改布局/样式/脚本（保持 LF 行尾）。

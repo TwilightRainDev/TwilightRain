@@ -47,6 +47,25 @@
     <link rel="alternate" type="application/atom+xml" title="<%= config.title %>" href="<%= url_for('atom.xml') %>">
     <link rel="alternate" type="application/rss+xml" title="<%= config.title %>" href="<%= url_for('rss2.xml') %>">
 
+    <%# JSON-LD 结构化数据（2026-08-18 移植自 SanYeCao-blog）：仅文章页输出。
+         JSON.stringify 输出安全 JSON（标题含引号/尖括号不破坏结构）；
+         cover 相对路径拼接 config.url，封面池随机图（无显式 cover）不输出 image。 %>
+    <% if (page.layout === 'post') { %>
+    <script type="application/ld+json">
+        <%- JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BlogPosting',
+            headline: page.title,
+            description: page.description || config.description,
+            image: page.cover ? (page.cover.startsWith('http') ? page.cover : config.url + page.cover) : undefined,
+            datePublished: page.date.toISOString(),
+            dateModified: page.updated ? page.updated.toISOString() : page.date.toISOString(),
+            author: { '@type': 'Person', name: config.author },
+            mainEntityOfPage: { '@type': 'WebPage', '@id': page.permalink }
+        }) %>
+    </script>
+    <% } %>
+
     <script src="/js/ink.js" defer></script>
     <link rel="shortcut icon" href="<%= url_for(theme.favicon) %>" type="image/x-icon" />
 
