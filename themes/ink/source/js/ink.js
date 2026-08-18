@@ -877,6 +877,21 @@ document.addEventListener('DOMContentLoaded', function () {
         document.head.appendChild(script);
     }
 
+    // 超宽图表保持原始尺寸（2026-08-18 修复）：mermaid 输出 svg 带
+    // width="100%" + 内联 style="max-width: Npx"（N = 图表自然宽），容器窄于 N
+    // 时浏览器按 min(容器, N) 渲染，整图等比缩小、节点文字无法辨认。
+    // 检测自然宽 > 容器宽时改为原始尺寸，靠容器 overflow-x: auto 横向滚动；
+    // 窄图保持默认行为不变。静态化 SVG（mermaid-static.js 构建期输出）同结构，
+    // 在 DOMContentLoaded 时统一适配。
+    function fitMermaid(el) {
+        var svg = el.querySelector('svg');
+        if (!svg) return;
+        var natural = parseFloat(svg.style.maxWidth);
+        if (!natural || natural <= el.clientWidth) return;
+        svg.setAttribute('width', natural + 'px');
+        svg.style.maxWidth = 'none';
+    }
+
     function renderAll(force) {
         var elements = document.querySelectorAll('.mermaid');
         if (!elements.length) return;
@@ -909,6 +924,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(function (res) {
                     el.innerHTML = res.svg;
                     el.classList.add('mermaid-rendered');
+                    fitMermaid(el); // 每次渲染后（含主题切换 force 重渲染）做超宽适配
                 })
                 .catch(function (err) { renderError(err); }));
         });
@@ -924,6 +940,35 @@ document.addEventListener('DOMContentLoaded', function () {
     // DOMContentLoaded 兜底（极端时序下保证渲染）
     document.addEventListener('DOMContentLoaded', function () {
         if (!hasMermaid) hasMermaid = !!document.querySelector('.mermaid');
+        // 静态化 SVG（mermaid-static.js 构建期输出）不经 renderAll，统一超宽适配
+        document.querySelectorAll('.mermaid').forEach(fitMermaid);
         if (hasMermaid) loadLibrary(function () { renderAll(false); });
     });
 })();
+
+// ======================== 代码块超长折叠（2026-08-18，Reimu 批一迁移） ========================
+// 行数 = .code pre 内 <br> 数量（Hexo 8 行间一个 <br> + 末尾一个空行 <br>，
+// n 行代码恰有 n 个 br，数量即行数）。超阈值折叠并显示"展开全部（N 行）"按钮，
+// 底部渐变遮罩由 style.min.css .code-collapsed 提供。与复制按钮共存（按钮在
+// pre 内，折叠只截断 .code pre 高度，不改变 DOM 结构，复制仍取全文）。
+document.addEventListener('DOMContentLoaded', function () {
+    var COLLAPSE_LINES = 40;
+    document.querySelectorAll('figure.highlight').forEach(function (figure) {
+        var pre = figure.querySelector('.code pre');
+        if (!pre) return;
+        var lines = pre.querySelectorAll('br').length;
+        if (lines < COLLAPSE_LINES) return;
+
+        figure.classList.add('code-collapsed');
+        var btn = document.createElement('button');
+        btn.className = 'code-fold-btn';
+        btn.textContent = '展开全部（' + lines + ' 行）';
+        btn.setAttribute('aria-expanded', 'false');
+        btn.addEventListener('click', function () {
+            var collapsed = figure.classList.toggle('code-collapsed');
+            btn.textContent = collapsed ? '展开全部（' + lines + ' 行）' : '收起代码块';
+            btn.setAttribute('aria-expanded', String(!collapsed));
+        });
+        figure.appendChild(btn);
+    });
+});

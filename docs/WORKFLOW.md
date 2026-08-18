@@ -39,6 +39,9 @@ categories:
 comments: true                 # 默认开评论；不需要则 false
 cover: /img/xxx.jpg            # 可选：封面图（og:image 也用它）
 pinned: true                   # 可选：置顶到首页最前（不写则按日期排序）
+updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章页显示"更新于"；
+                               #   Hexo 默认 updated 是文件 mtime，git checkout
+                               #   会刷新，勿依赖隐式值，不写则不显示）
 ---
 ```
 

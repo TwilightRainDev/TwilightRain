@@ -163,8 +163,8 @@ themes/ink/layout/
   columns-preference）在 defer 阶段立即应用，兼容旧值（light/dark）。设置页选择
   会写入 localStorage。
   模块清单：图片说明、随机封面、主题/字体/列数偏好、返回顶部、阅读进度条、TOC、
-  悬停资料卡、图片灯箱绑定、代码块复制、归档折叠、友链主站探测、
-  二级菜单触摸交互、Mermaid 图表按需渲染（见下）。
+  悬停资料卡、图片灯箱绑定、代码块复制、代码块超长折叠（见下）、归档折叠、
+  友链主站探测、二级菜单触摸交互、Mermaid 图表按需渲染（见下）。
   **主题变更通知**：偏好模块 `applyTheme` 末尾 dispatch `theme-change` 事件
   （detail.theme = 实际主题），依赖主题的组件监听它（当前仅 mermaid 重渲染）。
 
@@ -214,6 +214,14 @@ themes/ink/layout/
 - **CSP**：无新增白名单——库自托管（`script-src 'self'`）、mermaid 不请求外链
   （图表内嵌 img 走 `img-src https:`）。**更新库**：`npm pack mermaid@版本` 取
   `dist/mermaid.min.js` 覆盖 `themes/ink/source/js/`。
+- **超宽适配（2026-08-18）**：mermaid 输出 svg 自带 `width="100%"` + 内联
+  `style="max-width: Npx"`（N = 图自然宽），容器窄于 N 时浏览器按 min(容器, N)
+  渲染、整图等比缩小，节点文字无法辨认。ink.js `fitMermaid` 检测自然宽 > 容器宽
+  时把 width 改为自然宽、内联 maxWidth 置 none，靠 `.mermaid` 的
+  `overflow-x: auto` 横向滚动；窄图保持默认行为不变。静态化 SVG（mermaid-static.js
+  构建期输出）不经 renderAll，由 DOMContentLoaded 时统一适配；主题切换 force
+  重渲染在渲染回调里再适配。曾设 `.mermaid svg { max-width: 100% }` 覆盖不了
+  内联样式（内联优先）是死规则，已删除。
 
 ## 阅读时间
 
@@ -282,7 +290,7 @@ themes/ink/layout/
   探测成功自动把链接切回主站。加新友链时若主站 DNS 未配置，填 `fallback` 即可。
 - 头像图片放 `source/img/links/`。
 - `source/js/search.js`：前端搜索（检索 searchdb 生成的 search.xml）。
-  ⚠️ 渲染结果必须转义，防 DOM XSS（见 [SECURITY.md](SECURITY.md#已知陷阱清单)）。
+  [WARN] 渲染结果必须转义，防 DOM XSS（见 [SECURITY.md](SECURITY.md#已知陷阱清单)）。
 
 ## 字体自托管
 
@@ -368,6 +376,32 @@ themes/ink/layout/
   （版本号变化时 `npx playwright install chromium`）。
 - **友链波浪网格（2026-08-18）**：`.link-list` 桌面 24 列 nth-child 列宽交错
   （11/12/13 列波浪周期），移动端宽度交错（84/92/100%），纯 CSS 无结构改动。
+
+## Reimu 批一迁移（2026-08-18）
+
+来源：`A:\work_zone\Resourse\hexo-theme-reimu`（Hexo 主题，功能级移植）；
+完整分析在 `A:\work_zone\Docs\Reimu-*.md` 四件套。
+
+- **段落锚点**：`scripts/heading-anchor.js`（after_post_render）给正文 h2/h3 注入
+  `<a class="heading-anchor">#</a>` 锚点链接。id **复用 hexo-renderer-marked 默认
+  生成的中文 id**（如 `id="做过什么"`），无 id 的标题按 ink.js TOC 同规则 slug
+  生成——TOC 运行时仅补缺 id，两者规则一致，深链 #hash 构建期已就绪、加载即定位。
+  CSS：标题 hover/聚焦显示 #、`:target` 高亮闪烁、h2/h3 `scroll-margin-top` 防
+  遮挡。**注意**：hexo 默认还会输出空 `<a class="headerlink">`（marked headerLink
+  功能），与 heading-anchor 并存，勿混淆。
+- **图片懒加载**：`scripts/lazy-load.js`（after_post_render）给正文 `<img>` 注入
+  `loading="lazy" decoding="async"`（已带 loading 或无 src 的跳过）。首页封面
+  index.ejs 已自带 lazy；文章页头图（post-imgcard）保持 eager（首屏）。
+- **代码块超长折叠**：ink.js 统计 `.code pre` 内 `<br>` 数量（Hexo 8 中 n 行代码
+  恰有 n 个 br），超 40 行加 `.code-collapsed`（max-height 420px + 底部渐变遮罩，
+  遮罩用 `--code-background-color` 反色背景，深浅主题自动适配）+ 展开按钮（可再
+  收起，按钮 z-index 盖在遮罩上）。复制按钮在 pre 内不受影响，复制仍取全文。
+- **文章时效**：`scripts/post-staleness.js`（after_post_render）注入两个标记——
+  `post.stale` / `post.staleDays`：文章日期距今超 365 天；`post.updatedSet`：
+  front matter **显式写 `updated:` 才为真**（data.raw 正则判断）。
+  **陷阱**：Hexo 默认 updated 取文件 mtime，git checkout/克隆会刷新 mtime，
+  直接显示 page.updated 是假数据——post.ejs 仅当 updatedSet 为真才输出
+  "更新于"小字；过期提示条（warning 配色）输出在阅读时间 meta 下。
 
 ## 修改主题的流程
 

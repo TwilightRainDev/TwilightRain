@@ -1927,10 +1927,12 @@ blockquote.admonition.bdm-caution .bdm-title::before {
     display: block;
     text-align: left;
 }
-.mermaid svg {
-    max-width: 100%;
-    height: auto;
-}
+/* 尺寸控制（2026-08-18 修复超宽缩放）：mermaid 输出的 svg 自带 width="100%"
+   + 内联 style="max-width: Npx"（N = 图表自然宽），容器窄于 N 时整图等比缩小、
+   节点文字无法辨认。曾设 .mermaid svg { max-width: 100% } 覆盖不了内联样式
+   （内联优先，是死规则）；现由 ink.js fitMermaid 检测超宽后把 width 改为自然宽，
+   交给本容器 overflow-x: auto 横向滚动。窄图保持 mermaid 默认 min(容器, 自然宽)
+   行为不变。此处不设 max-width，避免与 fitMermaid 冲突。 */
 .mermaid-error {
     margin: 0;
     padding: 0.5rem 0.75rem;
@@ -2688,4 +2690,94 @@ article mjx-container[display="true"] > mjx-math {
       var(--toggle-width) - var(--sun-diameter) - var(--sun-offset) - 0.187em
     )
   );
+}
+
+/* ======================== 段落锚点（2026-08-18，Reimu 批一迁移） ========================
+   scripts/heading-anchor.js 构建期给 h2/h3 注入 id + 锚点链接（# 号），
+   标题悬停/键盘聚焦时显示，点击直达本段落；深链 #hash 加载时目标标题高亮闪烁。 */
+.heading-anchor {
+    opacity: 0;
+    margin-left: 0.35em;
+    font-size: 0.85em;
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.15s;
+}
+h2:hover .heading-anchor, h3:hover .heading-anchor,
+.heading-anchor:focus-visible {
+    opacity: 0.6;
+}
+.heading-anchor:hover {
+    opacity: 1;
+}
+h2, h3 {
+    scroll-margin-top: 1rem; /* 深链/TOC 跳转时标题不被顶部元素遮挡 */
+}
+@keyframes target-flash {
+    from { background: rgba(26, 143, 227, 0.18); }
+    to { background: transparent; }
+}
+h2:target, h3:target {
+    animation: target-flash 1.2s ease-out;
+}
+
+/* ======================== 代码块超长折叠（2026-08-18，Reimu 批一迁移） ========================
+   ink.js 统计 .code pre 内行数（br 数量），超 40 行加 .code-collapsed：
+   截断高度 + 底部渐变遮罩 + 展开按钮。按钮为普通流元素（z-index 盖在遮罩上，
+   遮罩 pointer-events: none），展开后仍可见可再收起。渐变用 --code-background-color
+   （代码块反色背景），深浅主题自动适配。 */
+figure.highlight {
+    position: relative; /* 折叠遮罩定位基准 */
+}
+.code-collapsed .code pre {
+    max-height: 420px;
+    overflow: hidden;
+}
+.code-collapsed::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 56px;
+    background: linear-gradient(to bottom, transparent, var(--code-background-color));
+    pointer-events: none;
+}
+.code-fold-btn {
+    display: block;
+    position: relative;
+    z-index: 1;
+    margin: 0.5rem auto 0.25rem;
+    padding: 3px 16px;
+    border: 1px solid var(--color-primary, #1a8fe3);
+    border-radius: 0.375rem;
+    background: transparent;
+    color: var(--color-primary, #1a8fe3);
+    font-size: 0.85em;
+    line-height: 1.6;
+    cursor: pointer;
+}
+.code-fold-btn:hover {
+    background: var(--color-primary, #1a8fe3);
+    color: #fff;
+}
+
+/* ======================== 文章时效（2026-08-18，Reimu 批一迁移） ========================
+   post.ejs 按 post-staleness.js 注入的标记输出：过期提示条（warning 配色，
+   与提示块 admonition 同色系）+ 显式手写 updated 的更新时间（弱化小字）。 */
+.post-stale {
+    margin-block: 0 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px dashed var(--admonitions-color-warning);
+    color: var(--admonitions-color-warning);
+    font-size: var(--size-step-0);
+    border-radius: 0.375rem;
+}
+.post-updated {
+    margin: 0 0 0.5rem;
+    font-size: var(--size-step-0);
+    color: #888;
+}
+[data-theme="dark"] .post-updated {
+    color: #aaa;
 }

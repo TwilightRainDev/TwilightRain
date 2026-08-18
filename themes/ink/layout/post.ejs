@@ -28,6 +28,15 @@
         <% if (page.readingMinutes) { %>
             <p class="post-reading-meta">阅读约 <%= page.readingMinutes %> 分钟</p>
         <% } %>
+        <%# 文章时效（2026-08-18，Reimu 批一迁移）：过期提示由 post-staleness.js 按
+             文章日期标记（超 365 天）；更新时间仅 front matter 显式写 updated 才显示
+             （Hexo 默认 updated 取文件 mtime，git checkout 会刷新，直接显示是假数据） %>
+        <% if (page.stale) { %>
+            <p class="post-stale">本文发布于 <%= date(page.date) %>，距今已 <%= page.staleDays %> 天，内容可能已过时</p>
+        <% } %>
+        <% if (page.updatedSet) { %>
+            <p class="post-updated">更新于 <%= date(page.updated) %></p>
+        <% } %>
         <%- page.content %>
         <footer class="post-license">
             <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">知识共享 署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>
