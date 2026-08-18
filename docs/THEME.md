@@ -334,6 +334,19 @@ themes/ink/layout/
   schema.org 结构化数据（JSON.stringify 输出防标题含引号破坏结构；
   cover 相对路径自动拼接 config.url；封面池随机图无显式 cover 时不输出
   image）。普通页面（about/links 等）不输出。
+- **移动端胶囊 TOC**：post.ejs 输出固定右上角胶囊按钮 + 悬浮面板
+  （`hidden` 初始，ink.js 有 TOC 时解除）；ink.js 的 `placeToc()` 按
+  <768px 断点把生成的 toc DOM 在 `.post-toc-slot`（桌面双卡）与
+  `.post-toc-mobile-panel`（移动端面板）之间迁移，resize 跨界自动切换；
+  滚动 80px 后按钮出现（`.is-visible`），IntersectionObserver 高亮同时
+  更新按钮上的当前标题预览，面板内点击链接后收起。改动 TOC 结构时注意：
+  `syncTocHeight`（桌面双卡等高）移动端跳过并清空内联 height。
+- **构建版本色块**：`scripts/commit-data.js` 构建期写
+  `source/_data/commit.json`（优先 `CF_PAGES_COMMIT_SHA`，本地回退
+  `git rev-parse HEAD`），footer.ejs 渲染 6 个色块（sha 每 6 位 hex 切块），
+  hover title 显示完整 hash。`npm run build` 已改为
+  `node scripts/commit-data.js && hexo generate`；
+  `source/_data/` 已 gitignore（构建产物不入库）。
 
 ## 修改主题的流程
 

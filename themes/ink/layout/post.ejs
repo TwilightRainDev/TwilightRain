@@ -1,5 +1,16 @@
 <main>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha384-Q8BgkilbsFGYNNiDqJm69hvDS7NCJWOodvfK/cwTyQD4VQA0qKzuPpvqNER1UC0F" crossorigin="anonymous" />
+    <%# 移动端胶囊 TOC（2026-08-18 移植自 SanYeCao-blog PostMenu）：
+         滚动 80px 后出现固定右上角胶囊按钮，预览当前章节标题，点击展开目录面板；
+         桌面端仍是下方双卡布局。ink.js 按断点迁移 toc DOM 到 slot / 面板。
+         hidden 由 ink.js 控制：无 h2/h3 的文章不生成 toc，按钮保持隐藏。 %>
+    <button class="post-toc-mobile-toggle" type="button" aria-expanded="false" aria-controls="post-toc-mobile-panel" aria-label="目录" hidden>
+        <span class="post-toc-mobile-preview" data-toc-preview>目录</span>
+        <svg class="post-toc-mobile-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true">
+            <path d="M5 6.5H19M5 12H19M5 17.5H19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+    </button>
+    <div id="post-toc-mobile-panel" class="post-toc-mobile-panel" hidden></div>
     <%# 文章页头图并入 TOC 双卡布局（取代原 30vh banner）：
          图卡 + 目录卡并排；移动端图卡堆顶全宽。banner partial 保留给普通页面。 %>
     <div class="post-toc-row">

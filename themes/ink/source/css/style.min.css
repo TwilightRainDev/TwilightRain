@@ -2284,6 +2284,120 @@ article mjx-container[display="true"] > mjx-math {
     white-space: nowrap;
 }
 
+/* 3. 移动端胶囊 TOC（来源：SanYeCao-blog PostMenu.astro）
+   <768px 时 .post-toc-slot 隐藏，ink.js 将 toc 移入 .post-toc-mobile-panel；
+   按钮滚动 80px 后出现（.is-visible），点击展开面板。桌面双卡不受影响。 */
+@media (max-width: 767px) {
+    .post-toc-slot {
+        display: none;
+    }
+}
+
+.post-toc-mobile-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    position: fixed;
+    top: calc(env(safe-area-inset-top) + 0.75rem);
+    right: 0.8rem;
+    z-index: 30;
+    max-width: min(78vw, 22rem);
+    padding: 0.5rem 0.75rem;
+    border: 1.5px solid var(--color-primary);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(6px);
+    color: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(calc(-100% - 0.6rem));
+    pointer-events: none;
+    transition: transform 0.28s ease, opacity 0.22s ease;
+}
+
+.post-toc-mobile-toggle[hidden] {
+    display: none;
+}
+
+.post-toc-mobile-toggle.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.post-toc-mobile-preview {
+    display: inline-block;
+    max-width: 10rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+}
+
+.post-toc-mobile-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    opacity: 0.78;
+}
+
+.post-toc-mobile-panel {
+    position: fixed;
+    top: calc(env(safe-area-inset-top) + 3.5rem);
+    right: 0.8rem;
+    z-index: 29;
+    display: none;
+    width: min(88vw, 24rem);
+    max-height: min(65vh, 32rem);
+    overflow: auto;
+    padding: 0.9rem 1rem;
+    border: 1.5px solid var(--color-primary);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+}
+
+.post-toc-mobile-panel[hidden] {
+    display: none;
+}
+
+.post-toc-mobile-panel.is-open {
+    display: block;
+}
+
+.post-toc-mobile-panel .post-toc {
+    margin-bottom: 0;
+    overflow-y: visible;
+    height: auto !important;
+}
+
+[data-theme="dark"] .post-toc-mobile-toggle,
+[data-theme="dark"] .post-toc-mobile-panel {
+    background: rgba(26, 26, 26, 0.96);
+    color: #e6e6e6;
+}
+
+/* 4. 构建版本色块（来源：SanYeCao-blog BuildHashBlocks.astro）
+   footer.ejs 读 site.data.commit（scripts/commit-data.js 构建期注入），
+   commit sha 前 36 位 hex 切成 6 块色块，hover 显示完整 hash。 */
+.build-hash {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.15rem;
+    vertical-align: middle;
+    cursor: default;
+}
+
+.build-block {
+    width: 0.75rem;
+    height: 0.75rem;
+    display: inline-block;
+    border-radius: 2px;
+}
+
 .theme-toggle__container {
   position: relative;
   width: 100%;

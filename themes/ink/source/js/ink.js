@@ -372,33 +372,83 @@ document.addEventListener('DOMContentLoaded', function () {
     toc.appendChild(list);
     // 优先移入文章页的 .post-toc-slot（banner→TOC 双卡布局），无 slot 时退回旧行为
     var tocSlot = document.querySelector('.post-toc-slot');
+    var tocMobilePanel = document.querySelector('.post-toc-mobile-panel');
+    var tocMobileToggle = document.querySelector('.post-toc-mobile-toggle');
+    var tocMobilePreview = tocMobileToggle ? tocMobileToggle.querySelector('[data-toc-preview]') : null;
+
+    // 移动端胶囊 TOC（2026-08-18 移植自 SanYeCao-blog）：
+    // <768px 时 toc 移入悬浮面板，桌面时移回 slot 双卡，resize 跨界自动迁移。
+    var isMobileToc = function () { return window.matchMedia('(max-width: 767px)').matches; };
+    var placeToc = function () {
+        if (isMobileToc() && tocMobilePanel) {
+            if (toc.parentNode !== tocMobilePanel) tocMobilePanel.appendChild(toc);
+            if (tocMobileToggle) tocMobileToggle.hidden = false;
+        } else if (tocSlot) {
+            if (toc.parentNode !== tocSlot) tocSlot.appendChild(toc);
+            if (tocMobileToggle) tocMobileToggle.hidden = true;
+            syncTocHeight();
+        }
+    };
+
+    // 目录卡高度与图卡等高（height 同步）：目录内容少于图卡高时
+    // 填充留白（等高卡片），内容超出时卡片内滚动（overflow-y: auto）。
+    // 图片解码完成、窗口缩放等任何图卡高度变化都由 ResizeObserver
+    // 同步（img 未解码时高度会塌陷，RO 在解码完成后自动修正；
+    // h > 0 防止图片加载失败时目录卡高度归零；移动端胶囊模式不设高）。
+    var imgcard = tocSlot ? document.querySelector('.post-imgcard') : null;
+    var syncTocHeight = function () {
+        if (isMobileToc()) { toc.style.height = ''; return; }
+        if (!imgcard) return;
+        var h = imgcard.offsetHeight;
+        if (h > 0) toc.style.height = h + 'px';
+    };
+
     if (tocSlot) {
-        tocSlot.appendChild(toc);
-        // 目录卡与图卡等高：max-height 跟随图卡实际高度（图片自然比例，
-        // 随宽度与图片加载时机变化），目录内容超出后卡片内滚动。
-        // 图卡高度为 0（图片未加载/加载失败）时不设限，避免目录卡消失。
-        var imgcard = document.querySelector('.post-imgcard');
+        placeToc();
         if (imgcard) {
-            // 目录卡高度与图卡等高（height 同步）：目录内容少于图卡高时
-            // 填充留白（等高卡片），内容超出时卡片内滚动（overflow-y: auto）。
-            // 图片解码完成、窗口缩放等任何图卡高度变化都由 ResizeObserver
-            // 同步（img 未解码时高度会塌陷，RO 在解码完成后自动修正；
-            // h > 0 防止图片加载失败时目录卡高度归零）。
-            var syncTocHeight = function () {
-                var h = imgcard.offsetHeight;
-                if (h > 0) toc.style.height = h + 'px';
-            };
             syncTocHeight();
             if (typeof ResizeObserver !== 'undefined') {
                 new ResizeObserver(syncTocHeight).observe(imgcard);
             }
-            window.addEventListener('resize', function () {
-                clearTimeout(syncTocHeight._timer);
-                syncTocHeight._timer = setTimeout(syncTocHeight, 100);
-            });
         }
     } else {
         article.insertBefore(toc, article.firstChild);
+    }
+
+    // resize 跨界迁移 + 高度同步（防抖 100ms，复用原同步节奏）
+    window.addEventListener('resize', function () {
+        clearTimeout(syncTocHeight._timer);
+        syncTocHeight._timer = setTimeout(function () {
+            placeToc();
+            syncTocHeight();
+        }, 100);
+    });
+
+    // 移动端胶囊：按钮展开/收起面板，点击面板外关闭
+    if (tocMobileToggle && tocMobilePanel) {
+        tocMobileToggle.addEventListener('click', function () {
+            var open = tocMobilePanel.classList.toggle('is-open');
+            tocMobileToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+            if (tocMobilePanel.classList.contains('is-open') &&
+                !tocMobilePanel.contains(e.target) && !tocMobileToggle.contains(e.target)) {
+                tocMobilePanel.classList.remove('is-open');
+                tocMobileToggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+        // 滚动 80px 后显示按钮（移动端），顶部隐藏并收起面板
+        var onTocScroll = function () {
+            if (!isMobileToc() || !tocMobileToggle) return;
+            var show = window.scrollY > 80;
+            tocMobileToggle.classList.toggle('is-visible', show);
+            if (!show) {
+                tocMobilePanel.classList.remove('is-open');
+                tocMobileToggle.setAttribute('aria-expanded', 'false');
+            }
+        };
+        window.addEventListener('scroll', onTocScroll, { passive: true });
+        onTocScroll();
     }
 
     // 折叠/展开
@@ -407,7 +457,7 @@ document.addEventListener('DOMContentLoaded', function () {
         toggleBtn.textContent = list.classList.contains('collapsed') ? '[展开]' : '[折叠]';
     });
 
-    // 点击平滑滚动
+    // 点击平滑滚动（移动端胶囊面板内点击后收起面板）
     toc.addEventListener('click', function(e) {
         var link = e.target.closest('a');
         if (link && link.getAttribute('href').startsWith('#')) {
@@ -419,11 +469,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 toc.querySelectorAll('.toc-item.active').forEach(function(el) { el.classList.remove('active'); });
                 var parentLi = link.closest('.toc-item');
                 if (parentLi) parentLi.classList.add('active');
+                if (tocMobilePanel) {
+                    tocMobilePanel.classList.remove('is-open');
+                    if (tocMobileToggle) tocMobileToggle.setAttribute('aria-expanded', 'false');
+                }
             }
         }
     });
 
-    // 滚动时高亮当前章节
+    // 滚动时高亮当前章节（并同步移动端胶囊按钮的标题预览）
     var callback = function(entries) {
         entries.forEach(function(entry) {
             if (entry.isIntersecting) {
@@ -433,6 +487,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (activeA) {
                     var activeLi = activeA.closest('.toc-item');
                     if (activeLi) activeLi.classList.add('active');
+                    if (tocMobilePreview) tocMobilePreview.textContent = activeA.textContent;
                 }
             }
         });

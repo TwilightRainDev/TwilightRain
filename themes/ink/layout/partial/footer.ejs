@@ -6,5 +6,21 @@
         <p style="font-size:0.6em;margin: 8px 0 0;opacity:0.4;">
             &copy; <%= date(new Date(), 'YYYY') %> <%= config.author %> &middot; Powered by Hexo
         </p>
+        <%# 构建版本色块（2026-08-18 移植自 SanYeCao-blog）：site.data.commit 由
+             scripts/commit-data.js 构建期写入（CF_PAGES_COMMIT_SHA || git HEAD）。 %>
+        <% var commit = site.data.commit; %>
+        <% if (commit && /^[0-9a-f]{40}$/i.test(commit.sha)) {
+               var hash = commit.sha.toLowerCase();
+               var blocks = [];
+               for (var bi = 0; bi < 6; bi++) blocks.push(hash.slice(bi * 6, bi * 6 + 6).padEnd(6, '0'));
+        %>
+        <p style="font-size:0.6em;margin: 8px 0 0;opacity:0.4;">
+            <span class="build-hash" title="Build <%= hash %>" aria-label="Build <%= hash %>">
+                <% blocks.forEach(function(b) { %>
+                <span class="build-block" style="background:#<%= b %>"></span>
+                <% }); %>
+            </span>
+        </p>
+        <% } %>
     </div>
 </footer>
