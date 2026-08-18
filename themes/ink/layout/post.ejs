@@ -41,6 +41,14 @@
         <footer class="post-license">
             <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener">知识共享 署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>
         </footer>
+        <%# 分享（2026-08-18，Reimu 批三）：纯链接三平台（微博/QQ/X），无第三方脚本。
+             微信省略（官方分享需二维码生成）；page.permalink 为绝对 URL。 %>
+        <nav class="post-share" aria-label="分享本文">
+            <span class="post-share-label">分享</span>
+            <a href="https://service.weibo.com/share/share.php?url=<%- encodeURIComponent(page.permalink) %>&amp;title=<%- encodeURIComponent(page.title) %>" target="_blank" rel="noopener">微博</a>
+            <a href="https://connect.qq.com/widget/shareqq/index.html?url=<%- encodeURIComponent(page.permalink) %>&amp;title=<%- encodeURIComponent(page.title) %>" target="_blank" rel="noopener">QQ</a>
+            <a href="https://twitter.com/intent/tweet?url=<%- encodeURIComponent(page.permalink) %>&amp;text=<%- encodeURIComponent(page.title) %>" target="_blank" rel="noopener">X</a>
+        </nav>
     </article>
     <% if (page.prev || page.next) { %>
     <nav class="post-prevnext" aria-label="文章导航">

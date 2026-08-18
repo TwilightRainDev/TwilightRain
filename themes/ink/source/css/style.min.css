@@ -2214,6 +2214,49 @@ a.card-link:hover {
     color: #888;
 }
 
+/* ======================== 文内照片墙 .photo-grid（2026-08-18，Reimu 批三） ========================
+   文章内多图网格：正文写 <div class="photo-grid">img×N</div> 即网格排列，
+   灯箱复用现有 fancybox（ink.js 已给 article 内 img 加 data-fancybox）。
+   与相册页（独立集合页）场景不同质，故不做标签插件/不引 photoswipe
+   （详见 Docs/Reimu-迁移推荐顺序.md 批三）。 */
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin-block: calc(var(--spacing) * 1.5);
+}
+.photo-grid img {
+    width: 100%;
+    height: auto;
+    border-radius: 0.375rem;
+    cursor: zoom-in;
+}
+
+/* ======================== 文章分享（2026-08-18，Reimu 批三） ========================
+   post.ejs 版权声明下方输出纯链接分享（微博 / QQ / X），无第三方脚本
+   （CSP 零新增），rel noopener 外链纪律。微信省略：官方分享需二维码生成。 */
+.post-share {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-block: 0.75rem 0;
+    font-size: 0.85em;
+    color: #999;
+}
+.post-share a {
+    color: #888;
+    text-decoration: none;
+}
+.post-share a:hover {
+    color: var(--color-primary, #1a8fe3);
+}
+[data-theme="dark"] .post-share {
+    color: #888;
+}
+[data-theme="dark"] .post-share a {
+    color: #aaa;
+}
+
 /* ======================== 展柜页（项目 / 技能 / 时间线） ======================== */
 .projects-grid,
 .skills-grid {

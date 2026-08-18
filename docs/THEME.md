@@ -435,6 +435,22 @@ themes/ink/layout/
   风险高（易破坏链接 href/代码块/MathJax 公式），收益可被写作规范替代
   （写文章时中英文间手加空格；见 WORKFLOW.md 写作规范）。
 
+## Reimu 批三（2026-08-18）
+
+- **文内照片墙（.photo-grid，纯 CSS 约定）**：文章正文写
+  `<div class="photo-grid">` 包一组 `<img>` 即网格排列（auto-fill minmax(200px,1fr)），
+  灯箱复用现有 fancybox（ink.js 已给 article 内 img 加 data-fancybox），
+  **不引入标签插件、不引 photoswipe**。与相册页（独立集合页）场景不同质：
+  相册是长期照片集合，photo-grid 是文章上下文内的图片组；灯箱与网格实现
+  同质，故复用现有体系。
+- **文章分享（post.ejs）**：版权声明下输出三平台纯链接分享（微博 / QQ / X），
+  无第三方脚本、CSP 零新增、rel noopener；URL/title 经 encodeURIComponent。
+  微信省略（官方分享需二维码生成，成本高）。
+- **复制附加版权：pass（用户拍板）**——复制代码附加版权文本违背初衷
+  （读者复制代码应得到纯净文本），不做。排除理由已入 Docs/Reimu-过滤排除清单。
+- **grid 网格布局：跳过**——与 .photo-grid 场景重叠（布局容器类）且
+  使用场景更少，需要时用原生 HTML 容器 + CSS 约定即可，不做标签插件。
+
 ## 修改主题的流程
 
 1. 改布局/样式/脚本（保持 LF 行尾）。

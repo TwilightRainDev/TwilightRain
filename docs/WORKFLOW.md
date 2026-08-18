@@ -127,6 +127,21 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
 - **文章内中英文空格**：写作时手动在中文与英文/数字间加空格
   （pangu 自动机制已评估降级，见 THEME.md「Reimu 批二迁移」）。
 
+- **文内照片墙**（2026-08-18，Reimu 批三，纯 CSS 约定，无标签插件）：
+
+  ```html
+  <div class="photo-grid">
+  <img src="/img/with-her-eyes-1.jpg" alt="图一">
+  <img src="/img/with-her-eyes-2.jpg" alt="图二">
+  </div>
+  ```
+
+  多图自动网格排列（200px 起自适应列数），点击放大走 fancybox 灯箱
+  （与正文图同机制）。相册集合请用 `/gallery/` 页（front matter photos 数组）。
+
+- **分享按钮**：文章页版权声明下方自动出现微博 / QQ / X 三平台分享链接，
+  无需手动配置。
+
 ## 提交与推送（重要）
 
 仓库在 Windows 本机、**无 gh CLI、无 SSH 密钥**，推送凭据走
