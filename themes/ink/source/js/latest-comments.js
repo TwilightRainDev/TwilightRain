@@ -9,9 +9,10 @@
 (function () {
     'use strict';
 
-    var MAX_SHOW = 8;            // 展示条数
-    var DISCUSSIONS = 10;        // 拉取的最近讨论数（每讨论取 1 条最新评论）
-    var CACHE_TTL = 30 * 60 * 1000;
+    var MAX_SHOW = 5;            // 展示条数
+    var DISCUSSIONS = 5;         // 拉取的最近讨论数（每讨论取 1 条最新评论）
+    var CACHE_TTL = 15 * 60 * 1000;  // 缓存 15 分钟：5 讨论+5 评论=6 请求/首次加载，
+                                     // 15 分钟窗口 24 请求 < 匿名限额 60/h，评论新鲜度与限流平衡
 
     function escapeHtml(str) {
         return String(str == null ? '' : str)

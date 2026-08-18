@@ -350,11 +350,24 @@ themes/ink/layout/
 - **最新评论挂件**：post.ejs 在 giscus 评论区下方输出
   `.latest-comments[data-github-repo]` 容器（与 giscus 同条件，评论关闭不显示），
   `themes/ink/source/js/latest-comments.js`（defer 按需引入）拉取 GitHub REST
-  （`/discussions?sort=updated` + 每讨论 1 条最新评论）渲染 8 条，localStorage
-  缓存 30 分钟消解匿名限流（60req/h）。
+  （`/discussions?sort=updated` + 每讨论 1 条最新评论）渲染 5 条，localStorage
+  缓存 15 分钟消解匿名限流（60req/h；6 请求/首次加载，窗口内 24 请求安全）。
   **已知陷阱**：GitHub GraphQL API 匿名不可用（需 token），故用 REST；
   评论 body 是 Markdown，只做纯文本化 + 转义输出（防 DOM XSS，与 search.js
   同纪律，勿改为直接渲染 HTML）；限流/失败静默降级为"评论加载失败"。
+- **Mermaid 构建期静态化（双轨，2026-08-18）**：`scripts/mermaid-static.js`
+  （after_post_render）用 playwright 把 `.mermaid` 占位容器内的源码渲染为
+  静态 SVG，输出 `<div class="mermaid mermaid-rendered" data-code="...">SVG</div>`：
+  `mermaid-rendered` 让 ink.js 首次加载跳过（零客户端渲染开销）；`data-code`
+  让主题切换时 ink.js force 重渲染（深色适配）。
+  **双轨机制**：依赖不在 package.json——本机通过 NODE_PATH 解析 D 盘全局包
+  （`D:\npm-global`，npm prefix 已指向该目录）+ playwright 浏览器在
+  `D:\work_temp\ms-playwright`（PLAYWRIGHT_BROWSERS_PATH）；CF（Linux）
+  无这些路径 → require 失败 → 保留占位 → ink.js 客户端渲染兜底（现状）。
+  修改依赖版本时：`npm install -g mermaid-isomorphic playwright` + 重装浏览器
+  （版本号变化时 `npx playwright install chromium`）。
+- **友链波浪网格（2026-08-18）**：`.link-list` 桌面 24 列 nth-child 列宽交错
+  （11/12/13 列波浪周期），移动端宽度交错（84/92/100%），纯 CSS 无结构改动。
 
 ## 修改主题的流程
 

@@ -1414,6 +1414,61 @@ pre:hover .copy-btn {
     gap: 12px;
 }
 
+/* 友链波浪网格（2026-08-18 移植自 SanYeCao-blog FriendlyLinkList）：
+   桌面 24 列 nth-child 列宽交错形成连续波浪（5.5:6.5 / 6:6 / 6.5:5.5 / 6:6），
+   移动端宽度交错（84/92/100%）。li 直接作为 grid item，无需改 EJS 结构。 */
+@media (min-width: 721px) {
+    .link-list {
+        grid-template-columns: repeat(24, minmax(0, 1fr));
+    }
+
+    .link-item {
+        min-width: 0;
+    }
+
+    .link-item:nth-child(8n + 1),
+    .link-item:nth-child(8n + 6) {
+        grid-column: span 11;
+    }
+
+    .link-item:nth-child(8n + 3),
+    .link-item:nth-child(8n + 4),
+    .link-item:nth-child(8n + 7),
+    .link-item:nth-child(8n + 8) {
+        grid-column: span 12;
+    }
+
+    .link-item:nth-child(8n + 2),
+    .link-item:nth-child(8n + 5) {
+        grid-column: span 13;
+    }
+}
+
+@media (max-width: 720px) {
+    .link-list {
+        grid-template-columns: 1fr;
+    }
+
+    .link-item {
+        grid-column: auto;
+        justify-self: left;
+        width: 100%;
+    }
+
+    .link-item:nth-child(4n + 1) {
+        width: 84%;
+    }
+
+    .link-item:nth-child(4n + 2),
+    .link-item:nth-child(4n) {
+        width: 92%;
+    }
+
+    .link-item:nth-child(4n + 3) {
+        width: 100%;
+    }
+}
+
 .link-item a {
     display: flex;
     align-items: center;
