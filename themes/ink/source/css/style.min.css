@@ -2134,19 +2134,19 @@ a.card-github:hover {
    - 光标全部集中在 :root 变量，替换光标集只需改 url 与热点坐标。
    - giscus iframe 内评论区的光标不受本站 CSS 控制（iframe 独立文档）。 */
 :root {
-    --cursor-default:     url('/img/cursors/glass-arrow.png') 2 1, default;
-    --cursor-pointer:     url('/img/cursors/glass-link.png') 18 2, pointer;
-    --cursor-text:        url('/img/cursors/glass-text.png') 16 41, text;
-    --cursor-help:        url('/img/cursors/glass-helps.png') 2 1, help;
-    --cursor-wait:        url('/img/cursors/glass-busy.png') 28 30, wait;
-    --cursor-progress:    url('/img/cursors/glass-working.png') 26 32, progress;
-    --cursor-move:        url('/img/cursors/glass-move.png') 32 31, move;
-    --cursor-not-allowed: url('/img/cursors/glass-unavail.png') 27 24, not-allowed;
-    --cursor-crosshair:   url('/img/cursors/glass-precision.png') 32 30, crosshair;
-    --cursor-n-resize:    url('/img/cursors/glass-vertical.png') 31 32, n-resize;
-    --cursor-e-resize:    url('/img/cursors/glass-horizontal.png') 31 32, e-resize;
-    --cursor-nw-resize:   url('/img/cursors/glass-diagonal-1.png') 31 32, nw-resize;
-    --cursor-ne-resize:   url('/img/cursors/glass-diagonal-2.png') 31 33, ne-resize;
+    --cursor-default:     url('/img/cursors/glass-arrow.png') 1 0, default;
+    --cursor-pointer:     url('/img/cursors/glass-link.png') 6 1, pointer;
+    --cursor-text:        url('/img/cursors/glass-text.png') 6 13, text;
+    --cursor-help:        url('/img/cursors/glass-helps.png') 1 0, help;
+    --cursor-wait:        url('/img/cursors/glass-busy.png') 9 10, wait;
+    --cursor-progress:    url('/img/cursors/glass-working.png') 9 11, progress;
+    --cursor-move:        url('/img/cursors/glass-move.png') 11 10, move;
+    --cursor-not-allowed: url('/img/cursors/glass-unavail.png') 9 8, not-allowed;
+    --cursor-crosshair:   url('/img/cursors/glass-precision.png') 11 10, crosshair;
+    --cursor-n-resize:    url('/img/cursors/glass-vertical.png') 10 11, n-resize;
+    --cursor-e-resize:    url('/img/cursors/glass-horizontal.png') 10 11, e-resize;
+    --cursor-nw-resize:   url('/img/cursors/glass-diagonal-1.png') 10 11, nw-resize;
+    --cursor-ne-resize:   url('/img/cursors/glass-diagonal-2.png') 10 11, ne-resize;
 }
 
 /* 基础态：页面默认光标 */

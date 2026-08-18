@@ -302,7 +302,8 @@ themes/ink/layout/
 
 ## Glass 鼠标光标（2026-08-18 加入）
 
-- 位置：`themes/ink/source/img/cursors/`（13 个 64x64 半透明 PNG，text 为 32x64）。
+- 位置：`themes/ink/source/img/cursors/`（13 个 21x21 半透明 PNG，text 为 11x21，
+  由 64x64 原图等比缩小至 1/3 后双三次重采样）。
   素材取自 `A:\work_zone\Resourse\Glass` 的 Windows Glass 光标集（.ani 格式，
   每套 2-9 帧动画，内嵌 PNG 帧），用脚本提取每套最完整的一帧。
 - 机制：`style.min.css` 末尾 `:root` 的 `--cursor-*` 变量定义全部光标（url + 热点），
@@ -310,8 +311,9 @@ themes/ink/layout/
   禁用控件→禁行、`.is-loading`→进度。
 - **动画限制**：CSS `cursor: url()` 不支持动画（Chrome/Edge/Safari 均取静态帧），
   故本主题只用静态帧；真动画需 JS 跟随方案，曾评估后弃用（副作用大）。
-- **热点坐标**：url 后数字为光标功能点（箭头顶端 2,1、手型指尖 18,2、I-beam 中线
-  16,41、resize 中心 31,32 等），由帧像素分析确定，**替换光标图片时必须同步改**。
+- **热点坐标**：url 后数字为光标功能点（箭头顶端 1,0、手型指尖 6,1、I-beam 中线
+  6,13、resize 中心 10,11 等），由帧像素分析确定并按 1/3 缩放换算，
+  **替换光标图片时必须同步改**。
 - **替换光标集**：只改 `:root` 内 13 个变量的 url 与热点即可，无需动元素规则。
 - **注意事项**：giscus 评论 iframe 内光标不受本站 CSS 控制（iframe 独立文档）。
 
