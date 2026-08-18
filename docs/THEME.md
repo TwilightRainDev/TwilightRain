@@ -347,6 +347,14 @@ themes/ink/layout/
   hover title 显示完整 hash。`npm run build` 已改为
   `node scripts/commit-data.js && hexo generate`；
   `source/_data/` 已 gitignore（构建产物不入库）。
+- **最新评论挂件**：post.ejs 在 giscus 评论区下方输出
+  `.latest-comments[data-github-repo]` 容器（与 giscus 同条件，评论关闭不显示），
+  `themes/ink/source/js/latest-comments.js`（defer 按需引入）拉取 GitHub REST
+  （`/discussions?sort=updated` + 每讨论 1 条最新评论）渲染 8 条，localStorage
+  缓存 30 分钟消解匿名限流（60req/h）。
+  **已知陷阱**：GitHub GraphQL API 匿名不可用（需 token），故用 REST；
+  评论 body 是 Markdown，只做纯文本化 + 转义输出（防 DOM XSS，与 search.js
+  同纪律，勿改为直接渲染 HTML）；限流/失败静默降级为"评论加载失败"。
 
 ## 修改主题的流程
 

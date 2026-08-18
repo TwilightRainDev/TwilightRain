@@ -2398,6 +2398,92 @@ article mjx-container[display="true"] > mjx-math {
     border-radius: 2px;
 }
 
+/* 5. 最新评论挂件（来源：SanYeCao-blog LatestComments，数据源改 GitHub REST）
+   位于文章页 giscus 评论区下方，刻意低调：无分隔线、小字号、浅色头像。 */
+.latest-comments {
+    margin-top: 2rem;
+}
+
+.latest-comments-title {
+    font-size: var(--size-step-1);
+    margin-bottom: 0.75rem;
+    opacity: 0.75;
+}
+
+.latest-comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.lc-item {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+}
+
+.lc-avatar {
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 50%;
+    flex: 0 0 auto;
+    margin-top: 0.1rem;
+}
+
+.lc-avatar-fallback {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8em;
+    background: rgba(128, 128, 128, 0.25);
+}
+
+.lc-body {
+    min-width: 0;
+    flex: 1;
+}
+
+.lc-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.lc-author {
+    font-weight: 600;
+    font-size: 0.85em;
+}
+
+.lc-time {
+    font-size: 0.75em;
+    opacity: 0.55;
+}
+
+.lc-text {
+    margin: 0.15rem 0 0.1rem;
+    font-size: 0.85em;
+    line-height: 1.5;
+    opacity: 0.85;
+    overflow-wrap: anywhere;
+}
+
+.lc-post {
+    font-size: 0.78em;
+    opacity: 0.7;
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: bottom;
+}
+
+.latest-comments-empty {
+    font-size: 0.85em;
+    opacity: 0.5;
+    margin: 0;
+}
+
 .theme-toggle__container {
   position: relative;
   width: 100%;
