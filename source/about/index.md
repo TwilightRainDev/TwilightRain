@@ -9,6 +9,14 @@ date: 2026-07-24
 
 网名 **<span id="twilight-rain-name" class="hover-trigger">TwilightRain</span>**，写点前端也写点桌面端。前端主要用 JavaScript / TypeScript，桌面端用 C# .NET 搞些 WinForms 小工具。平时会鼓捣一些脚本、工具、小项目。这个博客主要用来记录技术探索和日常思考。
 
+<style>
+.mc-viewer-wrap { max-width: 420px; margin: 28px auto; }
+.mc-viewer-wrap iframe { display: block; width: 100%; height: 700px; border: 0; border-radius: 14px; background: #0b0e13; }
+</style>
+<div class="mc-viewer-wrap">
+<iframe src="/mc-viewer/" title="TwilightRain Minecraft 皮肤 3D 预览" loading="lazy"></iframe>
+</div>
+
 ### 做过什么
 
 - [TwilightRain Text Tool](https://github.com/TwilightRainDev/TwilightRainTextTool) -- 集行合并、文件拼接、中文截断修复、标点替换于一体的 Windows 文本处理桌面工具，纯 C# 构建，支持国际化与深色模式。
