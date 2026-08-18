@@ -10,12 +10,42 @@ date: 2026-07-24
 网名 **<span id="twilight-rain-name" class="hover-trigger">TwilightRain</span>**，写点前端也写点桌面端。前端主要用 JavaScript / TypeScript，桌面端用 C# .NET 搞些 WinForms 小工具。平时会鼓捣一些脚本、工具、小项目。这个博客主要用来记录技术探索和日常思考。
 
 <style>
-.mc-viewer-wrap { max-width: 420px; margin: 28px auto; }
-.mc-viewer-wrap iframe { display: block; width: 100%; height: 700px; border: 0; border-radius: 14px; background: #0b0e13; }
+/* 左下角悬浮皮肤：透明渲染，深浅主题通用 */
+.mc-skin-widget {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 100;
+  pointer-events: none;
+}
+.mc-skin-widget::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 7%;
+  width: 55%;
+  height: 6%;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.35) 0%, transparent 70%);
+}
+.mc-skin-widget canvas {
+  display: block;
+  width: 220px;
+  height: auto;
+  cursor: grab;
+  pointer-events: auto;
+}
+.mc-skin-widget canvas:active { cursor: grabbing; }
+@media (max-width: 640px) {
+  .mc-skin-widget { left: 12px; bottom: 12px; }
+  .mc-skin-widget canvas { width: 150px; }
+}
 </style>
-<div class="mc-viewer-wrap">
-<iframe src="/mc-viewer/" title="TwilightRain Minecraft 皮肤 3D 预览" loading="lazy"></iframe>
+<div class="mc-skin-widget">
+<canvas id="mc-skin-canvas" aria-label="TwilightRain Minecraft 皮肤 3D 预览"></canvas>
 </div>
+<script src="/mc-skin/skinview3d.bundle.js"></script>
+<script src="/mc-skin/viewer.js"></script>
 
 ### 做过什么
 

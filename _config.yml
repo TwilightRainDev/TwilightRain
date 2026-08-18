@@ -30,7 +30,6 @@ code_dir: downloads/code
 i18n_dir: :lang
 skip_render:
   - 'egg/**' # 彩蛋页：原样拷贝，不套主题布局、不进 sitemap
-  - 'mc-viewer/**' # 皮肤 3D 查看器页（about 页 iframe 嵌入用）：原样拷贝，不套主题布局
   - 'BingSiteAuth.xml' # Bing 站点验证文件：原样拷贝到根路径，不得套主题布局或改内容
 
 # Writing

@@ -21,8 +21,7 @@ var CSP_POLICY = [
   "style-src 'self' 'unsafe-inline' https://giscus.app https://cdnjs.cloudflare.com",
   "img-src 'self' https: data:",
   "font-src 'self'",
-  // 'self'：about 页 iframe 嵌入的 mc-viewer 皮肤查看器（2026-08-18 新增）
-  "frame-src 'self' https://giscus.app",
+  "frame-src https://giscus.app",
   // api.github.com：GitHub 仓库卡片数据（ink.js fetch，唯一第三方 fetch
   // 例外，2026-08-17 用户拍板；localStorage 缓存 1h + 失败静默回退静态）
   "connect-src 'self' https://api.github.com",

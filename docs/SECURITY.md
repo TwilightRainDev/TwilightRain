@@ -14,7 +14,7 @@
 | `style-src` | `'self'` `'unsafe-inline'` `https://giscus.app` `https://cdnjs.cloudflare.com` | 见下方 giscus 陷阱 |
 | `img-src` | `'self'` `https:` `data:` | 外链图片与 data URI |
 | `font-src` | `'self'` | 字体全自托管，禁止外链字体 |
-| `frame-src` | `'self'` `https://giscus.app` | 本域 iframe（about 页 mc-viewer 皮肤查看器）+ 评论 iframe |
+| `frame-src` | `https://giscus.app` | 评论 iframe |
 | `connect-src` | `'self'` `https://api.github.com` | 唯一第三方 fetch：GitHub 仓库卡片数据（见下） |
 | `base-uri` | `'self'` | 防 base 标签劫持 |
 
