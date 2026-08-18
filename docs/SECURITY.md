@@ -15,8 +15,15 @@
 | `img-src` | `'self'` `https:` `data:` | 外链图片与 data URI |
 | `font-src` | `'self'` | 字体全自托管，禁止外链字体 |
 | `frame-src` | `https://giscus.app` | 评论 iframe |
-| `connect-src` | `'self'` | 无第三方 XHR |
+| `connect-src` | `'self'` `https://api.github.com` | 唯一第三方 fetch：GitHub 仓库卡片数据（见下） |
 | `base-uri` | `'self'` | 防 base 标签劫持 |
+
+**connect-src 例外（2026-08-17 起，用户拍板）**：`https://api.github.com`
+是博客唯一第三方 fetch 白名单，服务于 GitHub 仓库卡片（ink.js 拉取
+stars/forks/language/license/description）。缓解措施：localStorage 缓存
+1 小时（防无 token 的 60 次/小时/IP 限流）、请求失败静默回退静态内容
+（渐进增强）、只 GET 公开只读接口、不发送任何本地数据。新增其他第三方
+fetch 前先评估（默认收紧取向）；若卡片功能移除，此行一并删除。
 
 同时附带 `X-Content-Type-Options: nosniff` 与 `Referrer-Policy: strict-origin-when-cross-origin`。
 
@@ -43,6 +50,10 @@
 4. **重定向与 404**：
    - `scripts/redirects.js` 维护 301 重定向（目前：旧 hello-world → `/about/`，
      带/不带尾斜杠两条规则，`_redirects` 规则按顺序第一条命中）。
+   - `functions/_middleware.js` 整站 301：`twilightrain.pages.dev` → `https://twilightrain.com`
+     （保留路径与查询串）。**不能用 `_redirects` 实现**——规则不区分来源域名，
+     会把目标域名也一并重定向形成循环，故 hosts 判断放在 Pages Functions 中间件层。
+     preview 部署（`<hash>.twilightrain.pages.dev`）不在匹配范围，保持可访问。
    - `source/404.md` 使用自定义 `layout: 404`，配合
      `cloudflare pages` 确保不存在的路径返回**真实 404 状态**（而非 200）。
      改动时不要退化成"返回 200 的软 404"。
@@ -83,7 +94,7 @@
 
 - 评论走 giscus（GitHub Discussions 作后端，主题配置见 [THEME.md](THEME.md#评论)）。
 - 提交身份用 noreply 邮箱（`TwilightRainDev@users.noreply.github.com`），
-  推送凭据不落库（在 `H:\work_zone\ApiKey`）。
+  推送凭据不落库（在 `A:\work_zone\ApiKey`）。
 - `docs/BlogPrivate.txt` 是私人备忘，不入库（`.gitignore` 单独忽略）；
   docs/ 其余内容可放心提交。
 - 不要在 `source/`、`themes/ink/` 中放任何密钥、Cookie、token 文本。

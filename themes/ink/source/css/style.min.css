@@ -253,6 +253,11 @@ button:active{
     left: 0;
     right: 0;
     backdrop-filter: blur(10px);
+    /* 半透明黑底（浅色封面可读性）：ink.js 会对浅色封面（如白底漫画）
+       写入 rgba(255,255,255,0.4) 的 inline backgroundColor，白字在其上
+       发虚。background-image 黑层叠加白底效果不足（有效背景仍偏白），
+       故用 !important 统一压成半透明黑。深色封面下黑底亦无副作用。 */
+    background-color: rgba(0, 0, 0, 0.4) !important;
     display: flex;
     margin: 5px;
     padding: 10px;
@@ -321,6 +326,19 @@ code, .highlight, .code {
     margin: 0 3px;
     white-space: pre-wrap;
     word-wrap: break-word;
+}
+/* 正文行内长串换行：code 无断点长串（路径、token、哈希）与长链接文本
+   默认不换行，移动端溢出页面；anywhere 仅在该单元超出容器时打断，
+   正常单词与中文不受影响（对比 word-break: break-all 的暴力拆词） */
+article code,
+article a {
+    overflow-wrap: anywhere;
+}
+/* 表格单元格：td/th 内长串（举报编号、哈希、URL）在窄屏下同样需要
+   可断行；否则单元格内容撑破列宽溢出页面 */
+article table td,
+article table th {
+    overflow-wrap: anywhere;
 }
 code {
 	padding:2px 3px;
@@ -1396,6 +1414,61 @@ pre:hover .copy-btn {
     gap: 12px;
 }
 
+/* 友链波浪网格（2026-08-18 移植自 SanYeCao-blog FriendlyLinkList）：
+   桌面 24 列 nth-child 列宽交错形成连续波浪（5.5:6.5 / 6:6 / 6.5:5.5 / 6:6），
+   移动端宽度交错（84/92/100%）。li 直接作为 grid item，无需改 EJS 结构。 */
+@media (min-width: 721px) {
+    .link-list {
+        grid-template-columns: repeat(24, minmax(0, 1fr));
+    }
+
+    .link-item {
+        min-width: 0;
+    }
+
+    .link-item:nth-child(8n + 1),
+    .link-item:nth-child(8n + 6) {
+        grid-column: span 11;
+    }
+
+    .link-item:nth-child(8n + 3),
+    .link-item:nth-child(8n + 4),
+    .link-item:nth-child(8n + 7),
+    .link-item:nth-child(8n + 8) {
+        grid-column: span 12;
+    }
+
+    .link-item:nth-child(8n + 2),
+    .link-item:nth-child(8n + 5) {
+        grid-column: span 13;
+    }
+}
+
+@media (max-width: 720px) {
+    .link-list {
+        grid-template-columns: 1fr;
+    }
+
+    .link-item {
+        grid-column: auto;
+        justify-self: left;
+        width: 100%;
+    }
+
+    .link-item:nth-child(4n + 1) {
+        width: 84%;
+    }
+
+    .link-item:nth-child(4n + 2),
+    .link-item:nth-child(4n) {
+        width: 92%;
+    }
+
+    .link-item:nth-child(4n + 3) {
+        width: 100%;
+    }
+}
+
 .link-item a {
     display: flex;
     align-items: center;
@@ -1854,10 +1927,12 @@ blockquote.admonition.bdm-caution .bdm-title::before {
     display: block;
     text-align: left;
 }
-.mermaid svg {
-    max-width: 100%;
-    height: auto;
-}
+/* 尺寸控制（2026-08-18 修复超宽缩放）：mermaid 输出的 svg 自带 width="100%"
+   + 内联 style="max-width: Npx"（N = 图表自然宽），容器窄于 N 时整图等比缩小、
+   节点文字无法辨认。曾设 .mermaid svg { max-width: 100% } 覆盖不了内联样式
+   （内联优先，是死规则）；现由 ink.js fitMermaid 检测超宽后把 width 改为自然宽，
+   交给本容器 overflow-x: auto 横向滚动。窄图保持 mermaid 默认 min(容器, 自然宽)
+   行为不变。此处不设 max-width，避免与 fitMermaid 冲突。 */
 .mermaid-error {
     margin: 0;
     padding: 0.5rem 0.75rem;
@@ -1875,5 +1950,1042 @@ blockquote.admonition.bdm-caution .bdm-title::before {
     margin-block: 0 0.25rem;
 }
 [data-theme="dark"] .post-reading-meta {
+    color: #aaa;
+}
+
+/* ======================== GitHub 仓库卡片 ========================
+   ::github{repo="owner/repo" desc="可选"}（scripts/marked-github-card.js），
+   静态卡片：不调 API，不展示动态数据；样式参考 Twilight a.card-github。 */
+a.card-github {
+    display: block;
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 0.5rem;
+    padding: 0.9rem 1.1rem;
+    margin-block: var(--spacing);
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.2s ease;
+}
+a.card-github:hover {
+    border-color: var(--color-primary, #1a8fe3);
+}
+.gc-titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+.gc-titlebar-left {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-width: 0;
+}
+.gc-owner,
+.gc-divider {
+    color: #999;
+}
+.gc-repo {
+    font-weight: 600;
+    color: var(--color-primary, #1a8fe3);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.github-logo {
+    flex-shrink: 0;
+    color: #666;
+    display: inline-flex;
+}
+.gc-description {
+    margin-top: 0.4rem;
+    font-size: var(--size-step-0);
+    color: #888;
+}
+.github-card-error {
+    color: var(--admonitions-color-caution);
+    font-size: var(--size-step-0);
+}
+[data-theme="dark"] a.card-github {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+[data-theme="dark"] .github-logo {
+    color: #bbb;
+}
+
+/* ======================== 友链卡片增强 ========================
+   纯边框卡片 → 浅背景 + hover 浮起（Twilight friends 卡片风格） */
+.link-item a {
+    background: rgba(0, 0, 0, 0.03);
+    transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.15s ease;
+}
+.link-item a:hover {
+    background: rgba(0, 0, 0, 0.06);
+    border-color: var(--color-primary, #1a8fe3);
+    transform: translateY(-1px);
+}
+[data-theme="dark"] .link-item a {
+    background: rgba(255, 255, 255, 0.05);
+}
+[data-theme="dark"] .link-item a:hover {
+    background: rgba(255, 255, 255, 0.09);
+}
+
+/* GitHub 卡片动态数据行（ink.js 用 API 填充；无数据时整行隐藏） */
+.gc-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-top: 0.4rem;
+    font-size: var(--size-step-0);
+    color: #888;
+}
+.gc-meta:empty {
+    display: none;
+}
+[data-theme="dark"] .gc-meta {
+    color: #aaa;
+}
+
+/* ======================== 通用链接卡片（2026-08-18，Reimu 批二迁移） ========================
+   ::link{url="..." title="..." desc="..."}（scripts/marked-link-card.js），
+   纯静态卡片：不调 API、无前端 JS、CSP 零新增；样式与 GitHub 卡片同款。 */
+a.card-link {
+    display: block;
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 0.5rem;
+    padding: 0.9rem 1.1rem;
+    margin-block: var(--spacing);
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.2s ease;
+}
+a.card-link:hover {
+    border-color: var(--color-primary, #1a8fe3);
+}
+.lc-titlebar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+}
+.link-logo {
+    flex-shrink: 0;
+    color: #666;
+    display: inline-flex;
+}
+.lc-title {
+    font-weight: 600;
+    color: var(--color-primary, #1a8fe3);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.lc-host {
+    flex-shrink: 0;
+    margin-left: auto;
+    color: #999;
+    font-size: 0.85em;
+    max-width: 40%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.lc-description {
+    margin-top: 0.4rem;
+    font-size: var(--size-step-0);
+    color: #888;
+}
+.link-card-error {
+    color: var(--admonitions-color-caution);
+    font-size: var(--size-step-0);
+}
+[data-theme="dark"] a.card-link {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+[data-theme="dark"] .link-logo {
+    color: #bbb;
+}
+[data-theme="dark"] .lc-host {
+    color: #888;
+}
+
+/* ======================== 标签页 tabs（2026-08-18，Reimu 批二迁移） ========================
+   :::tabs + "--- 标题" 分隔（scripts/marked-tabs.js），ink.js 事件委托切换，
+   默认激活第一个；面板内容为完整 Markdown 二次解析结果。 */
+.tabs {
+    margin-block: calc(var(--spacing) * 1.5);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+.tabs-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    padding: 0.5rem 0.5rem 0;
+    background: rgba(0, 0, 0, 0.03);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+.tabs-tab {
+    padding: 0.35rem 0.9rem;
+    border: none;
+    background: transparent;
+    color: #666;
+    font-size: var(--size-step-0);
+    cursor: pointer;
+    border-radius: 0.375rem 0.375rem 0 0;
+}
+.tabs-tab:hover {
+    color: var(--color-primary, #1a8fe3);
+}
+.tabs-tab.is-active {
+    color: var(--color-primary, #1a8fe3);
+    background: #fff;
+    border-bottom: 2px solid var(--color-primary, #1a8fe3);
+    font-weight: 600;
+}
+.tabs-panel {
+    display: none;
+    padding: 0.9rem 1.1rem;
+}
+.tabs-panel.is-active {
+    display: block;
+}
+.tabs-error {
+    color: var(--admonitions-color-caution);
+    font-size: var(--size-step-0);
+}
+[data-theme="dark"] .tabs {
+    border-color: rgba(255, 255, 255, 0.15);
+}
+[data-theme="dark"] .tabs-nav {
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom-color: rgba(255, 255, 255, 0.15);
+}
+[data-theme="dark"] .tabs-tab {
+    color: #bbb;
+}
+[data-theme="dark"] .tabs-tab.is-active {
+    background: transparent;
+    color: var(--color-primary, #1a8fe3);
+}
+
+/* ======================== 首页分类胶囊（2026-08-18，Reimu 批二迁移） ========================
+   index.ejs 在文章流上方输出全站分类（名称 + 文章数），链接分类页；
+   flex-wrap 响应式，胶囊样式与折叠按钮同风格。 */
+.home-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-block: 0 1.5rem;
+}
+.home-category {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.85rem;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 999px;
+    color: inherit;
+    text-decoration: none;
+    font-size: var(--size-step-0);
+    transition: border-color 0.2s ease;
+}
+.home-category:hover {
+    border-color: var(--color-primary, #1a8fe3);
+    color: var(--color-primary, #1a8fe3);
+}
+.home-category-count {
+    font-size: 0.85em;
+    color: #999;
+}
+[data-theme="dark"] .home-category {
+    border-color: rgba(255, 255, 255, 0.15);
+}
+[data-theme="dark"] .home-category:hover {
+    color: var(--color-primary, #1a8fe3);
+}
+[data-theme="dark"] .home-category-count {
+    color: #888;
+}
+
+/* ======================== 文内照片墙 .photo-grid（2026-08-18，Reimu 批三） ========================
+   文章内多图网格：正文写 <div class="photo-grid">img×N</div> 即网格排列，
+   灯箱复用现有 fancybox（ink.js 已给 article 内 img 加 data-fancybox）。
+   与相册页（独立集合页）场景不同质，故不做标签插件/不引 photoswipe
+   （详见 Docs/Reimu-迁移推荐顺序.md 批三）。 */
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin-block: calc(var(--spacing) * 1.5);
+}
+.photo-grid img {
+    width: 100%;
+    height: auto;
+    border-radius: 0.375rem;
+    cursor: zoom-in;
+}
+
+/* ======================== 文章分享（2026-08-18，Reimu 批三） ========================
+   post.ejs 版权声明下方输出纯链接分享（微博 / QQ / X），无第三方脚本
+   （CSP 零新增），rel noopener 外链纪律。微信省略：官方分享需二维码生成。 */
+.post-share {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-block: 0.75rem 0;
+    font-size: 0.85em;
+    color: #999;
+}
+.post-share a {
+    color: #888;
+    text-decoration: none;
+}
+.post-share a:hover {
+    color: var(--color-primary, #1a8fe3);
+}
+[data-theme="dark"] .post-share {
+    color: #888;
+}
+[data-theme="dark"] .post-share a {
+    color: #aaa;
+}
+
+/* ======================== 展柜页（项目 / 技能 / 时间线） ======================== */
+.projects-grid,
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+    margin-block: var(--spacing);
+}
+.project-card {
+    display: block;
+    padding: 14px 16px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 10px;
+    text-decoration: none;
+    color: inherit;
+    background: rgba(0, 0, 0, 0.03);
+    transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.15s ease;
+}
+.project-card:hover {
+    border-color: var(--color-primary, #1a8fe3);
+    background: rgba(0, 0, 0, 0.06);
+    transform: translateY(-1px);
+}
+.project-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+.project-name {
+    font-weight: 600;
+    color: var(--color-primary, #1a8fe3);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.project-lang,
+.skill-name {
+    font-size: var(--size-step-0);
+    color: #999;
+    flex-shrink: 0;
+}
+.project-desc,
+.skill-desc {
+    margin-block: 6px 0;
+    font-size: var(--size-step-0);
+    color: #888;
+}
+.skill-card {
+    padding: 14px 16px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.03);
+}
+.skill-card .skill-name {
+    color: inherit;
+    font-weight: 600;
+}
+[data-theme="dark"] .project-card,
+[data-theme="dark"] .skill-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+[data-theme="dark"] .project-card:hover {
+    background: rgba(255, 255, 255, 0.09);
+}
+/* 时间线 */
+.timeline-year {
+    margin: 24px 0 8px;
+    font-size: var(--size-step-2);
+}
+.timeline-item {
+    display: flex;
+    gap: 14px;
+    margin-block: 10px;
+    align-items: baseline;
+}
+.timeline-date {
+    flex-shrink: 0;
+    font-size: var(--size-step-0);
+    color: #999;
+    min-width: 3em;
+}
+.timeline-body {
+    min-width: 0;
+}
+.timeline-title {
+    font-weight: 600;
+}
+.timeline-desc {
+    margin-block: 4px 0;
+    font-size: var(--size-step-0);
+    color: #888;
+}
+
+/* ======================== 日/月主题切换按钮（header 右侧） ========================
+   2026-08-17 由外部组件适配：html.dark 选择器改为 [data-theme="dark"]，
+   尺寸基准 --base-scale 由 120px 降为 12px 以适配博客 header，
+   width/height 由无效的 calc(em * 1px) 修正为直接使用 em 变量。
+   JS 逻辑在 ink.js 偏好设置模块（与设置页 radio 同构，共享 theme-preference）。 */
+.theme-toggle {
+  --transition-standard: 0.3s ease;
+  --base-scale: 12px;
+  --toggle-width: 5.625em;
+  --toggle-height: 2.5em;
+  --radius-pill: 100em;
+  --sun-diameter: 2.125em;
+  --sun-offset: calc((var(--toggle-height) - var(--sun-diameter)) / 2);
+
+  --bg-toggle-light: #3d7eae;
+  --bg-toggle-dark: #1d1f2c;
+  --color-sun: #ecca2f;
+  --color-moon: #c4c9d1;
+  --color-crater: #a0a5ad;
+  --color-star: #f5f5fa;
+  --color-cloud-front: #ffffffcc;
+  --color-cloud-back: #ffffff80;
+  --shadow-primary: rgba(0, 0, 0, 0.35);
+  --shadow-highlight: rgba(255, 255, 255, 0.6);
+  --halo-color: rgba(236, 202, 47, 0.25);
+
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: var(--base-scale);
+  padding: 0;
+  width: var(--toggle-width);
+  height: var(--toggle-height);
+  flex-shrink: 0;
+}
+
+/* ======================== Glass 玻璃光标（2026-08-18 加入） ========================
+   资源：themes/ink/source/img/cursors/（Windows Glass 光标集 .ani 帧提取，
+   64x64 半透明 PNG，text 为 32x64）。
+   实现说明：
+   - CSS cursor url() 不支持动画帧（Chrome/Edge/Safari 均取静态图），故从每套
+     动画中取最完整的一帧做静态光标，全浏览器生效。
+   - url 后的坐标是热点（光标功能点：箭头顶端、手型指尖、I-beam 中线、
+     resize 箭头中心），由帧像素分析确定。
+   - 光标全部集中在 :root 变量，替换光标集只需改 url 与热点坐标。
+   - giscus iframe 内评论区的光标不受本站 CSS 控制（iframe 独立文档）。 */
+:root {
+    --cursor-default:     url('/img/cursors/glass-arrow.png') 1 0, default;
+    --cursor-pointer:     url('/img/cursors/glass-link.png') 6 1, pointer;
+    --cursor-text:        url('/img/cursors/glass-text.png') 6 13, text;
+    --cursor-help:        url('/img/cursors/glass-helps.png') 1 0, help;
+    --cursor-wait:        url('/img/cursors/glass-busy.png') 9 10, wait;
+    --cursor-progress:    url('/img/cursors/glass-working.png') 9 11, progress;
+    --cursor-move:        url('/img/cursors/glass-move.png') 11 10, move;
+    --cursor-not-allowed: url('/img/cursors/glass-unavail.png') 9 8, not-allowed;
+    --cursor-crosshair:   url('/img/cursors/glass-precision.png') 11 10, crosshair;
+    --cursor-n-resize:    url('/img/cursors/glass-vertical.png') 10 11, n-resize;
+    --cursor-e-resize:    url('/img/cursors/glass-horizontal.png') 10 11, e-resize;
+    --cursor-nw-resize:   url('/img/cursors/glass-diagonal-1.png') 10 11, nw-resize;
+    --cursor-ne-resize:   url('/img/cursors/glass-diagonal-2.png') 10 11, ne-resize;
+}
+
+/* 基础态：页面默认光标 */
+html,
+body {
+    cursor: var(--cursor-default);
+}
+
+/* 可点击元素：链接、按钮、可折叠摘要、role=button */
+a,
+button,
+summary,
+[role='button'] {
+    cursor: var(--cursor-pointer);
+}
+
+/* 文本输入元素（checkbox/radio/range/select 保持系统默认） */
+input[type='text'],
+input[type='search'],
+input[type='email'],
+input[type='url'],
+input[type='tel'],
+input[type='number'],
+input[type='password'],
+textarea,
+[contenteditable='true'] {
+    cursor: var(--cursor-text);
+}
+
+/* 带 tooltip 的元素：帮助光标（交互元素除外，交互元素优先显示自身光标） */
+[title]:not(a):not(button):not(summary) {
+    cursor: var(--cursor-help);
+}
+
+/* 禁用控件 */
+button:disabled,
+input:disabled,
+textarea:disabled,
+select:disabled {
+    cursor: var(--cursor-not-allowed);
+}
+
+/* 全局加载态（JS 给容器加 .is-loading 时生效） */
+.is-loading,
+.is-loading * {
+    cursor: var(--cursor-progress) !important;
+}
+
+/* ======================== SanYeCao 移植（2026-08-18） ========================
+   1. Markdown details 折叠块样式（来源：SanYeCao-blog src/styles/posts.css）
+   2. 块级公式过长时独立横向滚动（MathJax 3 CHTML 适配，来源同上）
+   选择器限定 article（文章正文容器），不影响归档页 summary 折叠。 */
+
+/* 1. details 折叠块：顶部粗边框 + 圆角 + summary 箭头旋转 */
+article details {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin: 1.5rem 0;
+    overflow: hidden;
+    border-top: 2px solid var(--color-primary);
+    border-radius: 0 0 0.5rem 0.5rem;
+    background: rgba(128, 128, 128, 0.14);
+}
+
+article details summary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0.8rem 0.9rem;
+    cursor: pointer;
+    font-weight: 600;
+    user-select: none;
+    list-style: none;
+}
+
+article details summary::-webkit-details-marker {
+    display: none;
+}
+
+article details summary::before {
+    content: '>';
+    display: inline-block;
+    flex: 0 0 auto;
+    font-size: 1.25rem;
+    line-height: 1;
+    transition: transform 0.2s ease;
+}
+
+article details[open] summary::before {
+    transform: rotate(90deg);
+}
+
+article details > :not(summary) {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-right: 1rem;
+}
+
+article details > ol,
+article details > ul {
+    padding: 0.6rem 1rem 1rem 3rem;
+}
+
+article details li {
+    margin: 0.8rem 0;
+}
+
+[data-theme="dark"] article details {
+    border-top-color: #6ab0f3;
+    background: rgba(160, 160, 160, 0.16);
+}
+
+/* 2. 块级公式过长时独立横向滚动（MathJax 3 的 display 公式输出） */
+article mjx-container[display="true"] {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    box-sizing: border-box;
+    padding: 0.25rem 0;
+    -webkit-overflow-scrolling: touch;
+}
+
+article mjx-container[display="true"] > mjx-math {
+    display: inline-block;
+    min-width: max-content;
+    white-space: nowrap;
+}
+
+/* 3. 移动端胶囊 TOC（来源：SanYeCao-blog PostMenu.astro）
+   <768px 时 .post-toc-slot 隐藏，ink.js 将 toc 移入 .post-toc-mobile-panel；
+   按钮滚动 80px 后出现（.is-visible），点击展开面板。桌面双卡不受影响。 */
+@media (max-width: 767px) {
+    .post-toc-slot {
+        display: none;
+    }
+}
+
+.post-toc-mobile-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    position: fixed;
+    top: calc(env(safe-area-inset-top) + 0.75rem);
+    right: 0.8rem;
+    z-index: 30;
+    max-width: min(78vw, 22rem);
+    padding: 0.5rem 0.75rem;
+    border: 1.5px solid var(--color-primary);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(6px);
+    color: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(calc(-100% - 0.6rem));
+    pointer-events: none;
+    transition: transform 0.28s ease, opacity 0.22s ease;
+}
+
+.post-toc-mobile-toggle[hidden] {
+    display: none;
+}
+
+.post-toc-mobile-toggle.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.post-toc-mobile-preview {
+    display: inline-block;
+    max-width: 10rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+}
+
+.post-toc-mobile-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    opacity: 0.78;
+}
+
+.post-toc-mobile-panel {
+    position: fixed;
+    top: calc(env(safe-area-inset-top) + 3.5rem);
+    right: 0.8rem;
+    z-index: 29;
+    display: none;
+    width: min(88vw, 24rem);
+    max-height: min(65vh, 32rem);
+    overflow: auto;
+    padding: 0.9rem 1rem;
+    border: 1.5px solid var(--color-primary);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+}
+
+.post-toc-mobile-panel[hidden] {
+    display: none;
+}
+
+.post-toc-mobile-panel.is-open {
+    display: block;
+}
+
+.post-toc-mobile-panel .post-toc {
+    margin-bottom: 0;
+    overflow-y: visible;
+    height: auto !important;
+}
+
+[data-theme="dark"] .post-toc-mobile-toggle,
+[data-theme="dark"] .post-toc-mobile-panel {
+    background: rgba(26, 26, 26, 0.96);
+    color: #e6e6e6;
+}
+
+/* 4. 构建版本色块（来源：SanYeCao-blog BuildHashBlocks.astro）
+   footer.ejs 读 site.data.commit（scripts/commit-data.js 构建期注入），
+   commit sha 前 36 位 hex 切成 6 块色块，hover 显示完整 hash。 */
+.build-hash {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.15rem;
+    vertical-align: middle;
+    cursor: default;
+}
+
+.build-block {
+    width: 0.75rem;
+    height: 0.75rem;
+    display: inline-block;
+    border-radius: 2px;
+}
+
+/* 5. 最新评论挂件（来源：SanYeCao-blog LatestComments，数据源改 GitHub REST）
+   位于文章页 giscus 评论区下方，刻意低调：无分隔线、小字号、浅色头像。 */
+.latest-comments {
+    margin-top: 2rem;
+}
+
+.latest-comments-title {
+    font-size: var(--size-step-1);
+    margin-bottom: 0.75rem;
+    opacity: 0.75;
+}
+
+.latest-comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.lc-item {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+}
+
+.lc-avatar {
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 50%;
+    flex: 0 0 auto;
+    margin-top: 0.1rem;
+}
+
+.lc-avatar-fallback {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8em;
+    background: rgba(128, 128, 128, 0.25);
+}
+
+.lc-body {
+    min-width: 0;
+    flex: 1;
+}
+
+.lc-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.lc-author {
+    font-weight: 600;
+    font-size: 0.85em;
+}
+
+.lc-time {
+    font-size: 0.75em;
+    opacity: 0.55;
+}
+
+.lc-text {
+    margin: 0.15rem 0 0.1rem;
+    font-size: 0.85em;
+    line-height: 1.5;
+    opacity: 0.85;
+    overflow-wrap: anywhere;
+}
+
+.lc-post {
+    font-size: 0.78em;
+    opacity: 0.7;
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: bottom;
+}
+
+.latest-comments-empty {
+    font-size: 0.85em;
+    opacity: 0.5;
+    margin: 0;
+}
+
+.theme-toggle__container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-toggle-light);
+  border-radius: var(--radius-pill);
+  transition: background-color var(--transition-standard);
+  overflow: hidden;
+  box-shadow: 0.06em 0.06em 0.125em var(--shadow-highlight);
+}
+
+[data-theme="dark"] .theme-toggle__container {
+  background-color: var(--bg-toggle-dark);
+}
+
+.theme-toggle__container::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-shadow: 0em 0.05em 0.187em rgba(0, 0, 0, 0.5) inset;
+  border-radius: var(--radius-pill);
+  pointer-events: none;
+}
+
+.theme-toggle__sun {
+  width: var(--sun-diameter);
+  height: var(--sun-diameter);
+  background-color: var(--color-sun);
+  border-radius: 50%;
+  position: absolute;
+  top: var(--sun-offset);
+  transform: translateX(var(--sun-offset));
+  box-shadow: 0.05em 0.125em 0.125em var(--shadow-primary),
+    0em 0.05em 0.125em var(--shadow-primary),
+    0.05em 0.05em 0.05em 0em rgba(254, 255, 239, 0.61) inset,
+    0em -0.05em 0.05em 0em #a1872a inset,
+    0 0 0 0.625em var(--halo-color),
+    0 0 0 1.25em var(--halo-color),
+    0 0 0 1.875em var(--halo-color);
+  transition: transform var(--transition-standard);
+  overflow: hidden;
+}
+
+[data-theme="dark"] .theme-toggle__container .theme-toggle__sun {
+  transform: translateX(
+    calc(var(--toggle-width) - var(--sun-diameter) - var(--sun-offset))
+  );
+}
+
+.theme-toggle__moon-mask {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-moon);
+  border-radius: inherit;
+  transform: translateX(100%);
+  transition: transform var(--transition-standard);
+  box-shadow: 0.062em 0.062em 0.062em 0em rgba(254, 255, 239, 0.61) inset,
+    0em -0.062em 0.062em 0em #969696 inset;
+}
+
+[data-theme="dark"] .theme-toggle__container .theme-toggle__moon-mask {
+  transform: translateX(0);
+}
+
+.theme-toggle__crater {
+  position: absolute;
+  background-color: var(--color-crater);
+  border-radius: 50%;
+  box-shadow: 0em 0.03em 0.06em var(--shadow-primary) inset;
+}
+
+.theme-toggle__crater:nth-of-type(1) {
+  top: 0.75em;
+  left: 0.375em;
+  width: 0.75em;
+  height: 0.75em;
+}
+
+.theme-toggle__crater:nth-of-type(2) {
+  top: 0.9em;
+  left: 1.375em;
+  width: 0.375em;
+  height: 0.375em;
+}
+
+.theme-toggle__crater:nth-of-type(3) {
+  top: 0.3em;
+  left: 0.8em;
+  width: 0.25em;
+  height: 0.25em;
+}
+
+.theme-toggle__stars {
+  position: absolute;
+  left: 0.3em;
+  transform: translateY(-2em);
+  transition: transform var(--transition-standard);
+  width: 2.75em;
+  color: var(--color-star);
+}
+
+[data-theme="dark"] .theme-toggle__container .theme-toggle__stars {
+  transform: translateY(0.5em);
+}
+
+.theme-toggle__clouds {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1.5em;
+  transform: translateY(0);
+  width: 1.25em;
+  height: 1.25em;
+  background-color: var(--color-cloud-front);
+  border-radius: 50%;
+  box-shadow: 0.937em 0.312em var(--color-cloud-front),
+    1.437em 0.375em var(--color-cloud-front),
+    2.187em 0 var(--color-cloud-front),
+    2.937em 0.312em var(--color-cloud-front),
+    3.625em -0.062em var(--color-cloud-front),
+    4.5em -0.312em var(--color-cloud-front),
+    4.625em -1.75em 0 0.437em var(--color-cloud-front),
+    -0.312em -0.312em var(--color-cloud-back),
+    0.5em -0.125em var(--color-cloud-back),
+    1.25em -0.062em var(--color-cloud-back),
+    2em -0.312em var(--color-cloud-back),
+    2.625em 0em var(--color-cloud-back),
+    3.375em -0.437em var(--color-cloud-back),
+    4em -0.625em var(--color-cloud-back),
+    4.125em -2.125em 0 0.437em var(--color-cloud-back);
+  transition: transform var(--transition-standard);
+}
+
+[data-theme="dark"] .theme-toggle__container .theme-toggle__clouds {
+  transform: translateY(3em);
+}
+
+.theme-toggle__container:hover .theme-toggle__sun {
+  transform: translateX(calc(var(--sun-offset) + 0.187em));
+}
+
+[data-theme="dark"] .theme-toggle__container:hover .theme-toggle__sun {
+  transform: translateX(
+    calc(
+      var(--toggle-width) - var(--sun-diameter) - var(--sun-offset) - 0.187em
+    )
+  );
+}
+
+/* ======================== 段落锚点（2026-08-18，Reimu 批一迁移） ========================
+   scripts/heading-anchor.js 构建期给 h2/h3 注入 id + 锚点链接（# 号），
+   标题悬停/键盘聚焦时显示，点击直达本段落；深链 #hash 加载时目标标题高亮闪烁。 */
+.heading-anchor {
+    opacity: 0;
+    margin-left: 0.35em;
+    font-size: 0.85em;
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.15s;
+}
+h2:hover .heading-anchor, h3:hover .heading-anchor,
+.heading-anchor:focus-visible {
+    opacity: 0.6;
+}
+.heading-anchor:hover {
+    opacity: 1;
+}
+h2, h3 {
+    scroll-margin-top: 1rem; /* 深链/TOC 跳转时标题不被顶部元素遮挡 */
+}
+@keyframes target-flash {
+    from { background: rgba(26, 143, 227, 0.18); }
+    to { background: transparent; }
+}
+h2:target, h3:target {
+    animation: target-flash 1.2s ease-out;
+}
+
+/* ======================== 代码块超长折叠（2026-08-18，Reimu 批一迁移） ========================
+   ink.js 统计 .code pre 内行数（br 数量），超 40 行加 .code-collapsed：
+   截断高度 + 底部渐变遮罩 + 展开按钮。按钮为普通流元素（z-index 盖在遮罩上，
+   遮罩 pointer-events: none），展开后仍可见可再收起。渐变用 --code-background-color
+   （代码块反色背景），深浅主题自动适配。 */
+figure.highlight {
+    position: relative; /* 折叠遮罩定位基准 */
+}
+.code-collapsed .code pre {
+    max-height: 420px;
+    overflow: hidden;
+}
+.code-collapsed::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 56px;
+    background: linear-gradient(to bottom, transparent, var(--code-background-color));
+    pointer-events: none;
+}
+.code-fold-btn {
+    display: block;
+    position: relative;
+    z-index: 1;
+    margin: 0.5rem auto 0.25rem;
+    padding: 3px 16px;
+    border: 1px solid var(--color-primary, #1a8fe3);
+    border-radius: 0.375rem;
+    background: transparent;
+    color: var(--color-primary, #1a8fe3);
+    font-size: 0.85em;
+    line-height: 1.6;
+    cursor: pointer;
+}
+.code-fold-btn:hover {
+    background: var(--color-primary, #1a8fe3);
+    color: #fff;
+}
+
+/* ======================== 文章时效（2026-08-18，Reimu 批一迁移） ========================
+   post.ejs 按 post-staleness.js 注入的标记输出：过期提示条（warning 配色，
+   与提示块 admonition 同色系）+ 显式手写 updated 的更新时间（弱化小字）。 */
+.post-stale {
+    margin-block: 0 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px dashed var(--admonitions-color-warning);
+    color: var(--admonitions-color-warning);
+    font-size: var(--size-step-0);
+    border-radius: 0.375rem;
+}
+.post-updated {
+    margin: 0 0 0.5rem;
+    font-size: var(--size-step-0);
+    color: #888;
+}
+[data-theme="dark"] .post-updated {
     color: #aaa;
 }

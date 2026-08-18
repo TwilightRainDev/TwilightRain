@@ -22,7 +22,9 @@ var CSP_POLICY = [
   "img-src 'self' https: data:",
   "font-src 'self'",
   "frame-src https://giscus.app",
-  "connect-src 'self'",
+  // api.github.com：GitHub 仓库卡片数据（ink.js fetch，唯一第三方 fetch
+  // 例外，2026-08-17 用户拍板；localStorage 缓存 1h + 失败静默回退静态）
+  "connect-src 'self' https://api.github.com",
   "base-uri 'self'"
 ].join('; ');
 

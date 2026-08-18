@@ -8,6 +8,7 @@ tags:
   - TimeTrack
 categories:
   - 技术笔记
+cover: /img/covers/time-management-master.jpg
 ---
 
 # 如果我想成为时间管理大师

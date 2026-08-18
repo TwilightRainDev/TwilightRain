@@ -8,6 +8,7 @@ tags:
   - Claude Code
 categories:
   - 技术笔记
+cover: /img/covers/with-her-eyes.jpg
 ---
 
 # 带上她的眼睛。
@@ -17,6 +18,8 @@ categories:
 我的 Claude Code 其实也差不多。
 
 她在这台机器上跑着，底层套的却是 DeepSeek。七月末我给她换的中转，理由很朴素，国内直连 Anthropic 不方便，DeepSeek 便宜。文本能力没什么好抱怨的，一百万的上下文，写代码，查资料，读文档，都挺稳。但她看不见。图片，截图，图表，发过去她只会说图没收到。
+
+![](/img/with-her-eyes-1.jpg)
 
 碰到要看图的时候，我就成了她的眼睛，截图转文字，一句一句描述给她听。一次两次还行，久了就很蠢。她明明就住在这台电脑里，凭什么看一张本地的 jpg 还要我当中间人。
 
@@ -69,10 +72,14 @@ llm-vision-mcp 是 me9rez 写的一个 MCP server，stdio 类型，起一个 nod
 
 装第三方东西之前，我习惯把源码拉下来审计一遍。克隆到 H 盘，npm ci 一跑就挂死，25 分钟，最后 ENOTEMPTY。H 盘是 exFAT，撑不起 node_modules 这种碎文件森林。依赖挪到 C 盘的 NTFS 上装，上游测试 70/70 全过，才敢正式接上。
 
-审计副本留在我电脑里， H:\work_zone\Tools\llm-vision-mcp，我想看随时能看。
+审计副本留在我电脑里，我想看随时能看。
+
+![](/img/with-her-eyes-2.jpg)
 
 ---
 
 现在她能看见我发过去的东西了。报错截图，设计稿，别人转来的图表，都不用我再口述。剩下的事情反而简单。额度用完了怎么办，哪天 DeepSeek 自己长出视觉模型，这双借来的眼睛就该退休了。
 
 在那之前，先戴着吧。
+
+![](/img/with-her-eyes-3.jpg)

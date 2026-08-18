@@ -6,7 +6,7 @@
 - 依赖已提交 `package-lock.json`；改依赖后同步更新锁文件
 
 ```bash
-cd H:/work_zone/Blog/blog
+cd A:/work_zone/Blog/blog
 npm install        # 首次或依赖变更后
 ```
 
@@ -38,6 +38,10 @@ categories:
   - 分类1
 comments: true                 # 默认开评论；不需要则 false
 cover: /img/xxx.jpg            # 可选：封面图（og:image 也用它）
+pinned: true                   # 可选：置顶到首页最前（不写则按日期排序）
+updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章页显示"更新于"；
+                               #   Hexo 默认 updated 是文件 mtime，git checkout
+                               #   会刷新，勿依赖隐式值，不写则不显示）
 ---
 ```
 
@@ -87,10 +91,61 @@ cover: /img/xxx.jpg            # 可选：封面图（og:image 也用它）
   图表跟随深浅主题。**限制**：列表/引用缩进内的 mermaid 围栏不支持（会被
   Hexo 代码块预处理接管走代码高亮），图表一律顶格写。
 
+- **GitHub 仓库卡片**（单行指令）：
+
+  ```markdown
+  ::github{repo="TwilightRainDev/TwilightRain" desc="博客仓库"}
+  ```
+
+  渲染为仓库卡片（owner/repo + GitHub 图标 + 可选描述），点击跳转仓库页。
+  静态卡片，不调 API（不显示 stars 等动态数据）；repo 格式错误时输出
+  可见的 `[WARN]` 提示。
+
+- **通用链接卡片**（2026-08-18，Reimu 批二迁移，单行指令，与 ::github 同风格）：
+
+  ```markdown
+  ::link{url="https://www.anthropic.com/claude" title="Claude" desc="可选描述"}
+  ```
+
+  渲染为网页卡片（link 图标 + 标题 + 域名 + 可选描述），点击跳转（新标签）。
+  纯静态无 API；title 省略时显示域名；url 仅支持 http/https（其他协议拒绝）。
+
+- **标签页 tabs**（2026-08-18，Reimu 批二迁移，块级容器，与提示块同体系）：
+
+  ````markdown
+  :::tabs
+  --- 方案A
+  内容 A（支持 **Markdown** 与代码块）
+  --- 方案B
+  内容 B
+  :::
+  ````
+
+  渲染为标签页，默认显示第一个，点击按钮切换。`--- 标题` 是子页分隔符
+  （顶格写）；无分隔符的块输出可见 `[WARN]`。
+
+- **文章内中英文空格**：写作时手动在中文与英文/数字间加空格
+  （pangu 自动机制已评估降级，见 THEME.md「Reimu 批二迁移」）。
+
+- **文内照片墙**（2026-08-18，Reimu 批三，纯 CSS 约定，无标签插件）：
+
+  ```html
+  <div class="photo-grid">
+  <img src="/img/with-her-eyes-1.jpg" alt="图一">
+  <img src="/img/with-her-eyes-2.jpg" alt="图二">
+  </div>
+  ```
+
+  多图自动网格排列（200px 起自适应列数），点击放大走 fancybox 灯箱
+  （与正文图同机制）。相册集合请用 `/gallery/` 页（front matter photos 数组）。
+
+- **分享按钮**：文章页版权声明下方自动出现微博 / QQ / X 三平台分享链接，
+  无需手动配置。
+
 ## 提交与推送（重要）
 
 仓库在 Windows 本机、**无 gh CLI、无 SSH 密钥**，推送凭据走
-`H:\work_zone\ApiKey` 目录下的 GitHub PAT（Basic 认证 extraheader 注入）。
+`A:\work_zone\ApiKey` 目录下的 GitHub PAT（Basic 认证 extraheader 注入）。
 具体命令形式以当时凭据注入方式为准（git 全局/仓库级 http.extraheader 或
 `git -c http.extraheader=... push`）。
 

@@ -1,5 +1,5 @@
 ---
-title: 告别散装脚本：我写了一个 Windows 文本处理工具箱
+title: 告别散装脚本：Win文本工具箱
 excerpt: TwilightRainTextTool 诞生记：把散落四处的批处理与 PowerShell 文本处理脚本，统一成一个 C# WinForms 图形化工具箱。
 date: 2026-07-25 13:00:00
 tags:

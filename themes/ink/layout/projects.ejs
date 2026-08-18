@@ -1,0 +1,21 @@
+<main>
+    <h1>项目</h1>
+    <p class="projects-intro">公开仓库与工具项目一览。</p>
+    <% if (page.projects && page.projects.length > 0) { %>
+    <div class="projects-grid">
+        <% page.projects.forEach(function(p) { %>
+        <a class="project-card" href="<%= p.url %>" target="_blank" rel="noopener">
+            <div class="project-card-head">
+                <span class="project-name"><%= p.name %></span>
+                <% if (p.lang) { %>
+                <span class="project-lang"><%= p.lang %></span>
+                <% } %>
+            </div>
+            <p class="project-desc"><%= p.desc %></p>
+        </a>
+        <% }) %>
+    </div>
+    <% } else { %>
+    <p>暂无项目。</p>
+    <% } %>
+</main>

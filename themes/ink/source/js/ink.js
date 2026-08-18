@@ -216,6 +216,24 @@ document.addEventListener('DOMContentLoaded', function () {
             })(themeRadios[i]);
         }
 
+        // header 日/月切换按钮：与上方 radio 同构，读写同一 theme-preference。
+        // auto 偏好下按钮显示当前实际主题，点击则显式切到相反值（写死偏好）。
+        var toggleBtn = document.getElementById('theme-toggle-btn');
+        if (toggleBtn) {
+            var syncToggleBtn = function () {
+                toggleBtn.setAttribute('aria-checked',
+                    String(resolveTheme(storedTheme) === 'dark'));
+            };
+            toggleBtn.addEventListener('click', function () {
+                var next = resolveTheme(storedTheme) === 'dark' ? 'light' : 'dark';
+                storedTheme = next;
+                localStorage.setItem('theme-preference', storedTheme);
+                applyTheme(storedTheme);
+            });
+            document.addEventListener('theme-change', syncToggleBtn);
+            syncToggleBtn();
+        }
+
         var fontRadios = document.querySelectorAll('input[name="font"]');
         for (var j = 0; j < fontRadios.length; j++) {
             (function(r) {
@@ -354,33 +372,83 @@ document.addEventListener('DOMContentLoaded', function () {
     toc.appendChild(list);
     // 优先移入文章页的 .post-toc-slot（banner→TOC 双卡布局），无 slot 时退回旧行为
     var tocSlot = document.querySelector('.post-toc-slot');
+    var tocMobilePanel = document.querySelector('.post-toc-mobile-panel');
+    var tocMobileToggle = document.querySelector('.post-toc-mobile-toggle');
+    var tocMobilePreview = tocMobileToggle ? tocMobileToggle.querySelector('[data-toc-preview]') : null;
+
+    // 移动端胶囊 TOC（2026-08-18 移植自 SanYeCao-blog）：
+    // <768px 时 toc 移入悬浮面板，桌面时移回 slot 双卡，resize 跨界自动迁移。
+    var isMobileToc = function () { return window.matchMedia('(max-width: 767px)').matches; };
+    var placeToc = function () {
+        if (isMobileToc() && tocMobilePanel) {
+            if (toc.parentNode !== tocMobilePanel) tocMobilePanel.appendChild(toc);
+            if (tocMobileToggle) tocMobileToggle.hidden = false;
+        } else if (tocSlot) {
+            if (toc.parentNode !== tocSlot) tocSlot.appendChild(toc);
+            if (tocMobileToggle) tocMobileToggle.hidden = true;
+            syncTocHeight();
+        }
+    };
+
+    // 目录卡高度与图卡等高（height 同步）：目录内容少于图卡高时
+    // 填充留白（等高卡片），内容超出时卡片内滚动（overflow-y: auto）。
+    // 图片解码完成、窗口缩放等任何图卡高度变化都由 ResizeObserver
+    // 同步（img 未解码时高度会塌陷，RO 在解码完成后自动修正；
+    // h > 0 防止图片加载失败时目录卡高度归零；移动端胶囊模式不设高）。
+    var imgcard = tocSlot ? document.querySelector('.post-imgcard') : null;
+    var syncTocHeight = function () {
+        if (isMobileToc()) { toc.style.height = ''; return; }
+        if (!imgcard) return;
+        var h = imgcard.offsetHeight;
+        if (h > 0) toc.style.height = h + 'px';
+    };
+
     if (tocSlot) {
-        tocSlot.appendChild(toc);
-        // 目录卡与图卡等高：max-height 跟随图卡实际高度（图片自然比例，
-        // 随宽度与图片加载时机变化），目录内容超出后卡片内滚动。
-        // 图卡高度为 0（图片未加载/加载失败）时不设限，避免目录卡消失。
-        var imgcard = document.querySelector('.post-imgcard');
+        placeToc();
         if (imgcard) {
-            // 目录卡高度与图卡等高（height 同步）：目录内容少于图卡高时
-            // 填充留白（等高卡片），内容超出时卡片内滚动（overflow-y: auto）。
-            // 图片解码完成、窗口缩放等任何图卡高度变化都由 ResizeObserver
-            // 同步（img 未解码时高度会塌陷，RO 在解码完成后自动修正；
-            // h > 0 防止图片加载失败时目录卡高度归零）。
-            var syncTocHeight = function () {
-                var h = imgcard.offsetHeight;
-                if (h > 0) toc.style.height = h + 'px';
-            };
             syncTocHeight();
             if (typeof ResizeObserver !== 'undefined') {
                 new ResizeObserver(syncTocHeight).observe(imgcard);
             }
-            window.addEventListener('resize', function () {
-                clearTimeout(syncTocHeight._timer);
-                syncTocHeight._timer = setTimeout(syncTocHeight, 100);
-            });
         }
     } else {
         article.insertBefore(toc, article.firstChild);
+    }
+
+    // resize 跨界迁移 + 高度同步（防抖 100ms，复用原同步节奏）
+    window.addEventListener('resize', function () {
+        clearTimeout(syncTocHeight._timer);
+        syncTocHeight._timer = setTimeout(function () {
+            placeToc();
+            syncTocHeight();
+        }, 100);
+    });
+
+    // 移动端胶囊：按钮展开/收起面板，点击面板外关闭
+    if (tocMobileToggle && tocMobilePanel) {
+        tocMobileToggle.addEventListener('click', function () {
+            var open = tocMobilePanel.classList.toggle('is-open');
+            tocMobileToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+            if (tocMobilePanel.classList.contains('is-open') &&
+                !tocMobilePanel.contains(e.target) && !tocMobileToggle.contains(e.target)) {
+                tocMobilePanel.classList.remove('is-open');
+                tocMobileToggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+        // 滚动 80px 后显示按钮（移动端），顶部隐藏并收起面板
+        var onTocScroll = function () {
+            if (!isMobileToc() || !tocMobileToggle) return;
+            var show = window.scrollY > 80;
+            tocMobileToggle.classList.toggle('is-visible', show);
+            if (!show) {
+                tocMobilePanel.classList.remove('is-open');
+                tocMobileToggle.setAttribute('aria-expanded', 'false');
+            }
+        };
+        window.addEventListener('scroll', onTocScroll, { passive: true });
+        onTocScroll();
     }
 
     // 折叠/展开
@@ -389,7 +457,7 @@ document.addEventListener('DOMContentLoaded', function () {
         toggleBtn.textContent = list.classList.contains('collapsed') ? '[展开]' : '[折叠]';
     });
 
-    // 点击平滑滚动
+    // 点击平滑滚动（移动端胶囊面板内点击后收起面板）
     toc.addEventListener('click', function(e) {
         var link = e.target.closest('a');
         if (link && link.getAttribute('href').startsWith('#')) {
@@ -401,11 +469,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 toc.querySelectorAll('.toc-item.active').forEach(function(el) { el.classList.remove('active'); });
                 var parentLi = link.closest('.toc-item');
                 if (parentLi) parentLi.classList.add('active');
+                if (tocMobilePanel) {
+                    tocMobilePanel.classList.remove('is-open');
+                    if (tocMobileToggle) tocMobileToggle.setAttribute('aria-expanded', 'false');
+                }
             }
         }
     });
 
-    // 滚动时高亮当前章节
+    // 滚动时高亮当前章节（并同步移动端胶囊按钮的标题预览）
     var callback = function(entries) {
         entries.forEach(function(entry) {
             if (entry.isIntersecting) {
@@ -415,6 +487,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (activeA) {
                     var activeLi = activeA.closest('.toc-item');
                     if (activeLi) activeLi.classList.add('active');
+                    if (tocMobilePreview) tocMobilePreview.textContent = activeA.textContent;
                 }
             }
         });
@@ -552,6 +625,93 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     document.querySelectorAll('.post-imgcard img').forEach(function(img) {
         img.setAttribute('data-fancybox', 'article');
+    });
+})();
+
+// ======================== fancybox 关闭后恢复头图显示 ========================
+// fancybox 3.5.7 对直接 <img> 触发（无 <a> 包裹）时会把原图移动进灯箱
+// （原位置插隐藏占位符），关闭时放回原位但残留 style="display: none"，
+// 导致文章页头图"消失"（2026-08-17 复现：点开灯箱再关闭即不可见）。
+// 文章页有 jQuery（post.ejs 引入 cdnjs），监听 fancybox 的 afterClose.fb
+// 事件，恢复被置 none 的头图/正文图内联样式；首页无 jQuery 时自然跳过。
+(function() {
+    if (!window.jQuery) return;
+    window.jQuery(document).on('afterClose.fb', function () {
+        document.querySelectorAll('.post-imgcard img, article img').forEach(function (img) {
+            if (img.style.display === 'none') {
+                img.style.removeProperty('display');
+            }
+        });
+    });
+})();
+
+// ======================== GitHub 仓库卡片数据 ========================
+// 卡片由 marked 扩展静态渲染（owner/repo/链接/可选 desc），本模块用
+// GitHub API 补充 stars/forks/language/license 与 description（无静态
+// desc 时）。CSP connect-src 已放行 api.github.com（唯一第三方 fetch
+// 例外，见 SECURITY.md）。无 token 限流 60 次/小时/IP：localStorage
+// 缓存 1 小时；请求失败（限流/网络）静默保留静态内容，渐进增强。
+(function() {
+    var CARDS = document.querySelectorAll('a.card-github[data-repo]');
+    if (!CARDS.length) return;
+
+    var CACHE_TTL = 3600000; // 1 小时
+
+    function getRepoData(repo) {
+        var key = 'gh-repo-cache:' + repo;
+        try {
+            var hit = localStorage.getItem(key);
+            if (hit) {
+                var parsed = JSON.parse(hit);
+                if (parsed && parsed.ts && Date.now() - parsed.ts < CACHE_TTL) {
+                    return Promise.resolve(parsed.data);
+                }
+            }
+        } catch (e) { /* 缓存不可用则直接请求 */ }
+        // 注意：不能整串 encodeURIComponent(repo)——"/" 变 %2F 后 GitHub API
+        // 不返回 CORS 头，预检被拒（2026-08-17 实测）；owner/repo 各段编码
+        // （GitHub 命名规则字母数字 . _ -，编码结果与原值一致）
+        return fetch('https://api.github.com/repos/' + repo.split('/').map(encodeURIComponent).join('/'))
+            .then(function (res) {
+                if (!res.ok) throw new Error('GitHub API ' + res.status);
+                return res.json();
+            })
+            .then(function (data) {
+                try {
+                    localStorage.setItem(key, JSON.stringify({ ts: Date.now(), data: data }));
+                } catch (e) { /* 存储失败忽略 */ }
+                return data;
+            });
+    }
+
+    function fmt(n) {
+        if (typeof n !== 'number') return '';
+        if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+        return String(n);
+    }
+
+    function setText(el, text) {
+        if (el && text) el.textContent = text;
+    }
+
+    CARDS.forEach(function (card) {
+        var repo = card.getAttribute('data-repo');
+        getRepoData(repo).then(function (data) {
+            // data.message 为 API 错误响应（如仓库不存在/被限流时仍 200 的 404 响应）
+            if (!data || data.message) return;
+            setText(card.querySelector('.gc-stars'), 'stars ' + fmt(data.stargazers_count));
+            setText(card.querySelector('.gc-forks'), 'forks ' + fmt(data.forks_count));
+            setText(card.querySelector('.gc-language'), 'lang ' + data.language);
+            setText(card.querySelector('.gc-license'), data.license && data.license.spdx_id);
+            // 静态 desc 优先（语法 desc 有值则不动），无静态 desc 时用 API 描述
+            var descEl = card.querySelector('.gc-description');
+            if (descEl && !descEl.textContent.trim() && data.description) {
+                descEl.textContent = data.description;
+            }
+        }).catch(function (err) {
+            // 限流/网络失败：静默保留静态内容（渐进增强）
+            console.warn('GitHub card data unavailable for ' + repo + ':', err.message);
+        });
     });
 })();
 
@@ -717,6 +877,21 @@ document.addEventListener('DOMContentLoaded', function () {
         document.head.appendChild(script);
     }
 
+    // 超宽图表保持原始尺寸（2026-08-18 修复）：mermaid 输出 svg 带
+    // width="100%" + 内联 style="max-width: Npx"（N = 图表自然宽），容器窄于 N
+    // 时浏览器按 min(容器, N) 渲染，整图等比缩小、节点文字无法辨认。
+    // 检测自然宽 > 容器宽时改为原始尺寸，靠容器 overflow-x: auto 横向滚动；
+    // 窄图保持默认行为不变。静态化 SVG（mermaid-static.js 构建期输出）同结构，
+    // 在 DOMContentLoaded 时统一适配。
+    function fitMermaid(el) {
+        var svg = el.querySelector('svg');
+        if (!svg) return;
+        var natural = parseFloat(svg.style.maxWidth);
+        if (!natural || natural <= el.clientWidth) return;
+        svg.setAttribute('width', natural + 'px');
+        svg.style.maxWidth = 'none';
+    }
+
     function renderAll(force) {
         var elements = document.querySelectorAll('.mermaid');
         if (!elements.length) return;
@@ -749,6 +924,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(function (res) {
                     el.innerHTML = res.svg;
                     el.classList.add('mermaid-rendered');
+                    fitMermaid(el); // 每次渲染后（含主题切换 force 重渲染）做超宽适配
                 })
                 .catch(function (err) { renderError(err); }));
         });
@@ -764,6 +940,54 @@ document.addEventListener('DOMContentLoaded', function () {
     // DOMContentLoaded 兜底（极端时序下保证渲染）
     document.addEventListener('DOMContentLoaded', function () {
         if (!hasMermaid) hasMermaid = !!document.querySelector('.mermaid');
+        // 静态化 SVG（mermaid-static.js 构建期输出）不经 renderAll，统一超宽适配
+        document.querySelectorAll('.mermaid').forEach(fitMermaid);
         if (hasMermaid) loadLibrary(function () { renderAll(false); });
     });
 })();
+
+// ======================== 代码块超长折叠（2026-08-18，Reimu 批一迁移） ========================
+// 行数 = .code pre 内 <br> 数量（Hexo 8 行间一个 <br> + 末尾一个空行 <br>，
+// n 行代码恰有 n 个 br，数量即行数）。超阈值折叠并显示"展开全部（N 行）"按钮，
+// 底部渐变遮罩由 style.min.css .code-collapsed 提供。与复制按钮共存（按钮在
+// pre 内，折叠只截断 .code pre 高度，不改变 DOM 结构，复制仍取全文）。
+document.addEventListener('DOMContentLoaded', function () {
+    var COLLAPSE_LINES = 40;
+    document.querySelectorAll('figure.highlight').forEach(function (figure) {
+        var pre = figure.querySelector('.code pre');
+        if (!pre) return;
+        var lines = pre.querySelectorAll('br').length;
+        if (lines < COLLAPSE_LINES) return;
+
+        figure.classList.add('code-collapsed');
+        var btn = document.createElement('button');
+        btn.className = 'code-fold-btn';
+        btn.textContent = '展开全部（' + lines + ' 行）';
+        btn.setAttribute('aria-expanded', 'false');
+        btn.addEventListener('click', function () {
+            var collapsed = figure.classList.toggle('code-collapsed');
+            btn.textContent = collapsed ? '展开全部（' + lines + ' 行）' : '收起代码块';
+            btn.setAttribute('aria-expanded', String(!collapsed));
+        });
+        figure.appendChild(btn);
+    });
+});
+
+// ======================== 标签页 tabs 切换（2026-08-18，Reimu 批二迁移） ========================
+// scripts/marked-tabs.js 渲染 .tabs（nav 按钮 + 面板），本模块事件委托切换
+// is-active / aria-selected。无框架依赖；页面无 .tabs 时零开销（事件委托挂 document）。
+document.addEventListener('click', function (e) {
+    var btn = e.target && e.target.closest ? e.target.closest('.tabs-tab') : null;
+    if (!btn) return;
+    var root = btn.closest('.tabs');
+    if (!root) return;
+    var idx = btn.getAttribute('data-tab');
+    root.querySelectorAll('.tabs-tab').forEach(function (b) {
+        var active = b.getAttribute('data-tab') === idx;
+        b.classList.toggle('is-active', active);
+        b.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+    root.querySelectorAll('.tabs-panel').forEach(function (p) {
+        p.classList.toggle('is-active', p.getAttribute('data-tab') === idx);
+    });
+});

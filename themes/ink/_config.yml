@@ -6,8 +6,7 @@ favicon: /img/icon.svg
 #   对象            二级菜单：url 为父项链接（可选，缺省时父项仅作展开按钮），
 #                   children 为子项名 -> 链接（http(s) 开头同样视为外链）
 menu:
-  文章: /
-  标签: /tags/
+  首页: /
   分类:
     url: /categories/
     children:
@@ -15,11 +14,23 @@ menu:
       安全研究: /categories/安全研究/
       项目故事: /categories/项目故事/
       随笔: /categories/随笔/
+      标签云: /tags/
+      全量归档: /archives/
   搜索: /search/
-  友链: /links/
-  关于: /about/
+  展柜:
+    url: /projects/
+    children:
+      项目: /projects/
+      技能: /skills/
+      时间线: /timeline/
+      相册: /gallery/
+  关于:
+    url: /about/
+    children:
+      自己: /about/
+      友链: /links/
+      GitHub: https://github.com/TwilightRainDev
   设置: /settings/
-  GitHub: https://github.com/TwilightRainDev
 
 # 首页公告条：留空则不显示
 notice: ''

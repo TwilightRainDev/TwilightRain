@@ -1,5 +1,5 @@
 ---
-title: 从 GitHub Pages 迁移到 Cloudflare Pages：Hexo 博客部署全记录
+title: Hexo博客从GHP到CFP迁移记录
 excerpt: Hexo 博客从 GitHub Pages 迁到 Cloudflare Pages 的全记录：动机、建项目、以及两次部署踩坑（package.json 推错、分支名）。
 date: 2026-07-21 14:45:00
 tags:
@@ -18,6 +18,8 @@ categories:
 我的 Hexo 博客之前一直部署在 GitHub Pages 上，但我发现它在国内的访问体验很不稳定——时而能打开，时而转圈圈，时而直接超时。这是因为 `github.io` 域名在国内的 CDN 节点访问不畅，加上可能存在的 DNS 污染，导致博客对国内读者不太友好。
 
 于是我开始寻找解决方案。最直接的办法是使用 Cloudflare Pages 来托管博客，利用它的全球 CDN 加速，让国内访问更稳定。
+
+![](/img/hexo-to-cloudflare-pages.jpg)
 
 ---
 
