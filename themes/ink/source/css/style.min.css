@@ -1789,6 +1789,17 @@ figure.highlight td.code code br:last-child {
     background: rgba(26, 143, 227, 0.08);
 }
 
+/* 动态分类子项（header.ejs categories: true）的文章数 */
+.main-nav .sub-menu .sub-cat-count {
+    margin-left: 6px;
+    font-size: 0.85em;
+    color: #999;
+}
+
+[data-theme="dark"] .main-nav .sub-menu .sub-cat-count {
+    color: #888;
+}
+
 /* ======================== 文章页头图 + TOC 双卡（banner→TOC 重构） ======================== */
 /* post.ejs 输出 .post-toc-row（图卡 + 目录槽），ink.js 将生成的 TOC 移入槽内。
    原 30vh banner 仅文章页移除；banner 样式/模板保留给普通页面（about/links 等）。 */
@@ -2173,45 +2184,6 @@ a.card-link:hover {
 [data-theme="dark"] .tabs-tab.is-active {
     background: transparent;
     color: var(--color-primary, #1a8fe3);
-}
-
-/* ======================== 首页分类胶囊（2026-08-18，Reimu 批二迁移） ========================
-   index.ejs 在文章流上方输出全站分类（名称 + 文章数），链接分类页；
-   flex-wrap 响应式，胶囊样式与折叠按钮同风格。 */
-.home-categories {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-    margin-block: 0 1.5rem;
-}
-.home-category {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.35rem 0.85rem;
-    border: 1px solid rgba(0, 0, 0, 0.12);
-    border-radius: 999px;
-    color: inherit;
-    text-decoration: none;
-    font-size: var(--size-step-0);
-    transition: border-color 0.2s ease;
-}
-.home-category:hover {
-    border-color: var(--color-primary, #1a8fe3);
-    color: var(--color-primary, #1a8fe3);
-}
-.home-category-count {
-    font-size: 0.85em;
-    color: #999;
-}
-[data-theme="dark"] .home-category {
-    border-color: rgba(255, 255, 255, 0.15);
-}
-[data-theme="dark"] .home-category:hover {
-    color: var(--color-primary, #1a8fe3);
-}
-[data-theme="dark"] .home-category-count {
-    color: #888;
 }
 
 /* ======================== 文内照片墙 .photo-grid（2026-08-18，Reimu 批三） ========================

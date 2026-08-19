@@ -93,8 +93,15 @@ fetch 前先评估（默认收紧取向）；若卡片功能移除，此行一�
 ## 内容与仓库安全
 
 - 评论走 giscus（GitHub Discussions 作后端，主题配置见 [THEME.md](THEME.md#评论)）。
-- 提交身份用 noreply 邮箱（`TwilightRainDev@users.noreply.github.com`），
-  推送凭据不落库（在 `A:\work_zone\ApiKey`）。
+- 提交身份用 noreply 邮箱：完整地址为
+  `122437146+TwilightRainDev@users.noreply.github.com`（本地两个仓库
+  user.email 均已改为此地址）；**历史提交仍含真实邮箱**——GitHub 账号
+  建议开启 "Keep my email address private"。推送凭据不落库（在
+  `A:\work_zone\ApiKey`）。
 - `docs/BlogPrivate.txt` 是私人备忘，不入库（`.gitignore` 单独忽略）；
   docs/ 其余内容可放心提交。
 - 不要在 `source/`、`themes/ink/` 中放任何密钥、Cookie、token 文本。
+
+### 遗留记录（低优先级，知晓即可）
+
+- 举报编号 `J2026072510234300239` 公开在恶意软件维权文章中（用户主动发布，站点内容事实，无需处理）。
