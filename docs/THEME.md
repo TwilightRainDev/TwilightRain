@@ -138,6 +138,8 @@ themes/ink/layout/
   - 对象：`{ url: /父链接/, children: { 子名: /链接/ } }`。`url` 可省略，
     省略时父项仅作展开按钮（渲染为 `href="#"`，点击由 JS 接管）。
     子项与普通项一样，http(s) 开头视为外链新标签打开。
+    对象可另加 `categories: true`：子项改由 `site.categories` 动态生成
+    （名称 + 文章数，链接分类页），`children` 仍保留为附加项，见下「分类入口」。
 - **渲染**：`partial/header.ejs` 对对象值输出
   `<span class="has-sub"><a class="sub-trigger">…</a><ul class="sub-menu">…</ul></span>`。
 - **交互**：
@@ -427,10 +429,11 @@ themes/ink/layout/
   块内用 `this.lexer.blockTokens` 二次解析（列表/代码块/强调均支持）。
   注意：`--- 标题` 分隔符要求顶格且 `---` 后跟标题文本，与 Markdown 水平线
   （顶格 `---` 后无文本）不冲突；无子 tab 的块输出可见 `[WARN]`。
-- **首页分类胶囊**：index.ejs 在文章流上方输出全站分类
-  （`site.categories.each`，名称 + 文章数，链接分类页），flex-wrap 响应式，
-  与首页列数设置（作用于 .blog-posts）互不影响。分类顺序为 hexo 内部顺序
-  （当前按名称），如需按文章数排序需在模板内 sort（中文排序需注意）。
+- **分类入口**（2026-08-19 由首页分类胶囊并入头部二级菜单）：胶囊方案与
+  头部「分类」下拉（has-sub）重复列出同一批分类，已合并——`menu` 的「分类」项
+  设 `categories: true`，`header.ejs` 的 sub-menu 由 `site.categories` 动态生成
+  （名称 + 文章数，链接分类页），分类增删无需再改菜单配置。分类顺序为 hexo
+  内部顺序（当前按名称），如需按文章数排序需在模板内 sort（中文排序需注意）。
 - **pangu 中英文空格：降级为写作约定，不做自动机制**——HTML 级文本处理
   风险高（易破坏链接 href/代码块/MathJax 公式），收益可被写作规范替代
   （写文章时中英文间手加空格；见 WORKFLOW.md 写作规范）。

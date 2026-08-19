@@ -4,16 +4,15 @@ favicon: /img/icon.svg
 # 每项两种形态：
 #   字符串          普通链接，如 文章: /
 #   对象            二级菜单：url 为父项链接（可选，缺省时父项仅作展开按钮），
-#                   children 为子项名 -> 链接（http(s) 开头同样视为外链）
+#                   children 为子项名 -> 链接（http(s) 开头同样视为外链）；
+#                   categories: true 时子项改由 site.categories 动态生成
+#                   （名称 + 文章数，链接分类页），children 仍可保留附加项
 menu:
   首页: /
   分类:
     url: /categories/
+    categories: true
     children:
-      技术笔记: /categories/技术笔记/
-      安全研究: /categories/安全研究/
-      项目故事: /categories/项目故事/
-      随笔: /categories/随笔/
       标签云: /tags/
       全量归档: /archives/
   搜索: /search/

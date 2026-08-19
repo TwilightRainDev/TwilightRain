@@ -3,18 +3,8 @@
     <% if (theme.notice) { %>
     <div class="notice-bar"><%= theme.notice %></div>
     <% } %>
-    <%# 首页分类胶囊（2026-08-18，Reimu 批二迁移）：全站分类 + 文章数，
-         链接到分类页；flex-wrap 响应式，与文章流列数设置互不影响。 %>
-    <% if (site.categories.length) { %>
-    <nav class="home-categories" aria-label="文章分类">
-        <% site.categories.each(function(cat) { %>
-        <a class="home-category" href="<%- url_for(cat.path) %>">
-            <span class="home-category-name"><%= cat.name %></span>
-            <span class="home-category-count"><%= cat.posts.length %> 篇</span>
-        </a>
-        <% }) %>
-    </nav>
-    <% } %>
+    <%# 全站分类已并入头部「分类」二级菜单（header.ejs has-sub，2026-08-19），
+         首页不再重复输出分类列表 %>
     <ul class="blog-posts">
       <%# 置顶：front matter pinned: true 的文章排最前，其余按日期降序
            （草稿用 source/_drafts，Hexo 原生支持，无需处理） %>
