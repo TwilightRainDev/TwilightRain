@@ -9,7 +9,7 @@ tags:
 
 博客的写作系统最近迎来一次更新（Twilight 模板第一批迁移），新增了三项对技术写作比较实用的能力：**彩色提示块**、**Mermaid 图表**与**阅读时间**。本文用实际效果演示它们的写法。
 
-![](/img/blog-writing-features.jpg)
+![](/img/360px/blog-writing-features.jpg)
 
 ## 提示块（admonitions）
 

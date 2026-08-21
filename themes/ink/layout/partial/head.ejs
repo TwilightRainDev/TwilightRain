@@ -29,7 +29,8 @@
         <meta property="og:description" content="<%= config.description %>">
     <% } %>
     <% if (page.cover) { %>
-        <meta property="og:image" content="<%= page.cover %>">
+        <%# 社交预览用原图（ori）；页面展示用 360px %>
+        <meta property="og:image" content="<%= page.cover.replace('/img/360px/', '/img/ori/') %>">
     <% } %>
     <% if (page.date) { %>
         <meta property="article:published_time" content="<%= page.date.toISOString() %>">
@@ -57,7 +58,10 @@
             '@type': 'BlogPosting',
             headline: page.title,
             description: page.description || config.description,
-            image: page.cover ? (page.cover.startsWith('http') ? page.cover : config.url + page.cover) : undefined,
+            image: page.cover ? (function () {
+                var c = page.cover.replace('/img/360px/', '/img/ori/');
+                return c.startsWith('http') ? c : config.url + c;
+            })() : undefined,
             datePublished: page.date.toISOString(),
             dateModified: page.updated ? page.updated.toISOString() : page.date.toISOString(),
             author: { '@type': 'Person', name: config.author },

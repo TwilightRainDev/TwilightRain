@@ -37,7 +37,7 @@ tags:
 categories:
   - 分类1
 comments: true                 # 默认开评论；不需要则 false
-cover: /img/xxx.jpg            # 可选：封面图（og:image 也用它）
+cover: /img/360px/covers/xxx.jpg  # 可选：封面（页面展示 360px；og:image 自动改写为 ori）
 pinned: true                   # 可选：置顶到首页最前（不写则按日期排序）
 updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章页显示"更新于"；
                                #   Hexo 默认 updated 是文件 mtime，git checkout
@@ -55,7 +55,10 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
   `<!-- more -->` 自然截断——截断点可能落在代码中间（曾导致摘要里出现
   HTML 实体乱码），且截断摘要只是开头段复制，不是真正的摘要。
 - **date 即永久链接**：发文后改日期会改变 URL，造成死链。定稿后再定日期。
-- 图片放 `source/img/`，正文用 `/img/xxx.jpg` 绝对路径引用。
+- **图片双轨（2026-08-21）**：原图放 `source/img/ori/`（入库）；展示图由
+  `npm run thumbs` 或 `npm run build` 生成到 `source/img/360px/`（**gitignore，勿提交**）。
+  正文/cover 引用 `/img/360px/...`；灯箱左上角「查看原图」打开对应 `/img/ori/...`。
+  `icon.svg` 仍放 `source/img/icon.svg`，不进双轨。
 - `external_link` 已开启，外链自动新标签打开。
 - 文章会自动进 feed（atom.xml，限 20 篇）、搜索（search.xml）与 sitemap，无需额外操作。
 - 提交信息建议带类型前缀（仓库历史惯例：`feat:` / `fix:` / `security:` / `chore:` / `docs:`）。
@@ -131,10 +134,10 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
 
   ```html
   <div class="photo-grid">
-  <img src="/img/with-her-eyes-1.jpg" alt="图一">
-  <img src="/img/with-her-eyes-2.jpg" alt="图二">
-  </div>
-  ```
+  <img src="/img/360px/with-her-eyes-1.jpg" alt="图一">
+  <img src="/img/360px/with-her-eyes-2.jpg" alt="图二">
+</div>
+```
 
   多图自动网格排列（200px 起自适应列数），点击放大走 fancybox 灯箱
   （与正文图同机制）。相册集合请用 `/gallery/` 页（front matter photos 数组）。

@@ -8,7 +8,7 @@ tags:
   - 技能
 categories:
   - 代码仓库
-cover: /img/covers/claude-skills.jpg
+cover: /img/360px/covers/claude-skills.jpg
 ---
 
 # 把踩过的坑编译成技能

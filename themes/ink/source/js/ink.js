@@ -50,17 +50,21 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function getImageColor(canvas, img) {
-        canvas.width = img.width;
-        canvas.height = img.height;
+        // 降采样后再取色，避免全分辨率扫像素卡主线程
+        var maxSide = 64;
+        var w = img.naturalWidth || img.width;
+        var h = img.naturalHeight || img.height;
+        var scale = Math.min(1, maxSide / Math.max(w, h, 1));
+        canvas.width = Math.max(1, Math.round(w * scale));
+        canvas.height = Math.max(1, Math.round(h * scale));
 
-        const context = canvas.getContext("2d");
+        var context = canvas.getContext('2d');
         context.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-        const data = context.getImageData(0, 0, img.width, img.height).data;
-        let r = 0, g = 0, b = 0;
-
-        const pixelCount = img.width * img.height;
-        for (let i = 0; i < data.length; i += 4) {
+        var data = context.getImageData(0, 0, canvas.width, canvas.height).data;
+        var r = 0, g = 0, b = 0;
+        var pixelCount = canvas.width * canvas.height;
+        for (var i = 0; i < data.length; i += 4) {
             r += data[i];
             g += data[i + 1];
             b += data[i + 2];
@@ -69,19 +73,21 @@ document.addEventListener('DOMContentLoaded', function () {
         g = Math.round(g / pixelCount);
         b = Math.round(b / pixelCount);
 
-        return `rgba(${r}, ${g}, ${b},0.4)`;
+        return 'rgba(' + r + ', ' + g + ', ' + b + ',0.4)';
     }
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-    // 首页无 cover 文章：每次页面加载从前端封面池随机取一张（替代原构建期随机的 picsum 图源）
-    // 加新封面：裁 800x800 放入 source/img/covers/ 连续编号，并同步更新下方 coverPool 循环上界
+    // 首页无 cover：封面池使用 360px 展示图；data-ori 指向同名原图
+    // 加新封面：原图放 source/img/ori/covers/cover-NN.jpg，构建生成 360px，并同步更新循环上界
     const coverPool = [];
     for (let i = 1; i <= 26; i++) {
-        coverPool.push('/img/covers/cover-' + (i < 10 ? '0' + i : i) + '.jpg');
+        coverPool.push('/img/360px/covers/cover-' + (i < 10 ? '0' + i : i) + '.jpg');
     }
     document.querySelectorAll('img[data-random-cover]').forEach(img => {
-        img.src = coverPool[Math.floor(Math.random() * coverPool.length)];
+        var src = coverPool[Math.floor(Math.random() * coverPool.length)];
+        img.src = src;
+        img.setAttribute('data-ori', src.replace('/img/360px/', '/img/ori/'));
     });
 
     const thumbnails = document.querySelectorAll('.thumbnail');
@@ -89,7 +95,6 @@ document.addEventListener('DOMContentLoaded', function () {
     thumbnails.forEach(img => {
         img.crossOrigin = 'anonymous';
         img.onload = function () {
-            console.log('Image loaded:', img.src);
             const canvas = document.createElement('canvas');
             const rgbColor = getImageColor(canvas, img);
             const articleItem = img.closest('.article-item');
@@ -103,20 +108,25 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     function getImageColor(canvas, img) {
-        canvas.width = img.width;
-        canvas.height = img.height;
+        var maxSide = 64;
+        var w = img.naturalWidth || img.width;
+        var h = img.naturalHeight || img.height;
+        var scale = Math.min(1, maxSide / Math.max(w, h, 1));
+        canvas.width = Math.max(1, Math.round(w * scale));
+        canvas.height = Math.max(1, Math.round(h * scale));
 
-        const context = canvas.getContext("2d");
+        const context = canvas.getContext('2d');
         context.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-        const data = context.getImageData(0, 0, img.width, img.height).data;
+        const data = context.getImageData(0, 0, canvas.width, canvas.height).data;
         const colorCounts = {};
 
         for (let i = 0; i < data.length; i += 4) {
-            const r = data[i];
-            const g = data[i + 1];
-            const b = data[i + 2];
-            const rgb = `rgba(${r},${g},${b},0.4)`;
+            // 量化到 16 级，减少 Map 体积
+            const r = data[i] & 0xf0;
+            const g = data[i + 1] & 0xf0;
+            const b = data[i + 2] & 0xf0;
+            const rgb = 'rgba(' + r + ',' + g + ',' + b + ',0.4)';
             colorCounts[rgb] = (colorCounts[rgb] || 0) + 1;
         }
 
@@ -128,8 +138,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 dominantColor = color;
             }
         }
-        console.log(`Extracted color: ${dominantColor}`);
-        return `${dominantColor}`;
+        return dominantColor;
     }
 });
 
@@ -614,29 +623,80 @@ document.addEventListener('DOMContentLoaded', function () {
 })();
 
 // ======================== 文章内图片灯箱 ========================
-// 给 article 内 img 加 data-fancybox 属性，fancybox 3 通过事件委托
-// 自动绑定点击放大（资源由 post.ejs 按页引入，仅文章页加载）。
-// 文章页头图卡（.post-imgcard，banner→TOC 双卡布局）的图片同样支持放大。
+// 给 article 内 img 加 data-fancybox；展示图为 360px，data-ori 指向原图。
+// 文章页头图卡（.post-imgcard）同样支持放大。
 (function() {
+    function ensureOri(el) {
+        if (el.getAttribute('data-ori')) return;
+        var src = el.getAttribute('src') || '';
+        if (src.indexOf('/img/360px/') !== -1) {
+            el.setAttribute('data-ori', src.replace('/img/360px/', '/img/ori/'));
+        }
+    }
     var article = document.querySelector('article');
-    if (!article) return;
-    article.querySelectorAll('img').forEach(function(img) {
-        img.setAttribute('data-fancybox', 'article');
-    });
+    if (article) {
+        article.querySelectorAll('img').forEach(function(img) {
+            ensureOri(img);
+            img.setAttribute('data-fancybox', 'article');
+        });
+    }
     document.querySelectorAll('.post-imgcard img').forEach(function(img) {
+        ensureOri(img);
         img.setAttribute('data-fancybox', 'article');
     });
 })();
 
-// ======================== fancybox 关闭后恢复头图显示 ========================
-// fancybox 3.5.7 对直接 <img> 触发（无 <a> 包裹）时会把原图移动进灯箱
-// （原位置插隐藏占位符），关闭时放回原位但残留 style="display: none"，
-// 导致文章页头图"消失"（2026-08-17 复现：点开灯箱再关闭即不可见）。
-// 文章页有 jQuery（post.ejs 引入 cdnjs），监听 fancybox 的 afterClose.fb
-// 事件，恢复被置 none 的头图/正文图内联样式；首页无 jQuery 时自然跳过。
+// ======================== fancybox「查看原图」+ 关闭后恢复头图 ========================
+// 灯箱内仍显示 360px；左上角按钮新标签打开 data-ori。
+// fancybox 3.5.7 对直接 <img> 触发会把原图移进灯箱并残留 display:none，afterClose 恢复。
 (function() {
     if (!window.jQuery) return;
-    window.jQuery(document).on('afterClose.fb', function () {
+    var $ = window.jQuery;
+
+    function resolveOriUrl(instance, current) {
+        var ori = '';
+        if (current && current.opts && current.opts.$orig && current.opts.$orig.length) {
+            var el = current.opts.$orig[0];
+            ori = el.getAttribute('data-ori') || '';
+            if (!ori && el.closest) {
+                var host = el.closest('[data-ori]');
+                if (host) ori = host.getAttribute('data-ori') || '';
+            }
+            if (!ori) {
+                var src = el.getAttribute('src') || el.getAttribute('href') || '';
+                if (src.indexOf('/img/360px/') !== -1) {
+                    ori = src.replace('/img/360px/', '/img/ori/');
+                }
+            }
+        }
+        if (!ori && current && current.src && String(current.src).indexOf('/img/360px/') !== -1) {
+            ori = String(current.src).replace('/img/360px/', '/img/ori/');
+        }
+        return ori;
+    }
+
+    function placeOriButton(instance, current) {
+        var container = instance.$refs && instance.$refs.container
+            ? instance.$refs.container[0]
+            : document.querySelector('.fancybox-container');
+        if (!container) return;
+        var old = container.querySelector('.fancybox-ori-link');
+        if (old) old.remove();
+        var ori = resolveOriUrl(instance, current);
+        if (!ori) return;
+        var a = document.createElement('a');
+        a.className = 'fancybox-ori-link';
+        a.href = ori;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.textContent = '查看原图';
+        container.appendChild(a);
+    }
+
+    $(document).on('afterShow.fb', function (e, instance, current) {
+        placeOriButton(instance, current);
+    });
+    $(document).on('afterClose.fb', function () {
         document.querySelectorAll('.post-imgcard img, article img').forEach(function (img) {
             if (img.style.display === 'none') {
                 img.style.removeProperty('display');

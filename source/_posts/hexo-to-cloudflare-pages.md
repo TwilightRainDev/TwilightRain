@@ -19,7 +19,7 @@ categories:
 
 于是我开始寻找解决方案。最直接的办法是使用 Cloudflare Pages 来托管博客，利用它的全球 CDN 加速，让国内访问更稳定。
 
-![](/img/hexo-to-cloudflare-pages.jpg)
+![](/img/360px/hexo-to-cloudflare-pages.jpg)
 
 ---
 

@@ -8,7 +8,7 @@ tags:
   - 音乐
 categories:
   - 技术笔记
-cover: /img/covers/ai-midi-adventure.jpg
+cover: /img/360px/covers/ai-midi-adventure.jpg
 ---
 
 有天我突发奇想，能不能让 AI 直接给我写一首 MIDI 曲子？

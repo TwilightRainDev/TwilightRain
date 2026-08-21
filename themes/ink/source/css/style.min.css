@@ -2204,6 +2204,26 @@ a.card-link:hover {
     cursor: zoom-in;
 }
 
+/* fancybox 灯箱：左上角「查看原图」（ink.js 注入 .fancybox-ori-link） */
+.fancybox-ori-link {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 99999;
+    padding: 0.4rem 0.75rem;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.65);
+    color: #fff;
+    font-size: 0.875rem;
+    text-decoration: none;
+    line-height: 1.2;
+}
+.fancybox-ori-link:hover,
+.fancybox-ori-link:focus {
+    background: rgba(0, 0, 0, 0.85);
+    color: #fff;
+}
+
 /* ======================== 文章分享（2026-08-18，Reimu 批三） ========================
    post.ejs 版权声明下方输出纯链接分享（微博 / QQ / X），无第三方脚本
    （CSP 零新增），rel noopener 外链纪律。微信省略：官方分享需二维码生成。 */

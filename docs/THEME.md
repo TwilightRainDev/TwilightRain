@@ -274,8 +274,9 @@ themes/ink/layout/
 - 2026-08-17 激活（布局此前已存在但未启用）：数据源 `source/gallery/index.md`
   的 front matter `photos` 数组（`src` / `title` / `date`），Fancybox 灯箱由
   gallery.ejs 自行引入（cdnjs + integrity）。
-- **加照片**：编辑 `photos` 数组即可，图片放 `source/img/`（建议 `img/photos/`
-  子目录）后引用 `/img/photos/xxx.jpg`。当前内容为封面池示例图占位，待替换。
+- **加照片**：原图放 `source/img/ori/photos/`（或其它 ori 子目录），构建出 360px 后，
+  `photos[].src` 写 `/img/360px/photos/xxx.jpg`。当前为封面池示例图占位，待替换。
+  gallery 模板会自动加 `data-ori` 供「查看原图」。
 - 导航入口在主题 `_config.yml` `menu`（`相册: /gallery/`）。
 
 ## 友链页（links.ejs）
@@ -290,7 +291,7 @@ themes/ink/layout/
 - **DNS 回退机制**：默认 href 指向 `fallback`；ink.js 用 `Image()` 探测主站
   favicon（`img-src` 允许 https，不受 `connect-src 'self'` 限制，fetch 不可用），
   探测成功自动把链接切回主站。加新友链时若主站 DNS 未配置，填 `fallback` 即可。
-- 头像图片放 `source/img/links/`。
+- 头像原图放 `source/img/ori/links/`，页面引用 `/img/360px/links/...`。
 - `source/js/search.js`：前端搜索（检索 searchdb 生成的 search.xml）。
   [WARN] 渲染结果必须转义，防 DOM XSS（见 [SECURITY.md](SECURITY.md#已知陷阱清单)）。
 
@@ -303,12 +304,15 @@ themes/ink/layout/
 
 ## 封面图池（首页缩略图）
 
-- 位置：`source/img/covers/`（cover-01.jpg … cover-26.jpg，800×800 正方形 JPEG，居中裁切自本地壁纸库）。
+- 原图位置：`source/img/ori/covers/`（cover-01.jpg … cover-26.jpg）。
+- 展示图：构建生成 `source/img/360px/covers/`（360×360 居中裁切，**不入库**）。
 - 机制：`index.ejs` 对未设 `cover` 的文章输出 `<img data-random-cover>`（不带 src），
-  由 `ink.js` 在 DOMContentLoaded 时从前端封面池随机赋 src——**每次页面加载都重新随机**
-  （2026-08-08 起替代外部 picsum 图源，修复过"构建期随机导致刷新不变"的问题）。
-- **加新封面图**：裁切成 800×800 正方形放入 `source/img/covers/`，文件名按
-  `cover-NN.jpg` 连续编号，并同步更新 `ink.js` 中 `coverPool` 的循环上界。
+  由 `ink.js` 在 DOMContentLoaded 时从 `/img/360px/covers/` 池随机赋 src，并写
+  `data-ori` 指向 `/img/ori/covers/`——**每次页面加载都重新随机**。
+- **加新封面图**：原图放入 `source/img/ori/covers/cover-NN.jpg` 连续编号，跑
+  `npm run thumbs`（或直接 `npm run build`），并同步更新 `ink.js` 中 `coverPool`
+  循环上界。页面 cover / 正文图一律引用 `/img/360px/...`。
+- **灯箱**：文章图与头图点开 fancybox 后，左上角「查看原图」新标签打开 ori。
 
 ## Glass 鼠标光标（2026-08-18 加入）
 

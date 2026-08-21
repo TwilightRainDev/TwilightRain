@@ -16,7 +16,7 @@
     <div class="post-toc-row">
         <figure class="post-imgcard">
             <% if (page.cover) { %>
-            <img src="<%- page.cover %>" alt="<%= page.title %>" />
+            <img src="<%- page.cover %>" data-ori="<%- page.cover.replace('/img/360px/', '/img/ori/') %>" alt="<%= page.title %>" />
             <% } else { %>
             <img data-random-cover alt="<%= page.title %>" />
             <% } %>
