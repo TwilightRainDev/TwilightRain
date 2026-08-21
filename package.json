@@ -7,7 +7,8 @@
     "build": "node scripts/commit-data.js && node scripts/gen-thumbs.js && hexo generate",
     "clean": "hexo clean",
     "deploy": "hexo deploy",
-    "server": "hexo server"
+    "server": "hexo server",
+    "test": "node --test test/lib/char-stats.test.js test/lib/breadcrumbs.test.js test/lib/wikilinks.test.js"
   },
   "engines": {
     "node": ">=20.19.0"

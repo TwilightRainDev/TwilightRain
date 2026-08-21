@@ -24,9 +24,10 @@
         <div class="post-toc-slot"></div>
     </div>
     <article>
-        <%# 阅读时间：scripts/reading-time.js 构建期注入（中文约 400 字/分钟） %>
-        <% if (page.readingMinutes) { %>
-            <p class="post-reading-meta">阅读约 <%= page.readingMinutes %> 分钟</p>
+        <%- partial('partial/breadcrumbs') %>
+        <%# 字数 + 阅读时间：scripts/reading-time.js 构建期注入（中文约 400 字/分钟） %>
+        <% if (page.charCount != null || page.readingMinutes) { %>
+            <p class="post-reading-meta"><% if (page.charCount != null) { %>约 <%= page.charCount %> 字<% } %><% if (page.charCount != null && page.readingMinutes) { %> · <% } %><% if (page.readingMinutes) { %>阅读约 <%= page.readingMinutes %> 分钟<% } %></p>
         <% } %>
         <%# 文章时效（2026-08-18，Reimu 批一迁移）：过期提示由 post-staleness.js 按
              文章日期标记（超 365 天）；更新时间仅 front matter 显式写 updated 才显示
@@ -49,6 +50,32 @@
             <a href="https://connect.qq.com/widget/shareqq/index.html?url=<%- encodeURIComponent(page.permalink) %>&amp;title=<%- encodeURIComponent(page.title) %>" target="_blank" rel="noopener">QQ</a>
             <a href="https://twitter.com/intent/tweet?url=<%- encodeURIComponent(page.permalink) %>&amp;text=<%- encodeURIComponent(page.title) %>" target="_blank" rel="noopener">X</a>
         </nav>
+        <%# 双链相关：scripts/wikilinks.js 构建 wikiOutbounds / wikiInbounds（Obsidian [[Title]]） %>
+        <% var outs = page.wikiOutbounds || []; var ins = page.wikiInbounds || []; %>
+        <% if (outs.length || ins.length) { %>
+        <section class="post-wikilinks" aria-label="相关文章">
+            <% if (outs.length) { %>
+            <div class="post-wikilinks-block">
+                <h2 class="post-wikilinks-title">链接到</h2>
+                <ul class="post-wikilinks-list">
+                    <% outs.forEach(function (item) { %>
+                    <li><a href="<%- item.path %>"><%= item.title %></a></li>
+                    <% }) %>
+                </ul>
+            </div>
+            <% } %>
+            <% if (ins.length) { %>
+            <div class="post-wikilinks-block">
+                <h2 class="post-wikilinks-title">反向链接</h2>
+                <ul class="post-wikilinks-list">
+                    <% ins.forEach(function (item) { %>
+                    <li><a href="<%- item.path %>"><%= item.title %></a></li>
+                    <% }) %>
+                </ul>
+            </div>
+            <% } %>
+        </section>
+        <% } %>
     </article>
     <% if (page.prev || page.next) { %>
     <nav class="post-prevnext" aria-label="文章导航">

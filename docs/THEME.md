@@ -458,6 +458,40 @@ themes/ink/layout/
 - **grid 网格布局：跳过**——与 .photo-grid 场景重叠（布局容器类）且
   使用场景更少，需要时用原生 HTML 容器 + CSS 约定即可，不做标签插件。
 
+## Butterfly 批一迁移（2026-08-21）
+
+来源对照：`A:\work_zone\Docs\Butterfly-AnZhiYu-*.md`（合并四件套 + 迁移过程）；
+实现自写 marked 扩展，不复制主题源码文件。
+
+- **隐藏块**：`scripts/marked-hide.js` — `:::hide[按钮文案]` 点击后显示；
+  `:::fold[摘要]` → `<details class="md-fold">`。ink.js 事件委托处理 `.md-hide-btn`。
+- **文内时间线**：`scripts/marked-timeline.js` — `:::timeline` + `--- 标题` 分隔；
+  容器类 `.post-timeline`，与站点展柜 `/timeline/` 的 `.timeline-*` 隔离。
+- **按钮 / 标签**：`scripts/marked-btn-label.js` —
+  `::btn{url=... text=...}`（http(s) 或站内 `/path`）、
+  `::label{text=... tone=default|blue|green|red|orange}`。
+- 语法说明见 [WORKFLOW.md](WORKFLOW.md) 文章内扩展语法。
+
+## PaperMod 琐碎增量（2026-08-21）
+
+来源评估见 `A:\work_zone\Docs\PaperMod-琐碎增量.md`（整站换主题不推荐，只落地增量）。
+
+- **字数**：`scripts/reading-time.js` 经 `scripts/lib/char-stats.js` 同时注入
+  `charCount` 与 `readingMinutes`；post.ejs 显示「约 N 字 · 阅读约 M 分钟」。
+  计数规则不变（去标签、去空白、约 400 字/分钟）。单测：`npm test`（用例在
+  `test/lib/`，勿放 `scripts/` 下——Hexo 会加载 scripts 内全部 .js）。
+- **层级面包屑**：`scripts/breadcrumbs.js` + `partial/breadcrumbs.ejs`。
+  链为「首页 / 分类（支持 parent 根→叶）/ 当前标题」；当前项不链接。
+  扁平单分类现状即「首页 / 分类名 / 标题」。纯函数见 `scripts/lib/breadcrumbs.js`。
+- **双链相关文章**：自研 `scripts/wikilinks.js`（未引 npm 插件；意图对齐
+  hexo-filter-titlebased-link）。`[[Title]]` / `[[Title|Alias]]` / `[[Title#Anchor]]`
+  在 `before_post_render` 换成 Markdown 链接；图写入 `global`，由
+  `reading-time.js` 的 `after_post_render` 注入 `wikiOutbounds` / `wikiInbounds`
+  （独立 after_post_render 拿不到图，与字数同钩子才进得了模板）。
+  文章底「链接到 / 反向链接」（无则隐藏）。示例：`bilicompact-complete.md`
+  链到源码文。写作说明见 WORKFLOW.md。图键用 `post.source`（勿用 `_id`，
+  generate 各阶段会变）。
+
 ## 修改主题的流程
 
 1. 改布局/样式/脚本（保持 LF 行尾）。

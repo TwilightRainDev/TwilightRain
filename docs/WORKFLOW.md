@@ -17,6 +17,7 @@ npm install        # 首次或依赖变更后
 | `npm run server` | 本地预览 http://localhost:4000（热重载） |
 | `npm run build` | 生成 `public/`（构建产物，不入库） |
 | `npm run clean` | 清空 `public/` 与 `db.json` 缓存 |
+| `npm test` | 跑 `scripts/lib/` 下纯函数单测（字数/面包屑/双链） |
 | `npx hexo new "标题"` | 生成新文章草稿（scaffolds/） |
 
 **预览时的已知差异**：`hexo server` 不输出安全头（CSP），因为 hexo-server 3.x 的
@@ -136,14 +137,52 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
   <div class="photo-grid">
   <img src="/img/360px/with-her-eyes-1.jpg" alt="图一">
   <img src="/img/360px/with-her-eyes-2.jpg" alt="图二">
-</div>
-```
+  </div>
+  ```
 
   多图自动网格排列（200px 起自适应列数），点击放大走 fancybox 灯箱
   （与正文图同机制）。相册集合请用 `/gallery/` 页（front matter photos 数组）。
 
+- **隐藏 / 折叠**（2026-08-21，Butterfly 批一）：
+
+  ````markdown
+  :::hide[点击显示答案]
+  这里是隐藏内容，支持 **Markdown**。
+  :::
+
+  :::fold[展开说明]
+  用原生 details 折叠，摘要为括号内标题。
+  :::
+  ````
+
+- **文内时间线**（2026-08-21，Butterfly 批一；与站点页 `/timeline/` 展柜不同）：
+
+  ````markdown
+  :::timeline[版本史]
+  --- v1
+  初版说明
+  --- v2
+  增量说明
+  :::
+  ````
+
+- **按钮 / 标签**（2026-08-21，Butterfly 批一）：
+
+  ```markdown
+  ::btn{url="https://example.com" text="打开文档"}
+  ::btn{url="/about/" text="关于本站"}
+  ::label{text="Beta" tone="blue"}
+  ```
+
+  `url` 仅允许 `http(s)://` 或站内 `/path`；`tone` 可选 default/blue/green/red/orange。
+
 - **分享按钮**：文章页版权声明下方自动出现微博 / QQ / X 三平台分享链接，
   无需手动配置。
+
+- **双链（Obsidian 风格，2026-08-21）**：正文写 `[[文章标题]]`，构建期转为站内链接；
+  文章底显示「链接到 / 反向链接」。别名与锚点：`[[标题|别名]]`、`[[标题#章节]]`。
+  按 **title** 匹配（次选 slug），**标题须唯一**；围栏/行内代码内的 `[[…]]` 不处理。
+  未匹配的双链原样保留，便于发现写错。
 
 ## 提交与推送（重要）
 

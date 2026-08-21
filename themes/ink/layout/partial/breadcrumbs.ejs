@@ -1,0 +1,14 @@
+<%# 层级面包屑：scripts/breadcrumbs.js → breadcrumb_items(page) %>
+<% var crumbs = breadcrumb_items(page); %>
+<% if (crumbs && crumbs.length > 1) { %>
+<nav class="breadcrumbs" aria-label="面包屑">
+    <% crumbs.forEach(function (item, i) { %>
+        <% if (i > 0) { %><span class="breadcrumbs-sep" aria-hidden="true">/</span><% } %>
+        <% if (item.path) { %>
+            <a href="<%- item.path %>"><%= item.label %></a>
+        <% } else { %>
+            <span class="breadcrumbs-current" aria-current="page"><%= item.label %></span>
+        <% } %>
+    <% }) %>
+</nav>
+<% } %>
