@@ -274,8 +274,9 @@ themes/ink/layout/
 - 2026-08-17 激活（布局此前已存在但未启用）：数据源 `source/gallery/index.md`
   的 front matter `photos` 数组（`src` / `title` / `date`），Fancybox 灯箱由
   gallery.ejs 自行引入（cdnjs + integrity）。
-- **加照片**：编辑 `photos` 数组即可，图片放 `source/img/`（建议 `img/photos/`
-  子目录）后引用 `/img/photos/xxx.jpg`。当前内容为封面池示例图占位，待替换。
+- **加照片**：原图放 `source/img/ori/photos/`（或其它 ori 子目录），构建出 360px 后，
+  `photos[].src` 写 `/img/360px/photos/xxx.jpg`。当前为封面池示例图占位，待替换。
+  gallery 模板会自动加 `data-ori` 供「查看原图」。
 - 导航入口在主题 `_config.yml` `menu`（`相册: /gallery/`）。
 
 ## 友链页（links.ejs）
@@ -290,7 +291,7 @@ themes/ink/layout/
 - **DNS 回退机制**：默认 href 指向 `fallback`；ink.js 用 `Image()` 探测主站
   favicon（`img-src` 允许 https，不受 `connect-src 'self'` 限制，fetch 不可用），
   探测成功自动把链接切回主站。加新友链时若主站 DNS 未配置，填 `fallback` 即可。
-- 头像图片放 `source/img/links/`。
+- 头像原图放 `source/img/ori/links/`，页面引用 `/img/360px/links/...`。
 - `source/js/search.js`：前端搜索（检索 searchdb 生成的 search.xml）。
   [WARN] 渲染结果必须转义，防 DOM XSS（见 [SECURITY.md](SECURITY.md#已知陷阱清单)）。
 
@@ -303,12 +304,15 @@ themes/ink/layout/
 
 ## 封面图池（首页缩略图）
 
-- 位置：`source/img/covers/`（cover-01.jpg … cover-26.jpg，800×800 正方形 JPEG，居中裁切自本地壁纸库）。
+- 原图位置：`source/img/ori/covers/`（cover-01.jpg … cover-26.jpg）。
+- 展示图：构建生成 `source/img/360px/covers/`（360×360 居中裁切，**不入库**）。
 - 机制：`index.ejs` 对未设 `cover` 的文章输出 `<img data-random-cover>`（不带 src），
-  由 `ink.js` 在 DOMContentLoaded 时从前端封面池随机赋 src——**每次页面加载都重新随机**
-  （2026-08-08 起替代外部 picsum 图源，修复过"构建期随机导致刷新不变"的问题）。
-- **加新封面图**：裁切成 800×800 正方形放入 `source/img/covers/`，文件名按
-  `cover-NN.jpg` 连续编号，并同步更新 `ink.js` 中 `coverPool` 的循环上界。
+  由 `ink.js` 在 DOMContentLoaded 时从 `/img/360px/covers/` 池随机赋 src，并写
+  `data-ori` 指向 `/img/ori/covers/`——**每次页面加载都重新随机**。
+- **加新封面图**：原图放入 `source/img/ori/covers/cover-NN.jpg` 连续编号，跑
+  `npm run thumbs`（或直接 `npm run build`），并同步更新 `ink.js` 中 `coverPool`
+  循环上界。页面 cover / 正文图一律引用 `/img/360px/...`。
+- **灯箱**：文章图与头图点开 fancybox 后，左上角「查看原图」新标签打开 ori。
 
 ## Glass 鼠标光标（2026-08-18 加入）
 
@@ -453,6 +457,40 @@ themes/ink/layout/
   （读者复制代码应得到纯净文本），不做。排除理由已入 Docs/Reimu-过滤排除清单。
 - **grid 网格布局：跳过**——与 .photo-grid 场景重叠（布局容器类）且
   使用场景更少，需要时用原生 HTML 容器 + CSS 约定即可，不做标签插件。
+
+## Butterfly 批一迁移（2026-08-21）
+
+来源对照：`A:\work_zone\Docs\Butterfly-AnZhiYu-*.md`（合并四件套 + 迁移过程）；
+实现自写 marked 扩展，不复制主题源码文件。
+
+- **隐藏块**：`scripts/marked-hide.js` — `:::hide[按钮文案]` 点击后显示；
+  `:::fold[摘要]` → `<details class="md-fold">`。ink.js 事件委托处理 `.md-hide-btn`。
+- **文内时间线**：`scripts/marked-timeline.js` — `:::timeline` + `--- 标题` 分隔；
+  容器类 `.post-timeline`，与站点展柜 `/timeline/` 的 `.timeline-*` 隔离。
+- **按钮 / 标签**：`scripts/marked-btn-label.js` —
+  `::btn{url=... text=...}`（http(s) 或站内 `/path`）、
+  `::label{text=... tone=default|blue|green|red|orange}`。
+- 语法说明见 [WORKFLOW.md](WORKFLOW.md) 文章内扩展语法。
+
+## PaperMod 琐碎增量（2026-08-21）
+
+来源评估见 `A:\work_zone\Docs\PaperMod-琐碎增量.md`（整站换主题不推荐，只落地增量）。
+
+- **字数**：`scripts/reading-time.js` 经 `scripts/lib/char-stats.js` 同时注入
+  `charCount` 与 `readingMinutes`；post.ejs 显示「约 N 字 · 阅读约 M 分钟」。
+  计数规则不变（去标签、去空白、约 400 字/分钟）。单测：`npm test`（用例在
+  `test/lib/`，勿放 `scripts/` 下——Hexo 会加载 scripts 内全部 .js）。
+- **层级面包屑**：`scripts/breadcrumbs.js` + `partial/breadcrumbs.ejs`。
+  链为「首页 / 分类（支持 parent 根→叶）/ 当前标题」；当前项不链接。
+  扁平单分类现状即「首页 / 分类名 / 标题」。纯函数见 `scripts/lib/breadcrumbs.js`。
+- **双链相关文章**：自研 `scripts/wikilinks.js`（未引 npm 插件；意图对齐
+  hexo-filter-titlebased-link）。`[[Title]]` / `[[Title|Alias]]` / `[[Title#Anchor]]`
+  在 `before_post_render` 换成 Markdown 链接；图写入 `global`，由
+  `reading-time.js` 的 `after_post_render` 注入 `wikiOutbounds` / `wikiInbounds`
+  （独立 after_post_render 拿不到图，与字数同钩子才进得了模板）。
+  文章底「链接到 / 反向链接」（无则隐藏）。示例：`bilicompact-complete.md`
+  链到源码文。写作说明见 WORKFLOW.md。图键用 `post.source`（勿用 `_id`，
+  generate 各阶段会变）。
 
 ## 修改主题的流程
 

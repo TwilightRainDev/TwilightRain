@@ -9,6 +9,6 @@ links:
       - name: 猫正离子
         url: https://ccat.tech
         fallback: https://github.com/LCMCat
-        img: /img/links/lcmcat.png
+        img: /img/360px/links/lcmcat.png
         desc: 猫猫
 ---

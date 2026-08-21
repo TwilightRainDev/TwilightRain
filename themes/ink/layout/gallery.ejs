@@ -4,7 +4,8 @@
         <% if (page.photos && page.photos.length > 0) { %>
             <% page.photos.forEach(photo => { %>
                 <figure class="gallery-item">
-                    <a href="<%= photo.src %>" data-fancybox="gallery" data-caption="<%= photo.title %>">
+                    <% var photoOri = photo.src.replace('/img/360px/', '/img/ori/') %>
+                    <a href="<%= photo.src %>" data-fancybox="gallery" data-ori="<%= photoOri %>" data-caption="<%= photo.title %>">
                         <img src="<%= photo.src %>" alt="<%= photo.title %>" loading="lazy">
                     </a>
                     <figcaption class="image-info">

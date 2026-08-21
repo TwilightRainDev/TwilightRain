@@ -8,7 +8,7 @@ tags:
   - AI
 categories:
   - 代码仓库
-cover: /img/covers/how-to-ask-questions.jpg
+cover: /img/360px/covers/how-to-ask-questions.jpg
 ---
 
 # 我把《提问的智慧》改成了 2026 年的样子

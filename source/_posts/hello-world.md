@@ -7,7 +7,7 @@ tags:
   - 博客
 categories:
   - 随笔
-cover: /img/avatar.jpg
+cover: /img/360px/avatar.jpg
 comments: true
 ---
 

@@ -18,9 +18,9 @@
         <li class="article-item">
           <a href="<%- url_for(item.path) %>" class="link">
           <% if (item.cover) { %>
-          <img src="<%- item.cover %>" alt="<%- item.title %>" class="thumbnail" loading="lazy" />
+          <img src="<%- item.cover %>" data-ori="<%- item.cover.replace('/img/360px/', '/img/ori/') %>" alt="<%- item.title %>" class="thumbnail" loading="lazy" />
           <% } else { %>
-          <!-- 无 cover：由 ink.js 每次页面加载从前端封面池随机取图 -->
+          <!-- 无 cover：由 ink.js 每次页面加载从前端封面池随机取图（360px + data-ori） -->
           <img data-random-cover alt="<%- item.title %>" class="thumbnail" loading="lazy" />
           <% } %>
             <div class="article-info">

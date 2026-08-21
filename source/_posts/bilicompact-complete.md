@@ -15,7 +15,9 @@ categories:
 
 > BiliCompact 是一个非侵入式的 B 站首页精简用户脚本。本文从动机、设计、技术三个维度完整回顾这个项目。
 
-![](/img/bilicompact-rainbow.jpg)
+完整可运行源码见 [[BiliCompact 完整源码（v2.6.0）]]。
+
+![](/img/360px/bilicompact-rainbow.jpg)
 
 ## 缘起：为什么要写这个脚本
 
