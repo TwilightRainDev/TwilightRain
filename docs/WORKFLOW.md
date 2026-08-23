@@ -176,6 +176,25 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
 
   `url` 仅允许 `http(s)://` 或站内 `/path`；`tone` 可选 default/blue/green/red/orange。
 
+- **折叠容器 folding**（2026-08-23，Butterfly 批二；与 `:::fold` 不同）：
+
+  ````markdown
+  :::folding[展开详细配置说明]
+  长段补充内容，支持列表与代码块。
+  :::
+  ````
+
+- **B 站视频懒嵌入**（2026-08-23，Butterfly 批二）：
+
+  ```markdown
+  ::bilibili{id="BV1xx411c7mD"}
+  ::bilibili{id="av170001"}
+  ::bilibili{id="https://www.bilibili.com/video/BV1xx411c7mD/" page="1"}
+  ```
+
+  `av` 号与纯数字 aid 会经 `scripts/lib/av-bv-convert.js` 规范为 BV 后再嵌入；
+  滚动到可视区或点击占位卡片后加载 `player.bilibili.com` 播放器（sandbox iframe）。
+
 - **分享按钮**：文章页版权声明下方自动出现微博 / QQ / X 三平台分享链接，
   无需手动配置。
 

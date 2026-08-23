@@ -8,7 +8,7 @@
     "clean": "hexo clean",
     "deploy": "hexo deploy",
     "server": "hexo server",
-    "test": "node --test test/lib/char-stats.test.js test/lib/breadcrumbs.test.js test/lib/wikilinks.test.js"
+    "test": "node --test test/lib/char-stats.test.js test/lib/breadcrumbs.test.js test/lib/wikilinks.test.js test/lib/related-posts.test.js test/lib/av-bv-convert.test.js"
   },
   "engines": {
     "node": ">=20.19.0"

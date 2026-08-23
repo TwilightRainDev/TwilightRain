@@ -1006,11 +1006,9 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 })();
 
-// ======================== 代码块超长折叠（2026-08-18，Reimu 批一迁移） ========================
-// 行数 = .code pre 内 <br> 数量（Hexo 8 行间一个 <br> + 末尾一个空行 <br>，
-// n 行代码恰有 n 个 br，数量即行数）。超阈值折叠并显示"展开全部（N 行）"按钮，
-// 底部渐变遮罩由 style.min.css .code-collapsed 提供。与复制按钮共存（按钮在
-// pre 内，折叠只截断 .code pre 高度，不改变 DOM 结构，复制仍取全文）。
+// ======================== 代码块超长折叠（2026-08-18，Reimu 批一；2026-08-23 布局修复） ========================
+// 行数 = .code pre 内 <br> 数量。超阈值时用 .code-fold-viewport 裁切整表（行号列
+// 与代码列同高），按钮与渐变贴在预览区底部，避免 gutter 撑满数万 px。
 document.addEventListener('DOMContentLoaded', function () {
     var COLLAPSE_LINES = 40;
     document.querySelectorAll('figure.highlight').forEach(function (figure) {
@@ -1018,6 +1016,13 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!pre) return;
         var lines = pre.querySelectorAll('br').length;
         if (lines < COLLAPSE_LINES) return;
+
+        var table = figure.querySelector('table');
+        if (!table) return;
+        var viewport = document.createElement('div');
+        viewport.className = 'code-fold-viewport';
+        table.parentNode.insertBefore(viewport, table);
+        viewport.appendChild(table);
 
         figure.classList.add('code-collapsed');
         var btn = document.createElement('button');
@@ -1032,6 +1037,64 @@ document.addEventListener('DOMContentLoaded', function () {
         figure.appendChild(btn);
     });
 });
+
+// ======================== B 站懒嵌入（2026-08-23，Butterfly 批二迁移） ========================
+// marked-bilibili.js 输出 .bili-embed 占位；进入视口或点击后注入 sandbox iframe。
+(function () {
+    function mountBiliEmbed(root) {
+        if (!root || root.dataset.biliLoaded === '1') return;
+        var src = root.getAttribute('data-bili-src');
+        if (!src) return;
+        var frameWrap = root.querySelector('.bili-embed-frame');
+        var trigger = root.querySelector('.bili-embed-trigger');
+        if (!frameWrap) return;
+
+        var iframe = document.createElement('iframe');
+        iframe.src = src;
+        iframe.title = 'Bilibili 视频播放器';
+        iframe.loading = 'lazy';
+        iframe.setAttribute('allowfullscreen', '');
+        iframe.setAttribute(
+            'sandbox',
+            'allow-scripts allow-same-origin allow-presentation allow-popups'
+        );
+        iframe.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
+        frameWrap.innerHTML = '';
+        frameWrap.appendChild(iframe);
+        frameWrap.hidden = false;
+        if (trigger) trigger.hidden = true;
+        root.dataset.biliLoaded = '1';
+    }
+
+    function initBiliEmbeds() {
+        var nodes = document.querySelectorAll('.bili-embed:not([data-bili-loaded])');
+        if (!nodes.length) return;
+
+        nodes.forEach(function (root) {
+            var trigger = root.querySelector('.bili-embed-trigger');
+            if (trigger) {
+                trigger.addEventListener('click', function () {
+                    mountBiliEmbed(root);
+                });
+            }
+        });
+
+        if (!('IntersectionObserver' in window)) return;
+        var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    mountBiliEmbed(entry.target);
+                    io.unobserve(entry.target);
+                }
+            });
+        }, { rootMargin: '120px 0px', threshold: 0.01 });
+        nodes.forEach(function (root) {
+            if (root.dataset.biliLoaded !== '1') io.observe(root);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', initBiliEmbeds);
+})();
 
 // ======================== 标签页 tabs 切换（2026-08-18，Reimu 批二迁移） ========================
 // scripts/marked-tabs.js 渲染 .tabs（nav 按钮 + 面板），本模块事件委托切换

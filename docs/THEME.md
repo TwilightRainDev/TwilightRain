@@ -399,9 +399,10 @@ themes/ink/layout/
   `loading="lazy" decoding="async"`（已带 loading 或无 src 的跳过）。首页封面
   index.ejs 已自带 lazy；文章页头图（post-imgcard）保持 eager（首屏）。
 - **代码块超长折叠**：ink.js 统计 `.code pre` 内 `<br>` 数量（Hexo 8 中 n 行代码
-  恰有 n 个 br），超 40 行加 `.code-collapsed`（max-height 420px + 底部渐变遮罩，
-  遮罩用 `--code-background-color` 反色背景，深浅主题自动适配）+ 展开按钮（可再
-  收起，按钮 z-index 盖在遮罩上）。复制按钮在 pre 内不受影响，复制仍取全文。
+  恰有 n 个 br），超 40 行将 `<table>` 包入 `.code-fold-viewport` 并加
+  `.code-collapsed`（整表 max-height 420px，行号列与代码列同裁切；底部渐变 +
+  展开按钮贴在预览区底，2026-08-23 修复 gutter 撑高缺陷）。复制按钮在 pre 内
+  不受影响，复制仍取全文。
 - **文章时效**：`scripts/post-staleness.js`（after_post_render）注入两个标记——
   `post.stale` / `post.staleDays`：文章日期距今超 365 天；`post.updatedSet`：
   front matter **显式写 `updated:` 才为真**（data.raw 正则判断）。
@@ -471,6 +472,21 @@ themes/ink/layout/
   `::btn{url=... text=...}`（http(s) 或站内 `/path`）、
   `::label{text=... tone=default|blue|green|red|orange}`。
 - 语法说明见 [WORKFLOW.md](WORKFLOW.md) 文章内扩展语法。
+
+## Butterfly 批二迁移（2026-08-23）
+
+来源对照：`A:\work_zone\Docs\Butterfly-AnZhiYu-*.md`；实现自写，不复制 AZY 源码。
+
+- **相关文章**：`scripts/related-posts.js` + `scripts/lib/related-posts.js` —
+  构建期按标签交集权重取最多 6 篇，`post.ejs` 文末「相关文章」列表（与双链
+  「链接到/反向链接」独立共存）。
+- **折叠容器 folding**：`scripts/marked-folding.js` — `:::folding[摘要]` →
+  `<details class="md-folding">`（显式摘要条样式；与批一 `:::fold` / `:::hide` 区分）。
+- **B 站懒嵌入**：`scripts/marked-bilibili.js` + `scripts/lib/av-bv-convert.js` + ink.js —
+  `::bilibili{id="BV..."}` / `av` 号 / URL；av 自动规范为 BV 后嵌入 sandbox iframe
+  （`player.bilibili.com`）。CSP：`scripts/csp.js` 的 `frame-src` 已加
+  `https://player.bilibili.com`（见 SECURITY.md）。
+- **顺手债**：代码块超长折叠布局缺陷已修（见上 Reimu 批一代码折叠条目）。
 
 ## PaperMod 琐碎增量（2026-08-21）
 

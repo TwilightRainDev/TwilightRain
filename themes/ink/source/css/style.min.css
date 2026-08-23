@@ -2322,6 +2322,37 @@ a.card-link:hover {
     text-decoration: underline;
 }
 
+/* ======================== 标签相关文章（2026-08-23，Butterfly 批二） ======================== */
+.post-related {
+    margin-block: 1rem 0;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+[data-theme="dark"] .post-related {
+    border-top-color: rgba(255, 255, 255, 0.12);
+}
+.post-related-title {
+    margin: 0 0 0.35rem;
+    font-size: 0.9em;
+    font-weight: 600;
+    color: #666;
+}
+[data-theme="dark"] .post-related-title {
+    color: #aaa;
+}
+.post-related-list {
+    margin: 0;
+    padding-left: 1.15rem;
+    font-size: 0.9em;
+}
+.post-related-list a {
+    color: var(--color-primary, #1a8fe3);
+    text-decoration: none;
+}
+.post-related-list a:hover {
+    text-decoration: underline;
+}
+
 /* ======================== 展柜页（项目 / 技能 / 时间线） ======================== */
 .projects-grid,
 .skills-grid {
@@ -2994,19 +3025,19 @@ h2:target, h3:target {
     animation: target-flash 1.2s ease-out;
 }
 
-/* ======================== 代码块超长折叠（2026-08-18，Reimu 批一迁移） ========================
-   ink.js 统计 .code pre 内行数（br 数量），超 40 行加 .code-collapsed：
-   截断高度 + 底部渐变遮罩 + 展开按钮。按钮为普通流元素（z-index 盖在遮罩上，
-   遮罩 pointer-events: none），展开后仍可见可再收起。渐变用 --code-background-color
-   （代码块反色背景），深浅主题自动适配。 */
+/* ======================== 代码块超长折叠（2026-08-18，Reimu 批一；2026-08-23 布局修复） ========================
+   ink.js 用 .code-fold-viewport 裁切整表（行号+代码同高），按钮与渐变在预览区底。 */
 figure.highlight {
-    position: relative; /* 折叠遮罩定位基准 */
+    position: relative;
 }
-.code-collapsed .code pre {
+.code-fold-viewport {
+    position: relative;
+}
+.code-collapsed .code-fold-viewport {
     max-height: 420px;
     overflow: hidden;
 }
-.code-collapsed::after {
+.code-collapsed .code-fold-viewport::after {
     content: '';
     position: absolute;
     left: 0;
@@ -3083,6 +3114,93 @@ figure.highlight {
 
 .md-fold {
     margin-block: calc(var(--spacing) * 1.25);
+}
+
+/* folding 容器：显式摘要条，与 :::fold / article details 默认样式区分 */
+article details.md-folding {
+    margin-block: calc(var(--spacing) * 1.25);
+    border-top: none;
+    border-radius: 0.5rem;
+    background: rgba(26, 143, 227, 0.08);
+}
+article details.md-folding summary.md-folding-summary {
+    padding: 0.65rem 0.9rem;
+    font-weight: 600;
+    color: var(--color-primary, #1a8fe3);
+}
+article details.md-folding summary.md-folding-summary::before {
+    color: var(--color-primary, #1a8fe3);
+}
+article details.md-folding > .md-folding-body {
+    padding: 0 0.9rem 0.9rem;
+}
+[data-theme="dark"] article details.md-folding {
+    background: rgba(26, 143, 227, 0.14);
+}
+
+/* B 站懒嵌入 */
+.bili-embed {
+    margin-block: calc(var(--spacing) * 1.25);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.03);
+}
+.bili-embed-trigger {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    width: 100%;
+    min-height: 180px;
+    padding: 1.25rem;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+}
+.bili-embed-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: var(--color-primary, #1a8fe3);
+    color: #fff;
+    font-size: 1.1rem;
+}
+.bili-embed-label {
+    font-weight: 600;
+}
+.bili-embed-hint {
+    font-size: 0.85em;
+    color: #666;
+}
+.bili-embed-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+}
+.bili-embed-frame iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+[data-theme="dark"] .bili-embed {
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.04);
+}
+[data-theme="dark"] .bili-embed-hint {
+    color: #aaa;
+}
+.md-bili-error {
+    color: var(--admonitions-color-caution);
 }
 
 .post-timeline {
