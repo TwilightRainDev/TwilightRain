@@ -3,13 +3,15 @@
  *
  * front matter: series: 系列名  （可选 series_index: 1）
  * 文内: ::series  或  ::series{name="系列名"}
+ *
+ * 在 before_post_render 同步替换 ::series，避免 marked 扩展依赖模块级
+ * renderCtx（Hexo 并行渲染多篇文章时会互相覆盖）。
  */
 'use strict';
 
 var urlFor = require('hexo-util').url_for.bind(hexo);
 var seriesLib = require('./lib/series-groups');
-
-var renderCtx = null;
+var seriesBlocks = require('./lib/series-blocks');
 
 function rebuildSeriesGroups() {
   var posts = hexo.model('Post').toArray();
@@ -29,15 +31,6 @@ hexo.extend.filter.register('before_generate', function () {
   rebuildSeriesGroups();
 });
 
-hexo.extend.filter.register('before_post_render', function (data) {
-  if (!hexo._seriesGroups) rebuildSeriesGroups();
-  renderCtx = {
-    path: data.path,
-    series: data.series
-  };
-  return data;
-});
-
 function escapeHtml(str) {
   return String(str)
     .replace(/&/g, '&amp;')
@@ -47,7 +40,7 @@ function escapeHtml(str) {
     .replace(/'/g, '&#39;');
 }
 
-function renderSeriesHtml(seriesName) {
+function renderSeriesHtml(seriesName, currentPath) {
   var groups = hexo._seriesGroups || {};
   var items = groups[seriesName];
   if (!items || !items.length) {
@@ -55,7 +48,6 @@ function renderSeriesHtml(seriesName) {
   }
 
   var sorted = seriesLib.sortSeriesItems(items);
-  var currentPath = renderCtx && renderCtx.path;
   var listTag = sorted.length > 1 ? 'ol' : 'ul';
   var body = sorted.map(function (item) {
     var isCurrent = currentPath && item.path === currentPath;
@@ -73,42 +65,17 @@ function renderSeriesHtml(seriesName) {
     '</nav>';
 }
 
-var seriesExtension = {
-  name: 'mdSeries',
-  level: 'block',
-  start: function (src) {
-    var m = src.match(/^::series(?=[{\s])/);
-    return m ? m.index : -1;
-  },
-  tokenizer: function (src) {
-    var match = /^::series(?:\{([\s\S]*?)\})?[ \t]*(?:\n|$)/.exec(src);
-    if (!match) return undefined;
-    var attrs = {};
-    if (match[1]) {
-      var re = /([a-zA-Z-]+)="([^"]*)"/g;
-      var m;
-      while ((m = re.exec(match[1])) !== null) attrs[m[1]] = m[2];
-    }
-    return {
-      type: 'mdSeries',
-      raw: match[0],
-      name: (attrs.name || '').trim()
-    };
-  },
-  renderer: function (token) {
-    var seriesName = token.name || (renderCtx && renderCtx.series);
-    if (!seriesName) {
-      return '<p class="post-series-error">[WARN] 请写 ::series{name="系列名"} 或在 front matter 设置 series:</p>';
-    }
-    return renderSeriesHtml(seriesName);
+hexo.extend.filter.register('before_post_render', function (data) {
+  if (!hexo._seriesGroups) rebuildSeriesGroups();
+  if (data.content) {
+    data.content = seriesBlocks.replaceSeriesBlocks(data.content, {
+      path: data.path,
+      series: data.series
+    }, renderSeriesHtml);
   }
-};
-
-hexo.extend.filter.register('marked:use', function (markedUse) {
-  markedUse({ extensions: [seriesExtension] });
+  return data;
 });
 
 module.exports = {
-  seriesExtension: seriesExtension,
   renderSeriesHtml: renderSeriesHtml
 };
