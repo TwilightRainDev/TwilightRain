@@ -21,8 +21,7 @@
 ```
 
 **要点**：构建发生在 Cloudflare 云端（监听 main 分支），不是本地 `hexo deploy`。
-本地 `public/` 只是预览/检查用；历史 `hexo deploy`（推 `gh-pages` 分支）方案
-已在 2026-08-08 移除（依赖与配置一并清理），不要恢复。
+本地 `public/` 只是预览/检查用。
 
 ## 技术栈
 
@@ -35,7 +34,7 @@
 
 插件（`package.json` dependencies）：`hexo-generator-{archive,category,feed,index,searchdb,sitemap,tag}`（归档/分类/
 RSS/首页/搜索/站点地图/标签）、`hexo-renderer-{ejs,marked,stylus}`（模板/内容/样式渲染）、
-`hexo-server`（本地预览）。`hexo-deployer-git` 与 `hexo-theme-landscape` 已于 2026-08-08 移除（历史残留）。
+`hexo-server`（本地预览）。
 
 ## 目录地图
 
