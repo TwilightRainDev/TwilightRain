@@ -1,13 +1,12 @@
 # 博客维护手册（docs）
 
-TwilightRain 博客源码仓库的维护文档。本目录从 2026-08-08 起纳入版本控制，
-替代原 `BlogPrivate.txt` 私人备忘（其内容已并入本文档）。
+TwilightRain 博客源码仓库的维护文档。
 
 ## 三个必须记住的事实
 
 1. **站点**：https://twilightrain.com —— 由 Cloudflare Pages 托管（`twilightrain.pages.dev` 已整站 301 到此，机制见 [SECURITY.md → 重定向与 404](SECURITY.md#重定向与-404)）。
 2. **源码**：`A:\work_zone\Blog\blog`（本地）↔ `https://github.com/TwilightRainDev/TwilightRain`（远程，`main` 分支装源码）。
-3. **⚠️ Cloudflare 构建只认 `main` 分支的源码**：推送必须推 `main`。不要推 `gh-pages`（那是 GitHub Pages 时代的残留，`_config.yml` 的 `deploy` 段已废弃，不要使用）。
+3. **Cloudflare 构建只认 `main` 分支的源码**：推送必须推 `main`。不要推 `gh-pages`（`_config.yml` 的 `deploy` 段已废弃，不要使用）。
 
 ## 文档地图
 

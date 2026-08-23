@@ -2,6 +2,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const mainContent = document.querySelector('article');
     if (mainContent) {
         mainContent.querySelectorAll('img').forEach(img => {
+            // 卡片/网格/头图等组件内图片不做 article-image 取色包裹（会破坏布局并误藏图）
+            if (img.closest(
+                'a.card-site, a.card-intro, .photo-grid, .site-group, a.card-github, a.card-link, .post-imgcard'
+            )) {
+                return;
+            }
+
             const title = img.getAttribute('title');
             const alt = img.getAttribute('alt');
 
@@ -36,16 +43,23 @@ document.addEventListener('DOMContentLoaded', function () {
             customElement.appendChild(img);
             customElement.appendChild(figcaption);
 
-            img.addEventListener('load', function () {
+            function revealImage() {
                 customElement.style.display = 'inline-block';
                 const canvas = document.createElement('canvas');
                 const rgbColor = getImageColor(canvas, img);
                 figcaption.style.backgroundColor = rgbColor;
-            });
+            }
+
+            img.addEventListener('load', revealImage);
 
             img.addEventListener('error', function () {
                 customElement.remove();
             });
+
+            // 缓存图或 lazy 已解码时 load 不再触发，避免永久 display:none
+            if (img.complete && img.naturalWidth) {
+                revealImage();
+            }
         });
     }
 

@@ -17,7 +17,7 @@ npm install        # 首次或依赖变更后
 | `npm run server` | 本地预览 http://localhost:4000（热重载） |
 | `npm run build` | 生成 `public/`（构建产物，不入库） |
 | `npm run clean` | 清空 `public/` 与 `db.json` 缓存 |
-| `npm test` | 跑 `scripts/lib/` 下纯函数单测（字数/面包屑/双链） |
+| `npm run test` | 跑 `scripts/lib/` 下纯函数单测（字数/面包屑/双链） |
 | `npx hexo new "标题"` | 生成新文章草稿（scaffolds/） |
 
 **预览时的已知差异**：`hexo server` 不输出安全头（CSP），因为 hexo-server 3.x 的
@@ -51,20 +51,21 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
 - **文件名一律英文 kebab-case**（小写+连字符，如 `time-management-master.md`）：
   文件名即 URL slug（permalink `:year/:month/:day/:title/`），中文名会产出
   百分号编码的长 URL。中文标题写进 front-matter `title` 即可；改文件名会变
-  URL，需同步在 `scripts/redirects.js` 加 301（2026-08-16 统一改名先例）。
+  URL，需同步在 `scripts/redirects.js` 加 301。
 - **excerpt 一律 front matter 手写**（`excerpt: 一句话摘要`）：不要用
-  `<!-- more -->` 自然截断——截断点可能落在代码中间（曾导致摘要里出现
-  HTML 实体乱码），且截断摘要只是开头段复制，不是真正的摘要。
+  `<!-- more -->` 自然截断——截断点可能落在代码中间，导致摘要里出现
+  HTML 实体乱码，且截断摘要只是开头段复制，不是真正的摘要。
 - **date 即永久链接**：发文后改日期会改变 URL，造成死链。定稿后再定日期。
-- **图片双轨（2026-08-21）**：原图放 `source/img/ori/`（入库）；展示图由
+- **图片双轨**：原图放 `source/img/ori/`（入库）；展示图由
   `npm run thumbs` 或 `npm run build` 生成到 `source/img/360px/`（**gitignore，勿提交**）。
   正文/cover 引用 `/img/360px/...`；灯箱左上角「查看原图」打开对应 `/img/ori/...`。
   `icon.svg` 仍放 `source/img/icon.svg`，不进双轨。
+- **文章内中英文空格**：写作时手动在中文与英文/数字间加空格（见 [THEME.md](THEME.md#中英文空格)）。
 - `external_link` 已开启，外链自动新标签打开。
 - 文章会自动进 feed（atom.xml，限 20 篇）、搜索（search.xml）与 sitemap，无需额外操作。
 - 提交信息建议带类型前缀（仓库历史惯例：`feat:` / `fix:` / `security:` / `chore:` / `docs:`）。
 
-## 文章内扩展语法（2026-08-16 起，Twilight 迁移）
+## 文章内扩展语法
 
 - **提示块**（五类彩色块，语法与 markdown-it-container 一致）：
 
@@ -102,10 +103,9 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
   ```
 
   渲染为仓库卡片（owner/repo + GitHub 图标 + 可选描述），点击跳转仓库页。
-  静态卡片，不调 API（不显示 stars 等动态数据）；repo 格式错误时输出
-  可见的 `[WARN]` 提示。
+  repo 格式错误时输出可见的 `[WARN]` 提示。
 
-- **通用链接卡片**（2026-08-18，Reimu 批二迁移，单行指令，与 ::github 同风格）：
+- **通用链接卡片**（单行指令，与 ::github 同风格）：
 
   ```markdown
   ::link{url="https://www.anthropic.com/claude" title="Claude" desc="可选描述"}
@@ -114,7 +114,7 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
   渲染为网页卡片（link 图标 + 标题 + 域名 + 可选描述），点击跳转（新标签）。
   纯静态无 API；title 省略时显示域名；url 仅支持 http/https（其他协议拒绝）。
 
-- **标签页 tabs**（2026-08-18，Reimu 批二迁移，块级容器，与提示块同体系）：
+- **标签页 tabs**（块级容器，与提示块同体系）：
 
   ````markdown
   :::tabs
@@ -128,10 +128,7 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
   渲染为标签页，默认显示第一个，点击按钮切换。`--- 标题` 是子页分隔符
   （顶格写）；无分隔符的块输出可见 `[WARN]`。
 
-- **文章内中英文空格**：写作时手动在中文与英文/数字间加空格
-  （pangu 自动机制已评估降级，见 THEME.md「Reimu 批二迁移」）。
-
-- **文内照片墙**（2026-08-18，Reimu 批三，纯 CSS 约定，无标签插件）：
+- **文内照片墙**（纯 CSS 约定，无标签插件）：
 
   ```html
   <div class="photo-grid">
@@ -143,7 +140,7 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
   多图自动网格排列（200px 起自适应列数），点击放大走 fancybox 灯箱
   （与正文图同机制）。相册集合请用 `/gallery/` 页（front matter photos 数组）。
 
-- **隐藏 / 折叠**（2026-08-21，Butterfly 批一）：
+- **隐藏 / 折叠**：
 
   ````markdown
   :::hide[点击显示答案]
@@ -155,7 +152,7 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
   :::
   ````
 
-- **文内时间线**（2026-08-21，Butterfly 批一；与站点页 `/timeline/` 展柜不同）：
+- **文内时间线**（与站点页 `/timeline/` 展柜不同）：
 
   ````markdown
   :::timeline[版本史]
@@ -166,7 +163,7 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
   :::
   ````
 
-- **按钮 / 标签**（2026-08-21，Butterfly 批一）：
+- **按钮 / 标签**：
 
   ```markdown
   ::btn{url="https://example.com" text="打开文档"}
@@ -176,7 +173,7 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
 
   `url` 仅允许 `http(s)://` 或站内 `/path`；`tone` 可选 default/blue/green/red/orange。
 
-- **折叠容器 folding**（2026-08-23，Butterfly 批二；与 `:::fold` 不同）：
+- **折叠容器 folding**（与 `:::fold` 不同）：
 
   ````markdown
   :::folding[展开详细配置说明]
@@ -184,7 +181,7 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
   :::
   ````
 
-- **B 站视频懒嵌入**（2026-08-23，Butterfly 批二）：
+- **B 站视频懒嵌入**：
 
   ```markdown
   ::bilibili{id="BV1xx411c7mD"}
@@ -195,7 +192,7 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
   `av` 号与纯数字 aid 会经 `scripts/lib/av-bv-convert.js` 规范为 BV 后再嵌入；
   滚动到可视区或点击占位卡片后加载 `player.bilibili.com` 播放器（sandbox iframe）。
 
-- **站点卡 / 介绍卡**（2026-08-23，Butterfly 批三）：
+- **站点卡 / 介绍卡**：
 
   ```markdown
   ::site{url="https://example.com" title="站点名" screenshot="/img/360px/cover.jpg" desc="可选描述"}
@@ -209,7 +206,7 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
 
   图片 URL 须为 `http(s)://` 或站内 `/path`；与 `::link` 同安全策略。
 
-- **系列文**（2026-08-23，Butterfly 批三）：
+- **系列文**：
 
   ```yaml
   # front matter
@@ -227,7 +224,7 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
 - **分享按钮**：文章页版权声明下方自动出现微博 / QQ / X 三平台分享链接，
   无需手动配置。
 
-- **双链（Obsidian 风格，2026-08-21）**：正文写 `[[文章标题]]`，构建期转为站内链接；
+- **双链（Obsidian 风格）**：正文写 `[[文章标题]]`，构建期转为站内链接；
   文章底显示「链接到 / 反向链接」。别名与锚点：`[[标题|别名]]`、`[[标题#章节]]`。
   按 **title** 匹配（次选 slug），**标题须唯一**；围栏/行内代码内的 `[[…]]` 不处理。
   未匹配的双链原样保留，便于发现写错。
@@ -242,7 +239,7 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
 - **提交身份**：仓库已配好 `TwilightRain` / `122437146+TwilightRainDev@users.noreply.github.com`
   （noreply 邮箱，不暴露真实邮箱）。改任何仓库配置时**不要覆盖**这两项。
 - **只推 main**：Cloudflare 监听 main 分支构建。`gh-pages` 分支与 `hexo deploy`
-  流程是历史残留（依赖已移除），不要推、不要恢复。
+  流程已废弃，不要推、不要恢复。
 - 推送前先 `git status` 确认没有 `public/`、`db.json`、`node_modules`、
   `.deploy_git/` 混入（已在 `.gitignore` 中，正常情况下不会）。
 - `docs/` 已入库（除 `docs/BlogPrivate.txt` 外），文档改动随代码一起提交。

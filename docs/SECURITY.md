@@ -14,11 +14,11 @@
 | `style-src` | `'self'` `'unsafe-inline'` `https://giscus.app` `https://cdnjs.cloudflare.com` | 见下方 giscus 陷阱 |
 | `img-src` | `'self'` `https:` `data:` | 外链图片与 data URI |
 | `font-src` | `'self'` | 字体全自托管，禁止外链字体 |
-| `frame-src` | `https://giscus.app` `https://player.bilibili.com` | 评论 iframe；B 站播放器（批二 `::bilibili`，sandbox iframe） |
+| `frame-src` | `https://giscus.app` `https://player.bilibili.com` | 评论 iframe；B 站播放器（`::bilibili`，sandbox iframe） |
 | `connect-src` | `'self'` `https://api.github.com` | 唯一第三方 fetch：GitHub 仓库卡片数据（见下） |
 | `base-uri` | `'self'` | 防 base 标签劫持 |
 
-**connect-src 例外（2026-08-17 起，用户拍板）**：`https://api.github.com`
+**connect-src 例外**：`https://api.github.com`
 是博客唯一第三方 fetch 白名单，服务于 GitHub 仓库卡片（ink.js 拉取
 stars/forks/language/license/description）。缓解措施：localStorage 缓存
 1 小时（防无 token 的 60 次/小时/IP 限流）、请求失败静默回退静态内容
@@ -60,20 +60,20 @@ fetch 前先评估（默认收紧取向）；若卡片功能移除，此行一�
 
 5. **搜索 XSS（已修复，勿回退）**：`themes/ink/source/js/search.js` 渲染搜索结果
    时必须走文本节点/DOM 转义，不能把用户输入拼进 `innerHTML`。改搜索代码时
-   保持这一约束（历史上曾存在 DOM XSS，commit d6b5989 修复）。
+   保持这一约束（commit d6b5989 修复）。
 
 6. **依赖安全**：dependabot 每日检查 npm 依赖（`.github/dependabot.yml`），
    PR 上限 20。合并依赖升级 PR 前跑 `npm run build` 验证。`package.json` 的
    `overrides` 段（brace-expansion/minimatch 锁版）是已知漏洞的补丁，不要删。
 
-7. **内联事件处理器被 CSP 拦截（2026-08-14 踩坑）**：`script-src` 不含
+7. **内联事件处理器被 CSP 拦截**：`script-src` 不含
    `'unsafe-inline'`，任何 `onclick`/`onload` 等内联事件属性都会在浏览器端
    被拒绝执行（点击无反应，控制台报 "Refused to execute inline event
    handler"）。页面交互一律走外链 JS（ink.js）的 `addEventListener`，导航类
    语义用 `<a>` 链接（分页按钮即因此从 button+onclick 改为 a）。新增任何
    内联事件属性前先想清楚，改后需在线上验证。
 
-8. **source/ 下的可渲染扩展名会被当页面处理（2026-08-16 踩坑）**：Hexo 8
+8. **source/ 下的可渲染扩展名会被当页面处理**：Hexo 8
    的 asset processor 对 `source/` 中**无 front-matter** 的 `.html`/`.json`
    等"有渲染器"的文件仍走 `processPage`——会被套上主题布局、进入 `site.pages`
    （进而出现在 sitemap）。要原样静态拷贝必须加入 `_config.yml` 的
@@ -81,7 +81,7 @@ fetch 前先评估（默认收紧取向）；若卡片功能移除，此行一�
    注意：**改 `skip_render` 后必须 `hexo clean` 再 build**，否则 db.json 缓存
    会让旧产物（已套布局的版本）残留。
 
-9. **外置 import map 不可靠（2026-08-16 踩坑）**：`<script type="importmap"
+9. **外置 import map 不可靠**：`<script type="importmap"
    src="...">` 在 Chromium 系（Edge 151 实测）不生效——脚本标签不发请求，
    裸模块标识符全部解析失败（页面表现为：纯 HTML 界面正常、模块渲染的 3D
    场景全无）。**不要用 import map**：本地库一律改**相对路径导入**
@@ -92,7 +92,7 @@ fetch 前先评估（默认收紧取向）；若卡片功能移除，此行一�
 
 ## 内容与仓库安全
 
-- 评论走 giscus（GitHub Discussions 作后端，主题配置见 [THEME.md](THEME.md#评论)）。
+- 评论走 giscus（GitHub Discussions 作后端，主题配置见 [THEME.md](THEME.md#配置themesink_configyaml)）。
 - 提交身份用 noreply 邮箱：完整地址为
   `122437146+TwilightRainDev@users.noreply.github.com`（本地两个仓库
   user.email 均已改为此地址）；**历史提交仍含真实邮箱**——GitHub 账号

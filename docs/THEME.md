@@ -17,10 +17,9 @@ themes/ink/layout/
 │   ├── header.ejs    # 导航菜单（遍历主题 _config.yml menu 渲染，外链自动新标签打开）
 │   ├── footer.ejs    # 页脚
 │   ├── comments.ejs  # giscus 评论挂载
-│   └── banner.ejs    # 头图横幅（文章页与普通页面共用）
+│   └── banner.ejs    # 头图横幅（普通页面共用；文章页不使用）
 ├── 404.ejs           # 404 页（source/404.md 指定 layout: 404）
 ├── settings.ejs      # 设置页（source/settings/index.md → 主题/字体/首页列数偏好）
-├── post.ejs          # 文章页正文头部含阅读时间（scripts/reading-time.js 注入）
 ├── search.ejs        # 搜索页（source/search/index.md → search.js 前端检索）
 ├── categories.ejs / tags.ejs / gallery.ejs
 ```
@@ -40,26 +39,24 @@ themes/ink/layout/
 ## 文章页功能（post.ejs）
 
 - **头图横幅**（`partial/banner.ejs`）：**仅普通页面使用**（about/links 等，
-  `page.ejs` 引用）；**文章页已弃用**（2026-08-14 重构）：post.ejs 不再引用
-  banner，改为「头图并入 TOC 双卡」布局（见下文）。
+  `page.ejs` 引用）；文章页不使用 banner，改为「头图并入 TOC 双卡」布局（见下文）。
 - **文章页头图 + TOC 双卡**（post.ejs 输出 `.post-toc-row`）：图卡
   （`.post-imgcard`，40% 宽，高度为图片自然比例——封面池方图即方卡，
   front matter `cover` 或 `data-random-cover` 随机封面池）+ 目录槽
   （`.post-toc-slot`，ink.js 生成的 TOC 移入其中），桌面并排、移动端
   （<768px）图卡全宽堆顶。**目录卡与图卡等高**：ink.js 用 ResizeObserver
   同步 `toc.style.height = 图卡高`——目录内容少于图卡高时填充留白（等高
-  卡片），内容超出时卡片内滚动（`overflow-y: auto`，2026-08-15 修复
-  "长目录 557px 撑高" 问题）。图卡高度随图片解码与窗口宽度变化，RO 自动
-  跟随；`h > 0` 保护防止图片加载失败时目录卡高度归零。无 h2/h3 的文章
-  不生成 TOC 卡，图卡自动全宽（`:not(:has(.post-toc))` 规则）。图卡图片与
-  文章内图片同样绑定 fancybox 灯箱。TOC 头部「目录 [折叠]」整体左对齐。
-  改动双卡结构时注意：TOC 由 ink.js 运行时生成并移入槽位，`figure.highlight`
-  等文章结构不受影响。
+  卡片），内容超出时卡片内滚动（`overflow-y: auto`）。图卡高度随图片解码
+  与窗口宽度变化，RO 自动跟随；`h > 0` 保护防止图片加载失败时目录卡高度
+  归零。无 h2/h3 的文章不生成 TOC 卡，图卡自动全宽（`:not(:has(.post-toc))`
+  规则）。图卡图片与文章内图片同样绑定 fancybox 灯箱。TOC 头部「目录 [折叠]」
+  整体左对齐。改动双卡结构时注意：TOC 由 ink.js 运行时生成并移入槽位，
+  `figure.highlight` 等文章结构不受影响。
 - **图片灯箱**：文章内图片点击放大（fancybox 3）。资源由 post.ejs 按页引入
   （cdnjs + integrity，与 gallery.ejs 同款，CSP script-src/style-src 已含
   cdnjs.cloudflare.com，改安全头前读 [SECURITY.md](SECURITY.md)）。
   `ink.js` 在运行时给 article 内 img 加 `data-fancybox` 属性，fancybox 事件委托自动绑定。
-  **已知陷阱（2026-08-17 修复）**：fancybox 3.5.7 对直接 `<img>` 触发（无 `<a>`
+  **已知陷阱**：fancybox 3.5.7 对直接 `<img>` 触发（无 `<a>`
   包裹）会把原图移动进灯箱，关闭时放回但残留 `style="display: none"`——文章页
   头图关闭灯箱后"消失"。ink.js 监听 jQuery 的 `afterClose.fb` 事件恢复内联
   display（文章页才有 jQuery；若未来文章正文加图同样适用）。改动灯箱绑定方式
@@ -70,14 +67,24 @@ themes/ink/layout/
   `figure.highlight > table > td.code > pre > code.hljs > span`，行分隔为
   `<br>`）。提取用克隆后递归替换 `<br>` 为换行文本节点再取 textContent，
   `hljs: true` 后 `<br>` 嵌套在 `<code>` 内部，直接 textContent 会拼成一行。
+- **移动端胶囊 TOC**：post.ejs 输出固定右上角胶囊按钮 + 悬浮面板
+  （`hidden` 初始，ink.js 有 TOC 时解除）；ink.js 的 `placeToc()` 按
+  <768px 断点把生成的 toc DOM 在 `.post-toc-slot`（桌面双卡）与
+  `.post-toc-mobile-panel`（移动端面板）之间迁移，resize 跨界自动切换；
+  滚动 80px 后按钮出现（`.is-visible`），IntersectionObserver 高亮同时
+  更新按钮上的当前标题预览，面板内点击链接后收起。改动 TOC 结构时注意：
+  `syncTocHeight`（桌面双卡等高）移动端跳过并清空内联 height。
+- **文章分享**：版权声明下输出三平台纯链接分享（微博 / QQ / X），
+  无第三方脚本、CSP 零新增、rel noopener；URL/title 经 encodeURIComponent。
+- **双链相关文章**：文章底「链接到 / 反向链接」（无则隐藏）。
 
 ## 代码高亮（highlight.js）
 
 - 构建时渲染（`syntax_highlighter: highlight.js`，`hljs: true`），无客户端 JS、
   无第三方 CDN——配色直接内联在 style.min.css（自托管，单文件纪律）。
-- `auto_detect: true`：未标注语言的代码块由 highlight.js 构建时自动检测
-  （历史上 74% 的代码块无标注）。**已知误检**：纯文本/进度条类内容可能被
-  误识别为某种语言（如 erlang-repl），显式标注语言（\`\`\`js 等）可覆盖。
+- `auto_detect: true`：未标注语言的代码块由 highlight.js 构建时自动检测。
+  **已知误检**：纯文本/进度条类内容可能被误识别为某种语言（如 erlang-repl），
+  显式标注语言（\`\`\`js 等）可覆盖。
 - **深浅反色适配**：代码块背景是主题反色（浅色页面深底、深色页面浅底），
   所以配色反向匹配——默认（浅色页面）用 github-dark 配色，`[data-theme="dark"]`
   时用 github 浅色配色（ink.js 深色时始终设置 html[data-theme=dark]，
@@ -90,8 +97,7 @@ themes/ink/layout/
   落入 `code, .highlight, .code { font-size: 0.9em }` 字号链（td 0.9em -> pre 0.8em ->
   code 0.9em），代码文字约 10.5px；而 `td.gutter` 无 `.code` 类，行号约 13px。
   行多时 gutter 内容高于 code 内容，表格行高被 gutter 撑开，td 默认
-  `vertical-align: middle` 会把 code 整体下推半个行差——1663 行的代码块会下推
-  3.2k px，代码块前约 150 行只剩空背景（2026-08-14 定位的线上"前 144 行空白"事故）。
+  `vertical-align: middle` 会把 code 整体下推半个行差——超长代码块会严重错位。
   style.min.css 中 `figure.highlight td { font-size: inherit }` 与
   `figure.highlight td.code code { font-size: inherit }` 统一两格字号，不可删。
 - **代码不换行 + 行号对齐**：`figure.highlight table` 设 `table-layout: fixed;
@@ -102,6 +108,10 @@ themes/ink/layout/
 - **Hexo 8 末尾双 `<br>`**：code 元素末尾输出两个 `<br>`，多出一个尾随空行盒，
   行号与代码整体错位半行；`figure.highlight td.code code br:last-child { display: none }`
   已处理（依赖 br 是 code 的最后一个子节点，改动 highlight 输出结构前先验证）。
+- **代码块超长折叠**：ink.js 统计 `.code pre` 内 `<br>` 数量（Hexo 8 中 n 行代码
+  恰有 n 个 br），超 40 行将 `<table>` 包入 `.code-fold-viewport` 并加
+  `.code-collapsed`（整表 max-height 420px，行号列与代码列同裁切；底部渐变 +
+  展开按钮贴在预览区底）。复制按钮在 pre 内不受影响，复制仍取全文。
 
 ## MathJax 按需加载
 
@@ -112,7 +122,7 @@ themes/ink/layout/
   强制不加载；缺省自动检测。
 - **自动检测规则**：把 `page.content` 中 `<pre>...</pre>` 代码块整体剔除后，
   匹配 `$`、`\(`、`\[` 任意一个即视为含公式——代码块里的美元符号/反斜杠
-  不会误触发（bilicompact-source-v2 那种满屏 `$` 的源码文章安全）。
+  不会误触发。
 - **公式分隔符**：行内 `$...$` 与 `$$...$$`（显示公式），`\(...\)` 也受支持。
   **注意**：markdown-it 的 backslash escape 会把源文件里 `\(` `\)` `\[` `\]`
   的反斜杠吞掉（`\(` 属于可转义标点），文章里写 `\(...\)` 会渲染成 `(a ne b)`
@@ -130,11 +140,14 @@ themes/ink/layout/
   配置不能内联 `<script>`；该文件必须位于 tex-chtml.js 之前（defer 按文档
   顺序执行，`window.MathJax` 要先注册）。改动配置时勿合并进 ink.js——
   那样无公式页也会带上配置代码，违背按需纪律。
+- **长公式横向滚动**：`article mjx-container[display="true"]` 加
+  overflow-x: auto + max-width 100%（MathJax 3 CHTML 输出），超宽块级公式
+  独立横向滚动，不撑破正文。
 
 ## 二级菜单（header 导航）
 
 - **配置**：`_config.yml` 的 `menu` 值两种形态——
-  - 字符串：普通链接（现状不变）
+  - 字符串：普通链接
   - 对象：`{ url: /父链接/, children: { 子名: /链接/ } }`。`url` 可省略，
     省略时父项仅作展开按钮（渲染为 `href="#"`，点击由 JS 接管）。
     子项与普通项一样，http(s) 开头视为外链新标签打开。
@@ -151,6 +164,12 @@ themes/ink/layout/
   （`position: absolute; top: 100%`），`.has-sub:hover` 与 `.has-sub.open`
   两种展开入口；展开箭头是 CSS 边框三角（不依赖图标字体）。
 
+## 分类入口
+
+- `menu` 的「分类」项设 `categories: true`，`header.ejs` 的 sub-menu 由
+  `site.categories` 动态生成（名称 + 文章数，链接分类页），分类增删无需再改菜单配置。
+  分类顺序为 hexo 内部顺序（当前按名称），如需按文章数排序需在模板内 sort（中文排序需注意）。
+
 ## 归档页（archive.ejs）
 
 - 主配置 `_config.yml` 中 `archive_generator.per_page: 0` 关闭归档分页，
@@ -165,8 +184,8 @@ themes/ink/layout/
   columns-preference）在 defer 阶段立即应用，兼容旧值（light/dark）。设置页选择
   会写入 localStorage。
   模块清单：图片说明、随机封面、主题/字体/列数偏好、返回顶部、阅读进度条、TOC、
-  悬停资料卡、图片灯箱绑定、代码块复制、代码块超长折叠（见下）、归档折叠、
-  友链主站探测、二级菜单触摸交互、Mermaid 图表按需渲染（见下）。
+  悬停资料卡、图片灯箱绑定、代码块复制、代码块超长折叠、归档折叠、
+  友链主站探测、二级菜单触摸交互、Mermaid 图表按需渲染、B 站懒嵌入。
   **主题变更通知**：偏好模块 `applyTheme` 末尾 dispatch `theme-change` 事件
   （detail.theme = 实际主题），依赖主题的组件监听它（当前仅 mermaid 重渲染）。
 
@@ -176,7 +195,7 @@ themes/ink/layout/
 - 实现：ink.js 在 `.blog-posts` 上写 CSS 变量 `--cols`，样式表 `.article-item`
   宽度为 `calc(100% / var(--cols, 断点兜底) - 20px)`；三档媒体查询
   （基础 3 / ≤768px 2 / ≤480px 1）的 `var()` 兜底值不同——未设置时各断点取
-  各自默认列数（现状行为），显式设置后所有断点内都解析为设置值（全端跟随）。
+  各自默认列数，显式设置后所有断点内都解析为设置值（全端跟随）。
 - 只作用于首页：归档/标签等页用独立列表结构，不受影响。
 
 ## 提示块（admonitions）
@@ -184,7 +203,7 @@ themes/ink/layout/
 - **语法**：`:::note` / `:::tip` / `:::important` / `:::warning` / `:::caution`
   包裹内容，`:::类型[自定义标题]` 可指定标题（缺省显示类型名，如 Note）。
   渲染为 `<blockquote class="admonition bdm-类型" data-callout="类型">` +
-  `.bdm-title`（Twilight 迁移，语法与 markdown-it-container / remark-directive 一致）。
+  `.bdm-title`（语法与 markdown-it-container / remark-directive 一致）。
 - **实现**：`scripts/marked-admonitions.js` 注册 **marked:use** 过滤器——hexo-renderer-marked
   每次渲染前执行该过滤器（lib/renderer.js:235 `execFilterSync('marked:use', marked.use)`），
   用 marked 块级扩展（tokenizer 二次解析块内内容 + renderer）实现，无需切换渲染器、
@@ -200,10 +219,10 @@ themes/ink/layout/
   源码保留在 DOM（无 JS 可见、可复制）；ink.js 按需加载自托管
   `themes/ink/source/js/mermaid.min.js`（v11.16.1，约 3.6MB 未压缩 / gzip 约 1MB）
   渲染为 SVG 替换容器；渲染失败显示错误信息并保留源码。
-- **实现关键（2026-08-16 踩坑）**：**不能做成 marked 扩展**——hexo 内置
+- **实现关键**：**不能做成 marked 扩展**——hexo 内置
   `backtick_code_block` before_post_render 过滤器（priority 10）会在 marked 渲染前
   把源文里所有围栏代码块整体替换为占位符，marked 扩展的 tokenizer 永远看不到
-  \`\`\`mermaid（扩展注册成功但完全不命中）。`scripts/marked-mermaid.js` 因此改为
+  \`\`\`mermaid。`scripts/marked-mermaid.js` 因此改为
   **before_post_render 预处理**（priority 9，先于 backtick_code_block）：把 mermaid
   围栏直接替换为 HTML 容器，围栏结构消失后 backtick 过滤器不再匹配，其余代码块
   不受影响（highlight.js 构建时高亮路径不变）。
@@ -212,33 +231,44 @@ themes/ink/layout/
 - **主题跟随**：ink.js 监听偏好模块 dispatch 的 `theme-change` 事件，按
   `html[data-theme]` 用 mermaid 的 default/dark 主题重渲染（渲染前把源码存入
   `el.dataset.code`，重渲染不依赖 DOM 源码）。渲染配置 `securityLevel: 'strict'`
-  （不执行图表内 HTML/click 指令，Twilight 原方案 loose 未迁移）。
+  （不执行图表内 HTML/click 指令）。
 - **CSP**：无新增白名单——库自托管（`script-src 'self'`）、mermaid 不请求外链
   （图表内嵌 img 走 `img-src https:`）。**更新库**：`npm pack mermaid@版本` 取
   `dist/mermaid.min.js` 覆盖 `themes/ink/source/js/`。
-- **超宽适配（2026-08-18）**：mermaid 输出 svg 自带 `width="100%"` + 内联
+- **超宽适配**：mermaid 输出 svg 自带 `width="100%"` + 内联
   `style="max-width: Npx"`（N = 图自然宽），容器窄于 N 时浏览器按 min(容器, N)
   渲染、整图等比缩小，节点文字无法辨认。ink.js `fitMermaid` 检测自然宽 > 容器宽
   时把 width 改为自然宽、内联 maxWidth 置 none，靠 `.mermaid` 的
   `overflow-x: auto` 横向滚动；窄图保持默认行为不变。静态化 SVG（mermaid-static.js
   构建期输出）不经 renderAll，由 DOMContentLoaded 时统一适配；主题切换 force
-  重渲染在渲染回调里再适配。曾设 `.mermaid svg { max-width: 100% }` 覆盖不了
-  内联样式（内联优先）是死规则，已删除。
+  重渲染在渲染回调里再适配。
+- **构建期静态化（双轨）**：`scripts/mermaid-static.js`
+  （after_post_render）用 playwright 把 `.mermaid` 占位容器内的源码渲染为
+  静态 SVG，输出 `<div class="mermaid mermaid-rendered" data-code="...">SVG</div>`：
+  `mermaid-rendered` 让 ink.js 首次加载跳过（零客户端渲染开销）；`data-code`
+  让主题切换时 ink.js force 重渲染（深色适配）。
+  **双轨机制**：依赖不在 package.json——本机通过 NODE_PATH 解析 D 盘全局包
+  （`D:\npm-global`，npm prefix 已指向该目录）+ playwright 浏览器在
+  `D:\work_temp\ms-playwright`（PLAYWRIGHT_BROWSERS_PATH）；CF（Linux）
+  无这些路径 → require 失败 → 保留占位 → ink.js 客户端渲染兜底。
+  修改依赖版本时：`npm install -g mermaid-isomorphic playwright` + 重装浏览器
+  （版本号变化时 `npx playwright install chromium`）。
 
-## 阅读时间
+## 阅读时间与字数
 
 - **实现**：`scripts/reading-time.js` —— after_post_render 过滤器用 hexo-util
-  `stripHTML` 去标签统计字符数（中文约 400 字/分钟，下限 1 分钟），注入
-  `post.readingMinutes`。构建期计算、零前端开销、结果直接进 HTML。
-- **显示**：post.ejs 正文头部「阅读约 N 分钟」（`.post-reading-meta`，右下角小字）。
-- 代码块文本计入统计（与 Twilight 的 reading-time 行为一致）。
+  `stripHTML` 去标签统计字符数（中文约 400 字/分钟，下限 1 分钟），经
+  `scripts/lib/char-stats.js` 同时注入 `charCount` 与 `readingMinutes`。
+  构建期计算、零前端开销、结果直接进 HTML。
+- **显示**：post.ejs 正文头部「约 N 字 · 阅读约 M 分钟」（`.post-reading-meta`，右下角小字）。
+- 代码块文本计入统计。
 
 ## 文章置顶（index.ejs）
 
 - 文章 front matter `pinned: true` 时首页排最前（其余按日期降序）。
   实现：index.ejs 对 `page.posts` 先 `toArray().sort()`（pinned 优先，同 pinned
   内按日期降序）再渲染；只影响首页当前分页内顺序（置顶文章通常在第一页）。
-- 草稿：Hexo 原生 `source/_drafts` + `render_drafts: false`（现状），无需处理。
+- 草稿：Hexo 原生 `source/_drafts` + `render_drafts: false`，无需额外处理。
 
 ## GitHub 仓库卡片
 
@@ -248,43 +278,157 @@ themes/ink/layout/
 - 实现：`scripts/marked-github-card.js` 注册 marked:use 扩展（同提示块模式）
   静态渲染基础信息；`ink.js`「GitHub 仓库卡片数据」模块前端调 GitHub API
   补充动态数据（stars/forks/language/license，无静态 desc 时补 description）。
-- **API 与 CSP**（2026-08-17 用户拍板）：`connect-src` 放行
+- **API 与 CSP**：`connect-src` 放行
   `https://api.github.com`——博客唯一第三方 fetch 例外（安全细节见
   [SECURITY.md](SECURITY.md#安全头机制)）。限流缓解：localStorage 缓存 1 小时
   （`gh-repo-cache:{repo}`）；请求失败（限流/网络）静默保留静态内容（渐进增强）。
   卡片 HTML 带 `data-repo` 属性与 `.gc-meta` 槽位（`.gc-meta:empty` 隐藏）。
 - 样式：style.min.css「GitHub 仓库卡片」段（背景 + 边框 + hover 变色 + meta 行，深浅主题适配）。
 
+## 通用链接卡片
+
+- 语法：`::link{url="https://..." title="可选" desc="可选"}`，渲染 `<a class="card-link">`
+  （link 图标 + 标题 + 右端域名 + 可选描述），样式与 GitHub 卡片同款。
+- **纯静态**：不调 API、无前端 JS、CSP 零新增。**安全**：url 仅放行 http/https
+  （防 javascript: 伪协议注入，renderer 里正则校验），全部文本 escapeHtml 转义；
+  title 缺省取域名。无效语法输出可见 `[WARN]`。
+
+## 标签页（tabs）
+
+- 语法（与提示块 ::: 体系统一）：
+
+  ```markdown
+  :::tabs
+  --- 方案A
+  内容 A（完整 Markdown）
+  --- 方案B
+  内容 B
+  :::
+  ```
+
+  渲染 `.tabs`（tabs-nav 按钮条 + 各 tabs-panel，默认激活第一个）；
+  ink.js 事件委托切换（is-active / aria-selected），无框架依赖。
+  块内用 `this.lexer.blockTokens` 二次解析（列表/代码块/强调均支持）。
+  注意：`--- 标题` 分隔符要求顶格且 `---` 后跟标题文本，与 Markdown 水平线
+  （顶格 `---` 后无文本）不冲突；无子 tab 的块输出可见 `[WARN]`。
+- 实现：`scripts/marked-tabs.js`。
+
+## 隐藏块与折叠
+
+- **隐藏块**：`scripts/marked-hide.js` — `:::hide[按钮文案]` 点击后显示；
+  ink.js 事件委托处理 `.md-hide-btn`。
+- **折叠（fold）**：`:::fold[摘要]` → `<details class="md-fold">`。
+- **折叠容器（folding）**：`scripts/marked-folding.js` — `:::folding[摘要]` →
+  `<details class="md-folding">`（显式摘要条样式；与 `:::fold` / `:::hide` 区分）。
+
+## 文内时间线
+
+- `scripts/marked-timeline.js` — `:::timeline` + `--- 标题` 分隔；
+  容器类 `.post-timeline`，与站点展柜 `/timeline/` 的 `.timeline-*` 隔离。
+
+## 按钮与标签
+
+- `scripts/marked-btn-label.js` —
+  `::btn{url=... text=...}`（http(s) 或站内 `/path`）、
+  `::label{text=... tone=default|blue|green|red|orange}`。
+
+## 站点卡与介绍卡
+
+- `scripts/marked-site-cards.js` —
+  `::site{url=... title=... screenshot=... avatar=... desc=...}`、
+  `::intro{url=... img=... title=... subtitle=... tip=... cardtitle=... logo=...}`、
+  `:::site-group[标题]` 包多张 `::site`。纯静态；url/img 校验同 `::link`（http(s) 或 `/path`）。
+
+## 系列文
+
+- `scripts/series.js` + `scripts/lib/series-groups.js` —
+  front matter `series:`（可选 `series_index:`）；文内 `::series` 或 `::series{name="..."}` 输出
+  系列目录并高亮当前篇。不做侧栏 series widget。
+  样文：`blog-writing-features.md` / `blog-writing-features-part2.md`。
+
+## 相关文章
+
+- `scripts/related-posts.js` + `scripts/lib/related-posts.js` —
+  构建期按标签交集权重取最多 6 篇，`post.ejs` 文末「相关文章」列表（与双链
+  「链接到/反向链接」独立共存）。
+
+## B 站懒嵌入
+
+- `scripts/marked-bilibili.js` + `scripts/lib/av-bv-convert.js` + ink.js —
+  `::bilibili{id="BV..."}` / `av` 号 / URL；av 自动规范为 BV 后嵌入 sandbox iframe
+  （`player.bilibili.com`）。CSP：`scripts/csp.js` 的 `frame-src` 已加
+  `https://player.bilibili.com`（见 SECURITY.md）。
+
+## 层级面包屑
+
+- `scripts/breadcrumbs.js` + `partial/breadcrumbs.ejs`。
+  链为「首页 / 分类（支持 parent 根→叶）/ 当前标题」；当前项不链接。
+  扁平单分类现状即「首页 / 分类名 / 标题」。纯函数见 `scripts/lib/breadcrumbs.js`。
+
+## 双链（wikilinks）
+
+- 自研 `scripts/wikilinks.js`（未引 npm 插件）。`[[Title]]` / `[[Title|Alias]]` / `[[Title#Anchor]]`
+  在 `before_post_render` 换成 Markdown 链接；图写入 `global`，由
+  `reading-time.js` 的 `after_post_render` 注入 `wikiOutbounds` / `wikiInbounds`
+  （独立 after_post_render 拿不到图，与字数同钩子才进得了模板）。
+  图键用 `post.source`（勿用 `_id`，generate 各阶段会变）。
+
+## 段落锚点
+
+- `scripts/heading-anchor.js`（after_post_render）给正文 h2/h3 注入
+  `<a class="heading-anchor">#</a>` 锚点链接。id **复用 hexo-renderer-marked 默认
+  生成的中文 id**（如 `id="做过什么"`），无 id 的标题按 ink.js TOC 同规则 slug
+  生成——TOC 运行时仅补缺 id，两者规则一致，深链 #hash 构建期已就绪、加载即定位。
+  CSS：标题 hover/聚焦显示 #、`:target` 高亮闪烁、h2/h3 `scroll-margin-top` 防
+  遮挡。**注意**：hexo 默认还会输出空 `<a class="headerlink">`（marked headerLink
+  功能），与 heading-anchor 并存，勿混淆。
+
+## 图片懒加载
+
+- `scripts/lazy-load.js`（after_post_render）给正文 `<img>` 注入
+  `loading="lazy" decoding="async"`（已带 loading 或无 src 的跳过）。首页封面
+  index.ejs 已自带 lazy；文章页头图（post-imgcard）保持 eager（首屏）。
+
+## 文章时效
+
+- `scripts/post-staleness.js`（after_post_render）注入两个标记——
+  `post.stale` / `post.staleDays`：文章日期距今超 365 天；`post.updatedSet`：
+  front matter **显式写 `updated:` 才为真**（data.raw 正则判断）。
+  **陷阱**：Hexo 默认 updated 取文件 mtime，git checkout/克隆会刷新 mtime，
+  直接显示 page.updated 是假数据——post.ejs 仅当 updatedSet 为真才输出
+  "更新于"小字；过期提示条（warning 配色）输出在阅读时间 meta 下。
+
+## 文内照片墙（.photo-grid）
+
+- 文章正文写
+  `<div class="photo-grid">` 包一组 `<img>` 即网格排列（auto-fill minmax(200px,1fr)），
+  灯箱复用现有 fancybox（ink.js 已给 article 内 img 加 data-fancybox），
+  不引入标签插件、不引 photoswipe。与相册页（独立集合页）场景不同质：
+  相册是长期照片集合，photo-grid 是文章上下文内的图片组。
+
 ## 展柜页（projects / skills / timeline）
 
-- 2026-08-17 新增三个独立页：`/projects/`、`/skills/`、`/timeline/`，
+- 三个独立页：`/projects/`、`/skills/`、`/timeline/`，
   数据在各自 source 目录的 index.md front matter（`projects` / `skills` /
   `items` 数组），布局 projects.ejs / skills.ejs / timeline.ejs（卡片网格 /
   年份分组时间线）。
 - 导航：主题 `_config.yml` `menu` 的「展柜」二级菜单（url 指向 /projects/，
   子项三个）。
-- **踩坑（2026-08-17）**：front matter 数组内 `date: 2026-07-30` 会被 YAML
+- **陷阱**：front matter 数组内 `date: 2026-07-30` 会被 YAML
   解析为 Date 对象（裸日期是 YAML timestamp 类型），模板里 `.substring()`
   直接崩溃、页面输出 0 字节——**日期值必须加引号**（`date: "2026-07-30"`）。
-- 项目初始数据来自 GitHub 公开仓库列表；skills 初始数据来自仓库语言与博客
-  内容（均为可证实来源，可直接编辑 index.md 修改）。
 
 ## 相册页（gallery.ejs）
 
-- 2026-08-17 激活（布局此前已存在但未启用）：数据源 `source/gallery/index.md`
-  的 front matter `photos` 数组（`src` / `title` / `date`），Fancybox 灯箱由
-  gallery.ejs 自行引入（cdnjs + integrity）。
+- 数据源 `source/gallery/index.md` 的 front matter `photos` 数组（`src` / `title` / `date`），
+  Fancybox 灯箱由 gallery.ejs 自行引入（cdnjs + integrity）。
 - **加照片**：原图放 `source/img/ori/photos/`（或其它 ori 子目录），构建出 360px 后，
-  `photos[].src` 写 `/img/360px/photos/xxx.jpg`。当前为封面池示例图占位，待替换。
-  gallery 模板会自动加 `data-ori` 供「查看原图」。
+  `photos[].src` 写 `/img/360px/photos/xxx.jpg`。gallery 模板会自动加 `data-ori` 供「查看原图」。
 - 导航入口在主题 `_config.yml` `menu`（`相册: /gallery/`）。
 
 ## 友链页（links.ejs）
 
-- 2026-08-17 增强：卡片从纯边框升级为浅背景 + hover 浮起（Twilight friends
-  卡片风格），深浅主题各一套背景；数据结构（分组 + name/url/fallback/img/desc）
-  未变。
-
+- 卡片从浅背景 + hover 浮起，深浅主题各一套背景；数据结构（分组 + name/url/fallback/img/desc）。
 - 数据源：`source/links/index.md` 的 front matter `links` 数组（分组 + 条目）。
 - 条目字段：`name`、`url`（主站）、`fallback`（可选，主站不可达时的备用链接）、
   `img`（头像，自托管）、`desc`。
@@ -292,6 +436,8 @@ themes/ink/layout/
   favicon（`img-src` 允许 https，不受 `connect-src 'self'` 限制，fetch 不可用），
   探测成功自动把链接切回主站。加新友链时若主站 DNS 未配置，填 `fallback` 即可。
 - 头像原图放 `source/img/ori/links/`，页面引用 `/img/360px/links/...`。
+- **波浪网格**：`.link-list` 桌面 24 列 nth-child 列宽交错
+  （11/12/13 列波浪周期），移动端宽度交错（84/92/100%），纯 CSS 无结构改动。
 - `source/js/search.js`：前端搜索（检索 searchdb 生成的 search.xml）。
   [WARN] 渲染结果必须转义，防 DOM XSS（见 [SECURITY.md](SECURITY.md#已知陷阱清单)）。
 
@@ -314,54 +460,59 @@ themes/ink/layout/
   循环上界。页面 cover / 正文图一律引用 `/img/360px/...`。
 - **灯箱**：文章图与头图点开 fancybox 后，左上角「查看原图」新标签打开 ori。
 
-## Glass 鼠标光标（2026-08-18 加入）
+## 图片双轨（ori / 360px）
 
-- 位置：`themes/ink/source/img/cursors/`（13 个 21x21 半透明 PNG，text 为 11x21，
-  由 64x64 原图等比缩小至 1/3 后双三次重采样）。
-  素材取自 `A:\work_zone\Resourse\Glass` 的 Windows Glass 光标集（.ani 格式，
-  每套 2-9 帧动画，内嵌 PNG 帧），用脚本提取每套最完整的一帧。
+- 原图：`source/img/ori/<rel>` → 公开 URL `/img/ori/<rel>`（入库）。
+- 展示图：`source/img/360px/<rel>`（构建生成，**gitignore**）→ `/img/360px/<rel>`。
+- 同一逻辑资源共用相对路径 `<rel>`（例：`covers/cover-01.jpg`）。
+- 正文 / `cover` / gallery 等**展示用**路径写 `/img/360px/...`。
+- 每个可放大的 `<img>`（或 gallery 的 `<a>`）带 `data-ori="/img/ori/..."`，供「查看原图」使用。
+- `og:image` / JSON-LD 等社交预览使用 **ori**（质量优先）。
+- 生成：`scripts/gen-thumbs.js` 扫描 ori，居中裁 360×360，写入 `source/img/360px/`；
+  `hexo before_generate` 钩子兜底；`npm run build` 内先跑缩略图生成再 `hexo generate`。
+- 例外不进双轨：`icon.svg`、主题光标等非内容栅格资源保持原路径。
+- 首页取色在 360px 图上取色，且 canvas 降采样后再统计，避免主线程扫满像素。
+
+## Glass 鼠标光标
+
+- 位置：`themes/ink/source/img/cursors/`（13 个 21x21 半透明 PNG，text 为 11x21）。
 - 机制：`style.min.css` 末尾 `:root` 的 `--cursor-*` 变量定义全部光标（url + 热点），
   元素规则按交互状态映射：链接/按钮→手型、文本输入→I-beam、`[title]`→帮助、
   禁用控件→禁行、`.is-loading`→进度。
 - **动画限制**：CSS `cursor: url()` 不支持动画（Chrome/Edge/Safari 均取静态帧），
-  故本主题只用静态帧；真动画需 JS 跟随方案，曾评估后弃用（副作用大）。
+  故本主题只用静态帧。
 - **热点坐标**：url 后数字为光标功能点（箭头顶端 1,0、手型指尖 6,1、I-beam 中线
-  6,13、resize 中心 10,11 等），由帧像素分析确定并按 1/3 缩放换算，
-  **替换光标图片时必须同步改**。
+  6,13、resize 中心 10,11 等），**替换光标图片时必须同步改**。
 - **替换光标集**：只改 `:root` 内 13 个变量的 url 与热点即可，无需动元素规则。
 - **注意事项**：giscus 评论 iframe 内光标不受本站 CSS 控制（iframe 独立文档）。
 
-## SanYeCao 移植（2026-08-18 加入）
+## details 折叠块样式
 
-来源：`A:\work_zone\Resourse\SanYeCao-blog`（Astro 模板，搬思路）；完整分析在
-`A:\work_zone\Docs\SanYeCao-*.md` 四件套。
-
-- **details 折叠块样式**：`article details` 规则（顶部主色粗边框 + 圆角 +
+- `article details` 规则（顶部主色粗边框 + 圆角 +
   summary `>` 箭头旋转动画 + 列表缩进），深色模式适配。文章内写原生
   `<details><summary>标题</summary>内容</details>` 即生效；选择器限定
-  article，不影响归档页 summary 折叠。注意与提示块（:::note，渲染为
+  article，不影响归档页 summary 折叠。与提示块（:::note，渲染为
   blockquote.admonition）互不干扰。
-- **长公式横向滚动**：`article mjx-container[display="true"]` 加
-  overflow-x: auto + max-width 100%（MathJax 3 CHTML 输出），超宽块级公式
-  独立横向滚动，不撑破正文。
-- **JSON-LD BlogPosting**：head.ejs 按 `page.layout === 'post'` 输出
+
+## JSON-LD BlogPosting
+
+- head.ejs 按 `page.layout === 'post'` 输出
   schema.org 结构化数据（JSON.stringify 输出防标题含引号破坏结构；
   cover 相对路径自动拼接 config.url；封面池随机图无显式 cover 时不输出
   image）。普通页面（about/links 等）不输出。
-- **移动端胶囊 TOC**：post.ejs 输出固定右上角胶囊按钮 + 悬浮面板
-  （`hidden` 初始，ink.js 有 TOC 时解除）；ink.js 的 `placeToc()` 按
-  <768px 断点把生成的 toc DOM 在 `.post-toc-slot`（桌面双卡）与
-  `.post-toc-mobile-panel`（移动端面板）之间迁移，resize 跨界自动切换；
-  滚动 80px 后按钮出现（`.is-visible`），IntersectionObserver 高亮同时
-  更新按钮上的当前标题预览，面板内点击链接后收起。改动 TOC 结构时注意：
-  `syncTocHeight`（桌面双卡等高）移动端跳过并清空内联 height。
-- **构建版本色块**：`scripts/commit-data.js` 构建期写
+
+## 构建版本色块
+
+- `scripts/commit-data.js` 构建期写
   `source/_data/commit.json`（优先 `CF_PAGES_COMMIT_SHA`，本地回退
   `git rev-parse HEAD`），footer.ejs 渲染 6 个色块（sha 每 6 位 hex 切块），
   hover title 显示完整 hash。`npm run build` 已改为
   `node scripts/commit-data.js && hexo generate`；
   `source/_data/` 已 gitignore（构建产物不入库）。
-- **最新评论挂件**：post.ejs 在 giscus 评论区下方输出
+
+## 最新评论挂件
+
+- post.ejs 在 giscus 评论区下方输出
   `.latest-comments[data-github-repo]` 容器（与 giscus 同条件，评论关闭不显示），
   `themes/ink/source/js/latest-comments.js`（defer 按需引入）拉取 GitHub REST
   （`/discussions?sort=updated` + 每讨论 1 条最新评论）渲染 5 条，localStorage
@@ -369,156 +520,11 @@ themes/ink/layout/
   **已知陷阱**：GitHub GraphQL API 匿名不可用（需 token），故用 REST；
   评论 body 是 Markdown，只做纯文本化 + 转义输出（防 DOM XSS，与 search.js
   同纪律，勿改为直接渲染 HTML）；限流/失败静默降级为"评论加载失败"。
-- **Mermaid 构建期静态化（双轨，2026-08-18）**：`scripts/mermaid-static.js`
-  （after_post_render）用 playwright 把 `.mermaid` 占位容器内的源码渲染为
-  静态 SVG，输出 `<div class="mermaid mermaid-rendered" data-code="...">SVG</div>`：
-  `mermaid-rendered` 让 ink.js 首次加载跳过（零客户端渲染开销）；`data-code`
-  让主题切换时 ink.js force 重渲染（深色适配）。
-  **双轨机制**：依赖不在 package.json——本机通过 NODE_PATH 解析 D 盘全局包
-  （`D:\npm-global`，npm prefix 已指向该目录）+ playwright 浏览器在
-  `D:\work_temp\ms-playwright`（PLAYWRIGHT_BROWSERS_PATH）；CF（Linux）
-  无这些路径 → require 失败 → 保留占位 → ink.js 客户端渲染兜底（现状）。
-  修改依赖版本时：`npm install -g mermaid-isomorphic playwright` + 重装浏览器
-  （版本号变化时 `npx playwright install chromium`）。
-- **友链波浪网格（2026-08-18）**：`.link-list` 桌面 24 列 nth-child 列宽交错
-  （11/12/13 列波浪周期），移动端宽度交错（84/92/100%），纯 CSS 无结构改动。
 
-## Reimu 批一迁移（2026-08-18）
+## 中英文空格
 
-来源：`A:\work_zone\Resourse\hexo-theme-reimu`（Hexo 主题，功能级移植）；
-完整分析在 `A:\work_zone\Docs\Reimu-*.md` 四件套。
-
-- **段落锚点**：`scripts/heading-anchor.js`（after_post_render）给正文 h2/h3 注入
-  `<a class="heading-anchor">#</a>` 锚点链接。id **复用 hexo-renderer-marked 默认
-  生成的中文 id**（如 `id="做过什么"`），无 id 的标题按 ink.js TOC 同规则 slug
-  生成——TOC 运行时仅补缺 id，两者规则一致，深链 #hash 构建期已就绪、加载即定位。
-  CSS：标题 hover/聚焦显示 #、`:target` 高亮闪烁、h2/h3 `scroll-margin-top` 防
-  遮挡。**注意**：hexo 默认还会输出空 `<a class="headerlink">`（marked headerLink
-  功能），与 heading-anchor 并存，勿混淆。
-- **图片懒加载**：`scripts/lazy-load.js`（after_post_render）给正文 `<img>` 注入
-  `loading="lazy" decoding="async"`（已带 loading 或无 src 的跳过）。首页封面
-  index.ejs 已自带 lazy；文章页头图（post-imgcard）保持 eager（首屏）。
-- **代码块超长折叠**：ink.js 统计 `.code pre` 内 `<br>` 数量（Hexo 8 中 n 行代码
-  恰有 n 个 br），超 40 行将 `<table>` 包入 `.code-fold-viewport` 并加
-  `.code-collapsed`（整表 max-height 420px，行号列与代码列同裁切；底部渐变 +
-  展开按钮贴在预览区底，2026-08-23 修复 gutter 撑高缺陷）。复制按钮在 pre 内
-  不受影响，复制仍取全文。
-- **文章时效**：`scripts/post-staleness.js`（after_post_render）注入两个标记——
-  `post.stale` / `post.staleDays`：文章日期距今超 365 天；`post.updatedSet`：
-  front matter **显式写 `updated:` 才为真**（data.raw 正则判断）。
-  **陷阱**：Hexo 默认 updated 取文件 mtime，git checkout/克隆会刷新 mtime，
-  直接显示 page.updated 是假数据——post.ejs 仅当 updatedSet 为真才输出
-  "更新于"小字；过期提示条（warning 配色）输出在阅读时间 meta 下。
-
-## Reimu 批二迁移（2026-08-18）
-
-- **通用链接卡片**：`scripts/marked-link-card.js`，语法
-  `::link{url="https://..." title="可选" desc="可选"}`，渲染 `<a class="card-link">`
-  （link 图标 + 标题 + 右端域名 + 可选描述），样式与 GitHub 卡片同款。
-  **纯静态**：不调 API、无前端 JS、CSP 零新增。**安全**：url 仅放行 http/https
-  （防 javascript: 伪协议注入，renderer 里正则校验），全部文本 escapeHtml 转义；
-  title 缺省取域名。无效语法输出可见 `[WARN]`。
-- **标签页 tabs**：`scripts/marked-tabs.js`，语法（与提示块 ::: 体系统一）：
-
-  ```markdown
-  :::tabs
-  --- 方案A
-  内容 A（完整 Markdown）
-  --- 方案B
-  内容 B
-  :::
-  ```
-
-  渲染 `.tabs`（tabs-nav 按钮条 + 各 tabs-panel，默认激活第一个）；
-  ink.js 事件委托切换（is-active / aria-selected），无框架依赖。
-  块内用 `this.lexer.blockTokens` 二次解析（列表/代码块/强调均支持）。
-  注意：`--- 标题` 分隔符要求顶格且 `---` 后跟标题文本，与 Markdown 水平线
-  （顶格 `---` 后无文本）不冲突；无子 tab 的块输出可见 `[WARN]`。
-- **分类入口**（2026-08-19 由首页分类胶囊并入头部二级菜单）：胶囊方案与
-  头部「分类」下拉（has-sub）重复列出同一批分类，已合并——`menu` 的「分类」项
-  设 `categories: true`，`header.ejs` 的 sub-menu 由 `site.categories` 动态生成
-  （名称 + 文章数，链接分类页），分类增删无需再改菜单配置。分类顺序为 hexo
-  内部顺序（当前按名称），如需按文章数排序需在模板内 sort（中文排序需注意）。
-- **pangu 中英文空格：降级为写作约定，不做自动机制**——HTML 级文本处理
-  风险高（易破坏链接 href/代码块/MathJax 公式），收益可被写作规范替代
-  （写文章时中英文间手加空格；见 WORKFLOW.md 写作规范）。
-
-## Reimu 批三（2026-08-18）
-
-- **文内照片墙（.photo-grid，纯 CSS 约定）**：文章正文写
-  `<div class="photo-grid">` 包一组 `<img>` 即网格排列（auto-fill minmax(200px,1fr)），
-  灯箱复用现有 fancybox（ink.js 已给 article 内 img 加 data-fancybox），
-  **不引入标签插件、不引 photoswipe**。与相册页（独立集合页）场景不同质：
-  相册是长期照片集合，photo-grid 是文章上下文内的图片组；灯箱与网格实现
-  同质，故复用现有体系。
-- **文章分享（post.ejs）**：版权声明下输出三平台纯链接分享（微博 / QQ / X），
-  无第三方脚本、CSP 零新增、rel noopener；URL/title 经 encodeURIComponent。
-  微信省略（官方分享需二维码生成，成本高）。
-- **复制附加版权：pass（用户拍板）**——复制代码附加版权文本违背初衷
-  （读者复制代码应得到纯净文本），不做。排除理由已入 Docs/Reimu-过滤排除清单。
-- **grid 网格布局：跳过**——与 .photo-grid 场景重叠（布局容器类）且
-  使用场景更少，需要时用原生 HTML 容器 + CSS 约定即可，不做标签插件。
-
-## Butterfly 批一迁移（2026-08-21）
-
-来源对照：`A:\work_zone\Docs\Butterfly-AnZhiYu-*.md`（合并四件套 + 迁移过程）；
-实现自写 marked 扩展，不复制主题源码文件。
-
-- **隐藏块**：`scripts/marked-hide.js` — `:::hide[按钮文案]` 点击后显示；
-  `:::fold[摘要]` → `<details class="md-fold">`。ink.js 事件委托处理 `.md-hide-btn`。
-- **文内时间线**：`scripts/marked-timeline.js` — `:::timeline` + `--- 标题` 分隔；
-  容器类 `.post-timeline`，与站点展柜 `/timeline/` 的 `.timeline-*` 隔离。
-- **按钮 / 标签**：`scripts/marked-btn-label.js` —
-  `::btn{url=... text=...}`（http(s) 或站内 `/path`）、
-  `::label{text=... tone=default|blue|green|red|orange}`。
-- 语法说明见 [WORKFLOW.md](WORKFLOW.md) 文章内扩展语法。
-
-## Butterfly 批二迁移（2026-08-23）
-
-来源对照：`A:\work_zone\Docs\Butterfly-AnZhiYu-*.md`；实现自写，不复制 AZY 源码。
-
-- **相关文章**：`scripts/related-posts.js` + `scripts/lib/related-posts.js` —
-  构建期按标签交集权重取最多 6 篇，`post.ejs` 文末「相关文章」列表（与双链
-  「链接到/反向链接」独立共存）。
-- **折叠容器 folding**：`scripts/marked-folding.js` — `:::folding[摘要]` →
-  `<details class="md-folding">`（显式摘要条样式；与批一 `:::fold` / `:::hide` 区分）。
-- **B 站懒嵌入**：`scripts/marked-bilibili.js` + `scripts/lib/av-bv-convert.js` + ink.js —
-  `::bilibili{id="BV..."}` / `av` 号 / URL；av 自动规范为 BV 后嵌入 sandbox iframe
-  （`player.bilibili.com`）。CSP：`scripts/csp.js` 的 `frame-src` 已加
-  `https://player.bilibili.com`（见 SECURITY.md）。
-- **顺手债**：代码块超长折叠布局缺陷已修（见上 Reimu 批一代码折叠条目）。
-
-## Butterfly 批三迁移（2026-08-23）
-
-来源对照：`A:\work_zone\Docs\Butterfly-AnZhiYu-*.md`；#7 checkbox、#10 gallery **用户拍板不做**。
-
-- **站点卡 / 介绍卡**：`scripts/marked-site-cards.js` —
-  `::site{url=... title=... screenshot=... avatar=... desc=...}`、
-  `::intro{url=... img=... title=... subtitle=... tip=... cardtitle=... logo=...}`、
-  `:::site-group[标题]` 包多张 `::site`。纯静态；url/img 校验同 `::link`（http(s) 或 `/path`）。
-- **系列文**：`scripts/series.js` + `scripts/lib/series-groups.js` —
-  front matter `series:`（可选 `series_index:`）；文内 `::series` 或 `::series{name="..."}` 输出
-  系列目录并高亮当前篇。不做 BF 侧栏 series widget。样文：`blog-writing-features.md` / `blog-writing-features-part2.md`。
-
-## PaperMod 琐碎增量（2026-08-21）
-
-来源评估见 `A:\work_zone\Docs\PaperMod-琐碎增量.md`（整站换主题不推荐，只落地增量）。
-
-- **字数**：`scripts/reading-time.js` 经 `scripts/lib/char-stats.js` 同时注入
-  `charCount` 与 `readingMinutes`；post.ejs 显示「约 N 字 · 阅读约 M 分钟」。
-  计数规则不变（去标签、去空白、约 400 字/分钟）。单测：`npm test`（用例在
-  `test/lib/`，勿放 `scripts/` 下——Hexo 会加载 scripts 内全部 .js）。
-- **层级面包屑**：`scripts/breadcrumbs.js` + `partial/breadcrumbs.ejs`。
-  链为「首页 / 分类（支持 parent 根→叶）/ 当前标题」；当前项不链接。
-  扁平单分类现状即「首页 / 分类名 / 标题」。纯函数见 `scripts/lib/breadcrumbs.js`。
-- **双链相关文章**：自研 `scripts/wikilinks.js`（未引 npm 插件；意图对齐
-  hexo-filter-titlebased-link）。`[[Title]]` / `[[Title|Alias]]` / `[[Title#Anchor]]`
-  在 `before_post_render` 换成 Markdown 链接；图写入 `global`，由
-  `reading-time.js` 的 `after_post_render` 注入 `wikiOutbounds` / `wikiInbounds`
-  （独立 after_post_render 拿不到图，与字数同钩子才进得了模板）。
-  文章底「链接到 / 反向链接」（无则隐藏）。示例：`bilicompact-complete.md`
-  链到源码文。写作说明见 WORKFLOW.md。图键用 `post.source`（勿用 `_id`，
-  generate 各阶段会变）。
+- **写作约定**：写文章时中英文间手加空格；不做 HTML 级自动 pangu 机制
+  （HTML 级文本处理风险高，易破坏链接 href/代码块/MathJax 公式）。
 
 ## 修改主题的流程
 
