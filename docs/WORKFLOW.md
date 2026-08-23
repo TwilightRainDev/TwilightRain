@@ -195,6 +195,35 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
   `av` 号与纯数字 aid 会经 `scripts/lib/av-bv-convert.js` 规范为 BV 后再嵌入；
   滚动到可视区或点击占位卡片后加载 `player.bilibili.com` 播放器（sandbox iframe）。
 
+- **站点卡 / 介绍卡**（2026-08-23，Butterfly 批三）：
+
+  ```markdown
+  ::site{url="https://example.com" title="站点名" screenshot="/img/360px/cover.jpg" desc="可选描述"}
+  ::intro{url="/about/" img="/img/360px/cover.jpg" tip="标签" cardtitle="卡片标题" title="主标题" subtitle="副标题" logo="/img/360px/logo.jpg"}
+
+  :::site-group[分组标题]
+  ::site{url="https://a.com" title="A" screenshot="/img/360px/a.jpg"}
+  ::site{url="https://b.com" title="B" screenshot="/img/360px/b.jpg"}
+  :::
+  ```
+
+  图片 URL 须为 `http(s)://` 或站内 `/path`；与 `::link` 同安全策略。
+
+- **系列文**（2026-08-23，Butterfly 批三）：
+
+  ```yaml
+  # front matter
+  series: 我的连载名
+  series_index: 1   # 可选，控制目录顺序
+  ```
+
+  ```markdown
+  ::series
+  ::series{name="我的连载名"}
+  ```
+
+  同 `series:` 的文章会自动进入目录；当前篇高亮。样文见 `blog-writing-features.md` 与 `blog-writing-features-part2.md`。
+
 - **分享按钮**：文章页版权声明下方自动出现微博 / QQ / X 三平台分享链接，
   无需手动配置。
 

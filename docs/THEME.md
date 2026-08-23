@@ -488,6 +488,18 @@ themes/ink/layout/
   `https://player.bilibili.com`（见 SECURITY.md）。
 - **顺手债**：代码块超长折叠布局缺陷已修（见上 Reimu 批一代码折叠条目）。
 
+## Butterfly 批三迁移（2026-08-23）
+
+来源对照：`A:\work_zone\Docs\Butterfly-AnZhiYu-*.md`；#7 checkbox、#10 gallery **用户拍板不做**。
+
+- **站点卡 / 介绍卡**：`scripts/marked-site-cards.js` —
+  `::site{url=... title=... screenshot=... avatar=... desc=...}`、
+  `::intro{url=... img=... title=... subtitle=... tip=... cardtitle=... logo=...}`、
+  `:::site-group[标题]` 包多张 `::site`。纯静态；url/img 校验同 `::link`（http(s) 或 `/path`）。
+- **系列文**：`scripts/series.js` + `scripts/lib/series-groups.js` —
+  front matter `series:`（可选 `series_index:`）；文内 `::series` 或 `::series{name="..."}` 输出
+  系列目录并高亮当前篇。不做 BF 侧栏 series widget。样文：`blog-writing-features.md` / `blog-writing-features-part2.md`。
+
 ## PaperMod 琐碎增量（2026-08-21）
 
 来源评估见 `A:\work_zone\Docs\PaperMod-琐碎增量.md`（整站换主题不推荐，只落地增量）。
