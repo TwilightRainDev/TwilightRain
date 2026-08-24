@@ -15,6 +15,7 @@ TwilightRain 博客源码仓库的维护文档。
 | [ARCHITECTURE.md](ARCHITECTURE.md) | 系统组成、构建链路、目录地图、关键文件 | 想理解整个博客怎么运转时 |
 | [WORKFLOW.md](WORKFLOW.md) | 本地开发、写作发布、提交推送全流程 | 每次写文章/改代码时 |
 | [SECURITY.md](SECURITY.md) | CSP 安全头、`_headers`/`_redirects` 机制、已知陷阱 | 改安全策略、排查线上问题时 |
+| [CONSOLE-TRIAGE.md](CONSOLE-TRIAGE.md) | 浏览器 Console 现象分诊、验收清单 | 真机验收、排查 giscus/GitHub/B 站报错时 |
 | [THEME.md](THEME.md) | ink 主题定制点：布局、偏好、字体、评论 | 改页面样式/结构时 |
 | [adr/](adr/README.md) | 架构决策记录（删留、CSP、语法收敛等） | 追问「为什么这样设计」时 |
 
@@ -32,5 +33,5 @@ npm run build         # 生成 public/（构建产物）
 
 ## 文档维护约定
 
-- 新发现的坑、改过的配置，**必须同步更新本目录**，特别是 [SECURITY.md](SECURITY.md#已知陷阱清单) 的陷阱清单。
+- 新发现的坑、改过的配置，**必须同步更新本目录**，特别是 [SECURITY.md](SECURITY.md#已知陷阱清单) 的陷阱清单与 [CONSOLE-TRIAGE.md](CONSOLE-TRIAGE.md) 的分诊表。
 - 文档行尾 LF；本仓库已由 `.gitattributes` 统一（见 [WORKFLOW.md → 行尾与编码](WORKFLOW.md#行尾与编码)）。
