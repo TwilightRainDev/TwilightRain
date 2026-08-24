@@ -51,6 +51,5 @@
                 });
             })(layoutRadios[i]);
         }
-        syncColumnsState(storedLayout);
     });
 })();

@@ -114,27 +114,15 @@ $$\int_0^1 x^2 \, dx = \frac{1}{3}$$
 `:::details` 是统一的块级折叠容器，支持 **Markdown** 与列表。
 :::
 
-> [NOTE] 旧语法 `:::hide` / `:::fold` / `:::folding` 仍可用但已废弃，阶段四将移除。
-
-## 隐藏与折叠（旧语法，已废弃）
-
-:::hide[点击显示答案]
-隐藏块适合剧透或折叠长补充，支持 **Markdown** 与列表。
-:::
-
-:::fold[轻量 details 折叠]
-`:::fold` 使用原生 `<details>`，样式类 `.md-fold`。
-:::
-
 ## 文内时间线（Butterfly 批一）
 
 :::timeline[写作特性演进]
 --- Reimu 批一
 段落锚点、懒加载、代码折叠、文章时效
 --- Butterfly 批一
-hide / timeline / btn·label
+timeline / btn·label
 --- Butterfly 批二
-相关文章、folding、B 站嵌入
+B 站嵌入
 --- Butterfly 批三
 站点卡、系列文
 :::
@@ -145,12 +133,6 @@ hide / timeline / btn·label
 ::btn{url="https://github.com/TwilightRainDev/TwilightRain" text="GitHub 仓库"}
 ::label{text="验收" tone="blue"}
 ::label{text="批三" tone="green"}
-
-## 折叠容器 folding（Butterfly 批二）
-
-:::folding[展开详细说明]
-与 `:::fold` 不同，`:::folding` 使用显式摘要条样式（`.md-folding`），适合较长的补充段落。
-:::
 
 ## B 站懒嵌入（Butterfly 批二）
 

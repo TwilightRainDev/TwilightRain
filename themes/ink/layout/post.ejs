@@ -76,18 +76,6 @@
             <% } %>
         </section>
         <% } %>
-        <%# 相关文章（2026-08-23，Butterfly 批二）：按标签交集推荐，与双链区块独立 %>
-        <% var relatedList = related_posts_list(page); %>
-        <% if (relatedList.length) { %>
-        <section class="post-related" aria-label="相关文章">
-            <h2 class="post-related-title">相关文章</h2>
-            <ul class="post-related-list">
-                <% relatedList.forEach(function (item) { %>
-                <li><a href="<%- url_for(item.path) %>"><%= item.title %></a></li>
-                <% }) %>
-            </ul>
-        </section>
-        <% } %>
     </article>
     <% if (page.prev || page.next) { %>
     <nav class="post-prevnext" aria-label="文章导航">
@@ -106,16 +94,6 @@
     </nav>
     <% } %>
     <%- partial('partial/comments') %>
-    <%# 最新评论挂件（2026-08-18 移植自 SanYeCao-blog LatestComments，数据源改 GitHub REST）：
-         giscus 评论区下方，低调展示最近互动；与 giscus 同条件（评论关闭则不显示）。
-         latest-comments.js 拉取 + localStorage 缓存 30 分钟。 %>
-    <% if (page.comments !== false && theme.giscus && theme.giscus.enabled && theme.giscus.repo_id && theme.giscus.category_id) { %>
-    <div class="latest-comments" data-github-repo="<%= theme.giscus.repo %>">
-        <h2 class="latest-comments-title">最新评论</h2>
-        <div class="latest-comments-list" aria-live="polite"></div>
-    </div>
-    <script src="/js/latest-comments.js" defer></script>
-    <% } %>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha384-Zm+UU4tdcfAm29vg+MTbfu//q5B/lInMbMCr4T8c9rQFyOv6PlfQYpB5wItcXWe7" crossorigin="anonymous"></script>
 </main>

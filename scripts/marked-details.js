@@ -5,7 +5,7 @@
  *   内容（完整 Markdown）
  *   :::
  *
- * 渲染为 <details class="md-details">；替代 :::fold / :::folding（旧语法保留至阶段四）。
+ * 渲染为 <details class="md-details">。
  */
 'use strict';
 

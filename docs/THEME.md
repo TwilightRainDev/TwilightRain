@@ -239,20 +239,8 @@ themes/ink/layout/
   `style="max-width: Npx"`（N = 图自然宽），容器窄于 N 时浏览器按 min(容器, N)
   渲染、整图等比缩小，节点文字无法辨认。ink.js `fitMermaid` 检测自然宽 > 容器宽
   时把 width 改为自然宽、内联 maxWidth 置 none，靠 `.mermaid` 的
-  `overflow-x: auto` 横向滚动；窄图保持默认行为不变。静态化 SVG（mermaid-static.js
-  构建期输出）不经 renderAll，由 DOMContentLoaded 时统一适配；主题切换 force
+  `overflow-x: auto` 横向滚动；窄图保持默认行为不变。主题切换 force
   重渲染在渲染回调里再适配。
-- **构建期静态化（双轨）**：`scripts/mermaid-static.js`
-  （after_post_render）用 playwright 把 `.mermaid` 占位容器内的源码渲染为
-  静态 SVG，输出 `<div class="mermaid mermaid-rendered" data-code="...">SVG</div>`：
-  `mermaid-rendered` 让 ink.js 首次加载跳过（零客户端渲染开销）；`data-code`
-  让主题切换时 ink.js force 重渲染（深色适配）。
-  **双轨机制**：依赖不在 package.json——本机通过 NODE_PATH 解析 D 盘全局包
-  （`D:\npm-global`，npm prefix 已指向该目录）+ playwright 浏览器在
-  `D:\work_temp\ms-playwright`（PLAYWRIGHT_BROWSERS_PATH）；CF（Linux）
-  无这些路径 → require 失败 → 保留占位 → ink.js 客户端渲染兜底。
-  修改依赖版本时：`npm install -g mermaid-isomorphic playwright` + 重装浏览器
-  （版本号变化时 `npx playwright install chromium`）。
 
 ## 阅读时间与字数
 
@@ -319,9 +307,6 @@ themes/ink/layout/
   ink.js 点击切换 `.is-revealed`。
 - **块级折叠**：`scripts/marked-details.js` — `:::details[摘要]` →
   `<details class="md-details">`。
-- **隐藏块（废弃）**：`scripts/marked-hide.js` — `:::hide` / `:::fold`；
-  阶段四移除。
-- **折叠容器（废弃）**：`scripts/marked-folding.js` — `:::folding`。
 
 ## 图片网格
 
@@ -352,12 +337,6 @@ themes/ink/layout/
   front matter `series:`（可选 `series_index:`）；文内 `::series` 或 `::series{name="..."}` 输出
   系列目录并高亮当前篇。不做侧栏 series widget。
   样文：`blog-writing-features.md` / `blog-writing-features-part2.md`。
-
-## 相关文章
-
-- `scripts/related-posts.js` + `scripts/lib/related-posts.js` —
-  构建期按标签交集权重取最多 6 篇，`post.ejs` 文末「相关文章」列表（与双链
-  「链接到/反向链接」独立共存）。
 
 ## B 站懒嵌入
 
@@ -516,17 +495,6 @@ themes/ink/layout/
   hover title 显示完整 hash。`npm run build` 已改为
   `node scripts/commit-data.js && hexo generate`；
   `source/_data/` 已 gitignore（构建产物不入库）。
-
-## 最新评论挂件
-
-- post.ejs 在 giscus 评论区下方输出
-  `.latest-comments[data-github-repo]` 容器（与 giscus 同条件，评论关闭不显示），
-  `themes/ink/source/js/latest-comments.js`（defer 按需引入）拉取 GitHub REST
-  （`/discussions?sort=updated` + 每讨论 1 条最新评论）渲染 5 条，localStorage
-  缓存 15 分钟消解匿名限流（60req/h；6 请求/首次加载，窗口内 24 请求安全）。
-  **已知陷阱**：GitHub GraphQL API 匿名不可用（需 token），故用 REST；
-  评论 body 是 Markdown，只做纯文本化 + 转义输出（防 DOM XSS，与 search.js
-  同纪律，勿改为直接渲染 HTML）；限流/失败静默降级为"评论加载失败"。
 
 ## 中英文空格
 

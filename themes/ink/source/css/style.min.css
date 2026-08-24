@@ -2602,37 +2602,6 @@ a.card-link:hover {
     text-decoration: underline;
 }
 
-/* ======================== 标签相关文章（2026-08-23，Butterfly 批二） ======================== */
-.post-related {
-    margin-block: 1rem 0;
-    padding-top: 0.75rem;
-    border-top: 1px solid rgba(0, 0, 0, 0.08);
-}
-[data-theme="dark"] .post-related {
-    border-top-color: rgba(255, 255, 255, 0.12);
-}
-.post-related-title {
-    margin: 0 0 0.35rem;
-    font-size: 0.9em;
-    font-weight: 600;
-    color: #666;
-}
-[data-theme="dark"] .post-related-title {
-    color: #aaa;
-}
-.post-related-list {
-    margin: 0;
-    padding-left: 1.15rem;
-    font-size: 0.9em;
-}
-.post-related-list a {
-    color: var(--color-primary, #1a8fe3);
-    text-decoration: none;
-}
-.post-related-list a:hover {
-    text-decoration: underline;
-}
-
 /* ======================== 展柜页（项目 / 技能 / 时间线） ======================== */
 .projects-grid,
 .skills-grid {
@@ -3049,92 +3018,6 @@ article mjx-container[display="true"] > mjx-math {
     border-radius: 2px;
 }
 
-/* 5. 最新评论挂件（来源：SanYeCao-blog LatestComments，数据源改 GitHub REST）
-   位于文章页 giscus 评论区下方，刻意低调：无分隔线、小字号、浅色头像。 */
-.latest-comments {
-    margin-top: 2rem;
-}
-
-.latest-comments-title {
-    font-size: var(--size-step-1);
-    margin-bottom: 0.75rem;
-    opacity: 0.75;
-}
-
-.latest-comments-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.lc-item {
-    display: flex;
-    gap: 0.6rem;
-    align-items: flex-start;
-}
-
-.lc-avatar {
-    width: 1.75rem;
-    height: 1.75rem;
-    border-radius: 50%;
-    flex: 0 0 auto;
-    margin-top: 0.1rem;
-}
-
-.lc-avatar-fallback {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8em;
-    background: rgba(128, 128, 128, 0.25);
-}
-
-.lc-body {
-    min-width: 0;
-    flex: 1;
-}
-
-.lc-meta {
-    display: flex;
-    align-items: baseline;
-    gap: 0.5rem;
-}
-
-.lc-author {
-    font-weight: 600;
-    font-size: 0.85em;
-}
-
-.lc-time {
-    font-size: 0.75em;
-    opacity: 0.55;
-}
-
-.lc-text {
-    margin: 0.15rem 0 0.1rem;
-    font-size: 0.85em;
-    line-height: 1.5;
-    opacity: 0.85;
-    overflow-wrap: anywhere;
-}
-
-.lc-post {
-    font-size: 0.78em;
-    opacity: 0.7;
-    display: inline-block;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    vertical-align: bottom;
-}
-
-.latest-comments-empty {
-    font-size: 0.85em;
-    opacity: 0.5;
-    margin: 0;
-}
-
 .theme-toggle__container {
   position: relative;
   width: 100%;
@@ -3377,34 +3260,7 @@ figure.highlight {
 }
 
 /* ======================== Butterfly 批一（2026-08-21） ========================
-   hide / fold / 文内 timeline / btn / label；类名与站点 /timeline/ 展柜隔离。 */
-.md-hide {
-    margin-block: calc(var(--spacing) * 1.25);
-}
-.md-hide-btn {
-    display: inline-block;
-    padding: 0.35rem 0.9rem;
-    border: 1px solid rgba(0, 0, 0, 0.18);
-    border-radius: 0.375rem;
-    background: rgba(0, 0, 0, 0.04);
-    color: inherit;
-    cursor: pointer;
-    font: inherit;
-}
-.md-hide-btn:hover {
-    background: rgba(0, 0, 0, 0.08);
-}
-.md-hide-content {
-    margin-top: 0.75rem;
-}
-[data-theme="dark"] .md-hide-btn {
-    border-color: rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.06);
-}
-
-.md-fold {
-    margin-block: calc(var(--spacing) * 1.25);
-}
+   文内 timeline / btn / label；类名与站点 /timeline/ 展柜隔离。 */
 
 /* :::text 剧透揭示（拍板 M2） */
 .md-text {
@@ -3443,28 +3299,6 @@ article details.md-details {
 }
 article details.md-details > .md-details-body {
     padding-top: 0.5rem;
-}
-
-/* folding 容器：显式摘要条，与 :::fold / article details 默认样式区分 */
-article details.md-folding {
-    margin-block: calc(var(--spacing) * 1.25);
-    border-top: none;
-    border-radius: 0.5rem;
-    background: rgba(26, 143, 227, 0.08);
-}
-article details.md-folding summary.md-folding-summary {
-    padding: 0.65rem 0.9rem;
-    font-weight: 600;
-    color: var(--color-primary, #1a8fe3);
-}
-article details.md-folding summary.md-folding-summary::before {
-    color: var(--color-primary, #1a8fe3);
-}
-article details.md-folding > .md-folding-body {
-    padding: 0 0.9rem 0.9rem;
-}
-[data-theme="dark"] article details.md-folding {
-    background: rgba(26, 143, 227, 0.14);
 }
 
 /* B 站懒嵌入 */

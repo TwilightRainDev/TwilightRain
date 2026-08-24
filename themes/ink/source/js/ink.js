@@ -1071,8 +1071,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // width="100%" + 内联 style="max-width: Npx"（N = 图表自然宽），容器窄于 N
     // 时浏览器按 min(容器, N) 渲染，整图等比缩小、节点文字无法辨认。
     // 检测自然宽 > 容器宽时改为原始尺寸，靠容器 overflow-x: auto 横向滚动；
-    // 窄图保持默认行为不变。静态化 SVG（mermaid-static.js 构建期输出）同结构，
-    // 在 DOMContentLoaded 时统一适配。
+    // 窄图保持默认行为不变。
     function fitMermaid(el) {
         var svg = el.querySelector('svg');
         if (!svg) return;
@@ -1130,7 +1129,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // DOMContentLoaded 兜底（极端时序下保证渲染）
     document.addEventListener('DOMContentLoaded', function () {
         if (!hasMermaid) hasMermaid = !!document.querySelector('.mermaid');
-        // 静态化 SVG（mermaid-static.js 构建期输出）不经 renderAll，统一超宽适配
         document.querySelectorAll('.mermaid').forEach(fitMermaid);
         if (hasMermaid) loadLibrary(function () { renderAll(false); });
     });
@@ -1243,18 +1241,6 @@ document.addEventListener('click', function (e) {
     root.querySelectorAll('.tabs-panel').forEach(function (p) {
         p.classList.toggle('is-active', p.getAttribute('data-tab') === idx);
     });
-});
-
-// ======================== 隐藏块 md-hide（2026-08-21，Butterfly 批一） ========================
-// scripts/marked-hide.js 渲染 .md-hide + .md-hide-btn；点击后显示内容并移除按钮。
-document.addEventListener('click', function (e) {
-    var btn = e.target && e.target.closest ? e.target.closest('.md-hide-btn') : null;
-    if (!btn) return;
-    var root = btn.closest('.md-hide');
-    if (!root) return;
-    var content = root.querySelector('.md-hide-content');
-    if (content) content.removeAttribute('hidden');
-    btn.remove();
 });
 
 // ======================== 剧透块 md-text（拍板 M2） ========================
