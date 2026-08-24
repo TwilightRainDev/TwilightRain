@@ -94,13 +94,29 @@ $$\int_0^1 x^2 \, dx = \frac{1}{3}$$
 
 ## 文内照片墙
 
-<div class="photo-grid">
-<img src="/img/360px/with-her-eyes-1.jpg" alt="图一">
-<img src="/img/360px/with-her-eyes-2.jpg" alt="图二">
-<img src="/img/360px/blog-writing-features.jpg" alt="图三">
-</div>
+:::grid[2]
+![图一](/img/360px/with-her-eyes-1.jpg)
 
-## 隐藏与折叠（Butterfly 批一）
+![图二](/img/360px/with-her-eyes-2.jpg)
+
+![图三](/img/360px/blog-writing-features.jpg)
+:::
+
+> [NOTE] 旧写法 `<div class="photo-grid">` 仍可用但已废弃，请改用 `:::grid[列数]`。
+
+## 隐藏与折叠（拍板 M2 推荐语法）
+
+:::text[悬停或点击查看剧透]
+这是 `:::text` 行内揭示块，适合短剧透或答案。
+:::
+
+:::details[展开详细说明]
+`:::details` 是统一的块级折叠容器，支持 **Markdown** 与列表。
+:::
+
+> [NOTE] 旧语法 `:::hide` / `:::fold` / `:::folding` 仍可用但已废弃，阶段四将移除。
+
+## 隐藏与折叠（旧语法，已废弃）
 
 :::hide[点击显示答案]
 隐藏块适合剧透或折叠长补充，支持 **Markdown** 与列表。

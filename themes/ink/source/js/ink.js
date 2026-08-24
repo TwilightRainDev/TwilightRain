@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
         mainContent.querySelectorAll('img').forEach(img => {
             // 卡片/网格/头图等组件内图片不做 article-image 取色包裹（会破坏布局并误藏图）
             if (img.closest(
-                'a.card-site, a.card-intro, .photo-grid, .site-group, a.card-github, a.card-link, .post-imgcard'
+                'a.card-site, a.card-intro, .photo-grid, .md-grid, .site-group, a.card-github, a.card-link, .post-imgcard'
             )) {
                 return;
             }
@@ -1233,4 +1233,11 @@ document.addEventListener('click', function (e) {
     var content = root.querySelector('.md-hide-content');
     if (content) content.removeAttribute('hidden');
     btn.remove();
+});
+
+// ======================== 剧透块 md-text（拍板 M2） ========================
+document.addEventListener('click', function (e) {
+    var root = e.target && e.target.closest ? e.target.closest('.md-text') : null;
+    if (!root) return;
+    root.classList.toggle('is-revealed');
 });

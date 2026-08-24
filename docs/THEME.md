@@ -315,11 +315,18 @@ themes/ink/layout/
 
 ## 隐藏块与折叠
 
-- **隐藏块**：`scripts/marked-hide.js` — `:::hide[按钮文案]` 点击后显示；
-  ink.js 事件委托处理 `.md-hide-btn`。
-- **折叠（fold）**：`:::fold[摘要]` → `<details class="md-fold">`。
-- **折叠容器（folding）**：`scripts/marked-folding.js` — `:::folding[摘要]` →
-  `<details class="md-folding">`（显式摘要条样式；与 `:::fold` / `:::hide` 区分）。
+- **剧透揭示**：`scripts/marked-text.js` — `:::text[提示]` 悬停/点击揭示；
+  ink.js 点击切换 `.is-revealed`。
+- **块级折叠**：`scripts/marked-details.js` — `:::details[摘要]` →
+  `<details class="md-details">`。
+- **隐藏块（废弃）**：`scripts/marked-hide.js` — `:::hide` / `:::fold`；
+  阶段四移除。
+- **折叠容器（废弃）**：`scripts/marked-folding.js` — `:::folding`。
+
+## 图片网格
+
+- `scripts/marked-grid.js` — `:::grid[列数]`（默认 2）→ `.md-grid` CSS Grid；
+  替代旧 `<div class="photo-grid">`（已废弃）。
 
 ## 文内时间线
 
@@ -398,9 +405,9 @@ themes/ink/layout/
   直接显示 page.updated 是假数据——post.ejs 仅当 updatedSet 为真才输出
   "更新于"小字；过期提示条（warning 配色）输出在阅读时间 meta 下。
 
-## 文内照片墙（.photo-grid）
+## 文内照片墙（.photo-grid，已废弃）
 
-- 文章正文写
+- 推荐 `:::grid[列数]`（见上文「图片网格」与 WORKFLOW.md）。旧写法：文章正文写
   `<div class="photo-grid">` 包一组 `<img>` 即网格排列（auto-fill minmax(200px,1fr)），
   灯箱复用现有 fancybox（ink.js 已给 article 内 img 加 data-fancybox），
   不引入标签插件、不引 photoswipe。与相册页（独立集合页）场景不同质：

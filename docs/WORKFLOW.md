@@ -128,19 +128,31 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
   渲染为标签页，默认显示第一个，点击按钮切换。`--- 标题` 是子页分隔符
   （顶格写）；无分隔符的块输出可见 `[WARN]`。
 
-- **文内照片墙**（纯 CSS 约定，无标签插件）：
+- **文内照片墙**：
 
-  ```html
-  <div class="photo-grid">
-  <img src="/img/360px/with-her-eyes-1.jpg" alt="图一">
-  <img src="/img/360px/with-her-eyes-2.jpg" alt="图二">
-  </div>
-  ```
+  ````markdown
+  :::grid[2]
+  ![图一](/img/360px/with-her-eyes-1.jpg)
+  ![图二](/img/360px/with-her-eyes-2.jpg)
+  :::
+  ````
 
-  多图自动网格排列（200px 起自适应列数），点击放大走 fancybox 灯箱
-  （与正文图同机制）。相册集合请用 `/gallery/` 页（front matter photos 数组）。
+  列数可选（默认 2），渲染为 CSS Grid；点击放大走 fancybox。
+  旧写法 `<div class="photo-grid">` 仍可用但**已废弃**。
 
-- **隐藏 / 折叠**：
+- **剧透 / 折叠**（拍板 M2，推荐）：
+
+  ````markdown
+  :::text[悬停或点击查看]
+  短剧透内容
+  :::
+
+  :::details[展开说明]
+  块级折叠，支持完整 Markdown。
+  :::
+  ````
+
+- **隐藏 / 折叠**（旧语法，已废弃，阶段四移除）：
 
   ````markdown
   :::hide[点击显示答案]

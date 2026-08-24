@@ -2373,6 +2373,25 @@ a.card-link:hover {
     cursor: zoom-in;
 }
 
+/* ======================== 图片网格 .md-grid（拍板 M1，替代 photo-grid） ======================== */
+.md-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--md-grid-cols, 2), minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-block: calc(var(--spacing) * 1.5);
+}
+.md-grid img {
+    width: 100%;
+    height: auto;
+    border-radius: 0.375rem;
+    cursor: zoom-in;
+}
+@media (max-width: 480px) {
+    .md-grid {
+        grid-template-columns: repeat(min(var(--md-grid-cols, 2), 2), minmax(0, 1fr));
+    }
+}
+
 /* fancybox 灯箱：左上角「查看原图」（ink.js 注入 .fancybox-ori-link） */
 .fancybox-ori-link {
     position: absolute;
@@ -3283,6 +3302,45 @@ figure.highlight {
 
 .md-fold {
     margin-block: calc(var(--spacing) * 1.25);
+}
+
+/* :::text 剧透揭示（拍板 M2） */
+.md-text {
+    margin-block: calc(var(--spacing) * 1.25);
+    cursor: pointer;
+    border-radius: 0.375rem;
+    outline: none;
+}
+.md-text-hint {
+    display: inline-block;
+    margin-bottom: 0.35rem;
+    font-size: 0.85em;
+    color: #888;
+}
+.md-text-body {
+    filter: blur(6px);
+    user-select: none;
+    transition: filter 0.2s ease;
+    background: rgba(128, 128, 128, 0.12);
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+}
+.md-text:hover .md-text-body,
+.md-text:focus .md-text-body,
+.md-text.is-revealed .md-text-body {
+    filter: none;
+    user-select: text;
+}
+[data-theme="dark"] .md-text-body {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* :::details 块级折叠（拍板 M2） */
+article details.md-details {
+    margin-block: calc(var(--spacing) * 1.25);
+}
+article details.md-details > .md-details-body {
+    padding-top: 0.5rem;
 }
 
 /* folding 容器：显式摘要条，与 :::fold / article details 默认样式区分 */
