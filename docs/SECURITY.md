@@ -14,7 +14,7 @@
 | `style-src` | `'self'` `'unsafe-inline'` `https://giscus.app` `https://cdnjs.cloudflare.com` | 见下方 giscus 陷阱 |
 | `img-src` | `'self'` `https:` `data:` | 外链图片与 data URI |
 | `font-src` | `'self'` | 字体全自托管，禁止外链字体 |
-| `frame-src` | `https://giscus.app` `https://player.bilibili.com` | 评论 iframe；B 站播放器（`::bilibili`，sandbox iframe） |
+| `frame-src` | `https://giscus.app` `https://player.bilibili.com` `https://www.bilibili.com` | 评论 iframe；B 站播放器（`::bilibili`）；移动端播放器内嵌跳转需 `www.bilibili.com` |
 | `connect-src` | `'self'` `https://api.github.com` | 唯一第三方 fetch：GitHub 仓库卡片数据（见下） |
 | `base-uri` | `'self'` | 防 base 标签劫持 |
 
@@ -90,6 +90,13 @@ fetch 前先评估（默认收紧取向）；若卡片功能移除，此行一�
    [PATCH] 注释）。内联 import map 可用但被 CSP `script-src` 拦（无
    `'unsafe-inline'`），也不可取。
 
+10. **Cloudflare Web Analytics 与 CSP 冲突（TD-004，已关闭）**：Cloudflare
+    Dashboard 若开启 Web Analytics，会注入
+    `static.cloudflareinsights.com/beacon.min.js`，当前 `script-src` 未白名单
+    该域，控制台每页报 CSP 错误。**末态（2026-08-24）**：Dashboard 已关闭
+    Web Analytics 注入，CSP 不变。若日后重新开启，须二选一：关注入，或将
+    `https://static.cloudflareinsights.com` 加入 `script-src`。
+
 ## 内容与仓库安全
 
 - 评论走 giscus（GitHub Discussions 作后端，主题配置见 [THEME.md](THEME.md#配置themesink_configyaml)）。
@@ -101,7 +108,3 @@ fetch 前先评估（默认收紧取向）；若卡片功能移除，此行一�
 - `docs/BlogPrivate.txt` 是私人备忘，不入库（`.gitignore` 单独忽略）；
   docs/ 其余内容可放心提交。
 - 不要在 `source/`、`themes/ink/` 中放任何密钥、Cookie、token 文本。
-
-### 遗留记录（低优先级，知晓即可）
-
-- 举报编号 `J2026072510234300239` 公开在恶意软件维权文章中（用户主动发布，站点内容事实，无需处理）。
