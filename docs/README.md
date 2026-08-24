@@ -14,6 +14,7 @@ TwilightRain 博客源码仓库的维护文档。
 |---|---|---|
 | [ARCHITECTURE.md](ARCHITECTURE.md) | 系统组成、构建链路、目录地图、关键文件 | 想理解整个博客怎么运转时 |
 | [WORKFLOW.md](WORKFLOW.md) | 本地开发、写作发布、提交推送全流程 | 每次写文章/改代码时 |
+| [EXCLUDED.md](EXCLUDED.md) | 拍板排除项（PlantUML、code-group、热门页等，不做） | 评估「要不要加某功能」时 |
 | [SECURITY.md](SECURITY.md) | CSP 安全头、`_headers`/`_redirects` 机制、已知陷阱 | 改安全策略、排查线上问题时 |
 | [CONSOLE-TRIAGE.md](CONSOLE-TRIAGE.md) | 浏览器 Console 现象分诊、验收清单 | 真机验收、排查 giscus/GitHub/B 站报错时 |
 | [THEME.md](THEME.md) | ink 主题定制点：布局、偏好、字体、评论 | 改页面样式/结构时 |

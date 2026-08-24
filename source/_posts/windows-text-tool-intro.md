@@ -1,6 +1,6 @@
 ---
-title: 告别散装脚本：Win文本工具箱
-excerpt: TwilightRainTextTool 诞生记：把散落四处的批处理与 PowerShell 文本处理脚本，统一成一个 C# WinForms 图形化工具箱。
+title: 用Win文本工具箱告别散装脚本
+excerpt: 把散落四处的文本处理脚本，统一成图形化工具箱。
 date: 2026-07-25 13:00:00
 tags:
   - TextTool
@@ -86,7 +86,3 @@ TwilightRainTextTool 不是一个宏大的项目，它解决的是我日常工�
 如果你也有类似的文本处理需求，欢迎下载试用。项目开源在 GitHub 上，Issue 和 PR 都随时欢迎。
 
 **项目地址**：<https://github.com/TwilightRainDev/TwilightRainTextTool>
-
----
-
-*本文转载自 [TwilightRain's Blog](https://twilightrain.pages.dev/)*

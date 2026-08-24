@@ -64,6 +64,7 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
 - `external_link` 已开启，外链自动新标签打开。
 - 文章会自动进 feed（atom.xml，限 20 篇）、搜索（search.xml）与 sitemap，无需额外操作。
 - 提交信息建议带类型前缀（仓库历史惯例：`feat:` / `fix:` / `security:` / `chore:` / `docs:`）。
+- **不要实现拍板排除项**（PlantUML、code-group、热门页等）：见 [EXCLUDED.md](EXCLUDED.md)。
 
 ## 文章内扩展语法
 

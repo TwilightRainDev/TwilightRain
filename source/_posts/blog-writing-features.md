@@ -1,9 +1,9 @@
 ---
-title: 博客写作新特性：提示块、Mermaid 与阅读时间
+title: 博客写作全部特性验收
 date: 2026-08-17 10:00:00
 series: 写作特性验收
 series_index: 1
-excerpt: 写作系统全功能验收文：提示块、Mermaid、链接/仓库卡片、Butterfly 批一至批三语法与模板能力。
+excerpt: 本验收文含提示块、Mermaid、链接卡片及大量语法模板功能。
 tags:
   - 博客
   - 写作
