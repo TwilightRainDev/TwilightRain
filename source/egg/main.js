@@ -800,7 +800,9 @@
         controls.dampingFactor = 0.08;
         controls.autoRotate = true;
         controls.autoRotateSpeed = 0.4;
-        controls.maxPolarAngle = Math.PI;
+        // 避免相机翻过南北极引发球坐标万向跳变（TD-016）
+        controls.minPolarAngle = 0.12;
+        controls.maxPolarAngle = Math.PI - 0.12;
         controls.minDistance = 3.8;
         controls.maxDistance = 22;
         controls.update();
@@ -960,8 +962,13 @@
             while (rotDiff > Math.PI) rotDiff -= Math.PI * 2;
             while (rotDiff < -Math.PI) rotDiff += Math.PI * 2;
             orcaGroup.rotation.y += rotDiff * (isChasing ? 0.09 : 0.05);
-            orcaGroup.rotation.z += (Math.sin(elapsedTime * 2) * 0.08 - orcaGroup.rotation.z) * 0.06;
-            orcaGroup.rotation.x += ((moveTarget.y - orcaGroup.position.y) * 0.8 - orcaGroup.rotation.x) * 0.04;
+            // 俯仰/滚转独立插值且限幅，避免三轴欧拉叠加万向死锁（TD-016）
+            const pitchTarget = THREE.MathUtils.clamp(
+                (moveTarget.y - orcaGroup.position.y) * 0.35, -0.22, 0.22);
+            orcaGroup.rotation.x = THREE.MathUtils.lerp(
+                orcaGroup.rotation.x, pitchTarget, isChasing ? 0.06 : 0.04);
+            const rollTarget = Math.sin(elapsedTime * 2) * 0.05;
+            orcaGroup.rotation.z = THREE.MathUtils.lerp(orcaGroup.rotation.z, rollTarget, 0.06);
 
             // ----- 胸鳍 & 尾鳍动画 -----
             if (pectoralLeft && pectoralRight) {
