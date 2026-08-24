@@ -1493,6 +1493,16 @@ pre:hover .copy-btn {
     flex-shrink: 0;
 }
 
+.link-avatar-fallback {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: 600;
+    background: rgba(128, 128, 128, 0.25);
+    color: var(--color-dark);
+}
+
 .link-name {
     font-weight: 600;
 }
@@ -2568,10 +2578,9 @@ a.card-link:hover {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
+    justify-content: space-between;
     gap: 0.35rem 0.5rem;
-    margin-bottom: 0.35rem;
 }
-
 .project-pinned-tag {
     font-size: 0.75rem;
     line-height: 1.2;
@@ -2579,13 +2588,7 @@ a.card-link:hover {
     border-radius: 0.25rem;
     background: rgba(26, 143, 227, 0.12);
     color: var(--color-primary, #1a8fe3);
-}
-
-.project-card-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
+    flex-shrink: 0;
 }
 .project-name {
     font-weight: 600;

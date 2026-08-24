@@ -16,26 +16,26 @@ links:
     items:
       - name: GitHub
         url: https://github.com/TwilightRainDev
-        img: https://github.githubassets.com/favicons/favicon.svg
+        img: /img/360px/links/github.png
         desc: 代码仓库
       - name: Cloudflare Dashboard
         url: https://dash.cloudflare.com/
-        img: https://dash.cloudflare.com/favicon.ico
+        img: /img/360px/links/cloudflare.png
         desc: Pages / DNS / CDN
       - name: Greasy Fork
         url: https://greasyfork.org/
-        img: https://greasyfork.org/images/blacklogo16.png
+        img: /img/360px/links/greasyfork.png
         desc: 用户脚本发布
       - name: npm
         url: https://www.npmjs.com/
-        img: https://static.npmjs.com/favicon.ico
+        img: /img/360px/links/npm.png
         desc: 依赖包查询
       - name: Can I Use
         url: https://caniuse.com/
-        img: https://caniuse.com/img/favicon-128.png
+        img: /img/360px/links/caniuse.png
         desc: 浏览器特性兼容
       - name: MDN
         url: https://developer.mozilla.org/
-        img: https://developer.mozilla.org/favicon.ico
+        img: /img/360px/links/mdn.png
         desc: Web 文档
 ---

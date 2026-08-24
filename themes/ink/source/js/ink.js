@@ -636,6 +636,24 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 })();
 
+// 友链头像加载失败时回退为首字（外链 favicon 防盗链等）
+(function() {
+    document.querySelectorAll('.link-avatar').forEach(function(img) {
+        if (img.dataset.fallbackReady) return;
+        img.dataset.fallbackReady = '1';
+        img.addEventListener('error', function onErr() {
+            img.removeEventListener('error', onErr);
+            if (img.classList.contains('link-avatar-fallback')) return;
+            var name = img.getAttribute('alt') || '?';
+            var span = document.createElement('span');
+            span.className = 'link-avatar link-avatar-fallback';
+            span.setAttribute('aria-hidden', 'true');
+            span.textContent = name.trim().slice(0, 1) || '?';
+            img.replaceWith(span);
+        });
+    });
+})();
+
 // ======================== 文章内图片灯箱 ========================
 // 给 article 内 img 加 data-fancybox；展示图为 360px，data-ori 指向原图。
 // 文章页头图卡（.post-imgcard）同样支持放大。
