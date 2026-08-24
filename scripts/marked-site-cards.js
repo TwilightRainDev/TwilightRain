@@ -9,6 +9,8 @@
  */
 'use strict';
 
+var faviconFallback = require('./lib/favicon-fallback');
+
 function escapeHtml(str) {
   return String(str)
     .replace(/&/g, '&amp;')
@@ -35,7 +37,7 @@ function isSafeUrl(url) {
 
 function linkAttrs(url) {
   var external = /^https?:\/\//i.test(url);
-  return external ? ' target="_blank" rel="noopener"' : '';
+  return external ? ' target="_blank" rel="noopener noreferrer"' : '';
 }
 
 function renderSiteCard(attrs) {
@@ -44,12 +46,18 @@ function renderSiteCard(attrs) {
   if (!isSafeUrl(url) || !title) {
     return '<p class="card-site-error">[WARN] 无效站点卡，需 url 与 title</p>';
   }
-  var screenshot = (attrs.screenshot || '').trim();
-  var avatar = (attrs.avatar || '').trim();
+  var screenshot = faviconFallback.resolveScreenshot(url, attrs.screenshot);
+  var avatar = faviconFallback.resolveAvatar(url, attrs.avatar);
   var desc = (attrs.desc || '').trim();
+  var screenshotIsPlaceholder = faviconFallback.isScreenshotPlaceholder(screenshot);
 
   var cover = screenshot && isSafeUrl(screenshot)
-    ? '<div class="cs-cover"><img src="' + escapeHtml(screenshot) + '" alt="" loading="lazy" decoding="async"></div>'
+    ? '<div class="cs-cover"><img class="cs-cover-img' +
+      (screenshotIsPlaceholder ? ' cs-cover-img--placeholder' : '') + '" src="' +
+      escapeHtml(screenshot) + '" alt="" loading="lazy" decoding="async"' +
+      (screenshotIsPlaceholder && /^https?:\/\//i.test(url)
+        ? ' data-site-url="' + escapeHtml(url) + '"' : '') +
+      '></div>'
     : '<div class="cs-cover cs-cover--empty"></div>';
 
   var avatarHtml = avatar && isSafeUrl(avatar)
