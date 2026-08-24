@@ -16,6 +16,7 @@ TwilightRain 博客源码仓库的维护文档。
 | [WORKFLOW.md](WORKFLOW.md) | 本地开发、写作发布、提交推送全流程 | 每次写文章/改代码时 |
 | [SECURITY.md](SECURITY.md) | CSP 安全头、`_headers`/`_redirects` 机制、已知陷阱 | 改安全策略、排查线上问题时 |
 | [THEME.md](THEME.md) | ink 主题定制点：布局、偏好、字体、评论 | 改页面样式/结构时 |
+| [adr/](adr/README.md) | 架构决策记录（删留、CSP、语法收敛等） | 追问「为什么这样设计」时 |
 
 ## 快速上手（新维护者）
 

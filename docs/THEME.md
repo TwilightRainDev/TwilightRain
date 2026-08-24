@@ -71,9 +71,13 @@ themes/ink/layout/
   （`hidden` 初始，ink.js 有 TOC 时解除）；ink.js 的 `placeToc()` 按
   <768px 断点把生成的 toc DOM 在 `.post-toc-slot`（桌面双卡）与
   `.post-toc-mobile-panel`（移动端面板）之间迁移，resize 跨界自动切换；
-  滚动 80px 后按钮出现（`.is-visible`），IntersectionObserver 高亮同时
-  更新按钮上的当前标题预览，面板内点击链接后收起。改动 TOC 结构时注意：
-  `syncTocHeight`（桌面双卡等高）移动端跳过并清空内联 height。
+  滚动 80px 后按钮出现（`.is-visible`），**滚动过程中临时隐藏**
+  （`.is-scrolling`，停稳约 180ms 后再显示，减轻遮挡正文）；
+  IntersectionObserver 高亮同时更新按钮上的当前标题预览，面板内点击链接后收起。
+- **移动端汉堡导航**：`<768px` 隐藏桌面 `.main-nav--desktop`，`#menu-btn` 打开
+  `#mobile-drawer` 侧滑抽屉；抽屉内二级菜单点击展开/收起（`ink.js` `initMobileNav`）。
+- **首页布局偏好**：`/settings/` 可选网格（默认）或列表；`layout-pref.js` 写
+  `ink-home-layout` 到 localStorage，列表模式下列数选项置灰。
 - **文章分享**：版权声明下输出三平台纯链接分享（微博 / QQ / X），
   无第三方脚本、CSP 零新增、rel noopener；URL/title 经 encodeURIComponent。
 - **双链相关文章**：文章底「链接到 / 反向链接」（无则隐藏）。
@@ -328,8 +332,9 @@ themes/ink/layout/
 
 - `scripts/marked-site-cards.js` —
   `::site{url=... title=... screenshot=... avatar=... desc=...}`、
-  `::intro{url=... img=... title=... subtitle=... tip=... cardtitle=... logo=...}`、
-  `:::site-group[标题]` 包多张 `::site`。纯静态；url/img 校验同 `::link`（http(s) 或 `/path`）。
+  `::intro{...}`、`:::site-group[标题]` 包多张 `::site`。
+  `avatar` / `screenshot` 可省略：回退 favicon 与占位图（`lib/favicon-fallback.js`；
+  可选 `screenshot-cards.js` Playwright 截图）。
 
 ## 系列文
 

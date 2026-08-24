@@ -17,7 +17,7 @@ npm install        # 首次或依赖变更后
 | `npm run server` | 本地预览 http://localhost:4000（热重载） |
 | `npm run build` | 生成 `public/`（构建产物，不入库） |
 | `npm run clean` | 清空 `public/` 与 `db.json` 缓存 |
-| `npm run test` | 跑 `scripts/lib/` 下纯函数单测（字数/面包屑/双链） |
+| `npm run test` | 跑 `test/lib/*.test.js` 纯函数单测（双链/面包屑/系列/marked 扩展等） |
 | `npx hexo new "标题"` | 生成新文章草稿（scaffolds/） |
 
 **预览时的已知差异**：`hexo server` 不输出安全头（CSP），因为 hexo-server 3.x 的
@@ -197,6 +197,8 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
   ```
 
   图片 URL 须为 `http(s)://` 或站内 `/path`；与 `::link` 同安全策略。
+  `avatar` / `screenshot` 可省略：分别回退为 `https://{domain}/favicon.ico` 与占位图
+  （见 [THEME.md → 站点卡](THEME.md#站点卡与介绍卡)）。
 
 - **系列文**：
 
@@ -220,6 +222,13 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
   文章底显示「链接到 / 反向链接」。别名与锚点：`[[标题|别名]]`、`[[标题#章节]]`。
   按 **title** 匹配（次选 slug），**标题须唯一**；围栏/行内代码内的 `[[…]]` 不处理。
   未匹配的双链原样保留，便于发现写错。
+
+- **读者偏好（仅前端）**：`/settings/` 可切换主题、字体、首页布局（网格/列表）、
+  首页列数；存 `localStorage`，不上传服务器（`layout-pref.js` + `ink.js`）。
+
+- **构建期安全**：正文外链自动补 `rel="noopener noreferrer"`；`mailto:` HTML 实体编码；
+  外链 `img` 加 `referrerpolicy="no-referrer"`（`scripts/external-links.js`、
+  `scripts/image-referrerpolicy.js`）。
 
 ## 提交与推送（重要）
 
