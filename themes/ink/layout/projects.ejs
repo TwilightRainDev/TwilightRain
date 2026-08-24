@@ -2,11 +2,20 @@
     <h1>项目</h1>
     <p class="projects-intro">公开仓库与工具项目一览。</p>
     <% if (page.projects && page.projects.length > 0) { %>
+    <% var sortedProjects = page.projects.slice().sort(function(a, b) {
+        var pa = a.pinned ? 1 : 0;
+        var pb = b.pinned ? 1 : 0;
+        if (pa !== pb) return pb - pa;
+        return 0;
+    }); %>
     <div class="projects-grid">
-        <% page.projects.forEach(function(p) { %>
-        <a class="project-card" href="<%= p.url %>" target="_blank" rel="noopener">
+        <% sortedProjects.forEach(function(p) { %>
+        <a class="project-card<% if (p.pinned) { %> project-card--pinned<% } %>" href="<%= p.url %>" target="_blank" rel="noopener">
             <div class="project-card-head">
                 <span class="project-name"><%= p.name %></span>
+                <% if (p.pinned) { %>
+                <span class="project-pinned-tag">置顶</span>
+                <% } %>
                 <% if (p.lang) { %>
                 <span class="project-lang"><%= p.lang %></span>
                 <% } %>
