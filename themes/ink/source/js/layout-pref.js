@@ -12,12 +12,13 @@
     }
 
     function applyLayout(pref) {
-        var list = document.querySelector('.blog-posts');
-        if (!list) return;
         var layout = pref === 'list' ? 'list' : 'grid';
-        list.classList.toggle('blog-posts--list', layout === 'list');
         document.documentElement.setAttribute('data-home-layout', layout);
         syncColumnsState(layout);
+
+        var list = document.querySelector('.blog-posts');
+        if (!list) return;
+        list.classList.toggle('blog-posts--list', layout === 'list');
     }
 
     function syncColumnsState(layout) {
