@@ -160,29 +160,48 @@ document.addEventListener('DOMContentLoaded', function () {
 // 设置项存 localStorage，由 /settings/ 页控件修改。
 // 脚本为 defer，HTML 解析完成后立即应用偏好，尽可能减少闪烁。
 (function() {
+    var GISCUS_ORIGIN = 'https://giscus.app';
+    var giscusReady = false;
+    var pendingGiscusTheme = null;
+
+    function giscusThemeName(actual) {
+        return actual === 'dark' ? 'dark' : 'light';
+    }
+
+    /** 在 giscus client.js 执行前写入 data-theme，避免首屏闪色 */
+    function syncGiscusScriptTheme(actual) {
+        var script = document.querySelector('script[src*="giscus.app/client.js"]');
+        if (script) {
+            script.setAttribute('data-theme', giscusThemeName(actual));
+        }
+    }
+
+    function sendGiscusTheme(theme) {
+        pendingGiscusTheme = theme;
+        if (!giscusReady) return;
+        var iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe || !iframe.contentWindow) return;
+        try {
+            iframe.contentWindow.postMessage({
+                giscus: { setConfig: { theme: theme } }
+            }, GISCUS_ORIGIN);
+            pendingGiscusTheme = null;
+        } catch (e) { /* iframe 未就绪 */ }
+    }
+
+    window.addEventListener('message', function (event) {
+        if (event.origin !== GISCUS_ORIGIN) return;
+        if (!event.data || typeof event.data !== 'object' || !event.data.giscus) return;
+        giscusReady = true;
+        if (pendingGiscusTheme !== null) {
+            sendGiscusTheme(pendingGiscusTheme);
+        }
+    });
+
     function giscusTheme(actual) {
-        var theme = actual === 'dark' ? 'dark' : 'light';
-        var sync = function () {
-            var giscus = document.querySelector('iframe.giscus-frame');
-            if (!giscus || !giscus.contentWindow) return;
-            // lazy 加载或 about:blank 阶段 iframe 仍为同源，postMessage 会报错
-            var src = giscus.getAttribute('src') || '';
-            if (src.indexOf('giscus.app') === -1) return;
-            try {
-                giscus.contentWindow.postMessage({
-                    giscus: { setConfig: { theme: theme } }
-                }, 'https://giscus.app');
-            } catch (e) { /* iframe 未就绪 */ }
-        };
-        var bindLoad = function () {
-            var giscus = document.querySelector('iframe.giscus-frame');
-            if (!giscus || giscus.dataset.giscusThemeBound) return;
-            giscus.dataset.giscusThemeBound = '1';
-            giscus.addEventListener('load', sync);
-        };
-        sync();
-        bindLoad();
-        setTimeout(function () { sync(); bindLoad(); }, 2000);
+        var theme = giscusThemeName(actual);
+        syncGiscusScriptTheme(actual);
+        sendGiscusTheme(theme);
     }
 
     // 主题偏好：auto（跟随系统）/ light / dark
