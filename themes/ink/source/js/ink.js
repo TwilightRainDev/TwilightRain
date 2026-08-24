@@ -898,6 +898,85 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 })();
 
+// ======================== 移动端汉堡导航（TD-002） ========================
+(function() {
+    function initMobileNav() {
+        var btn = document.getElementById('menu-btn');
+        var drawer = document.getElementById('mobile-drawer');
+        if (!btn || !drawer) return;
+
+        var backdrop = drawer.querySelector('.mobile-drawer__backdrop');
+        var panel = drawer.querySelector('.mobile-drawer__panel');
+        if (!backdrop || !panel) return;
+
+        var focusables = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+        function openDrawer() {
+            drawer.classList.add('is-open');
+            drawer.setAttribute('aria-hidden', 'false');
+            btn.classList.add('is-active');
+            btn.setAttribute('aria-expanded', 'true');
+            btn.setAttribute('aria-label', '关闭菜单');
+            document.body.style.overflow = 'hidden';
+            var first = panel.querySelector(focusables);
+            if (first) first.focus();
+        }
+
+        function closeDrawer() {
+            drawer.classList.remove('is-open');
+            drawer.setAttribute('aria-hidden', 'true');
+            btn.classList.remove('is-active');
+            btn.setAttribute('aria-expanded', 'false');
+            btn.setAttribute('aria-label', '打开菜单');
+            document.body.style.overflow = '';
+            drawer.querySelectorAll('.has-sub.open').forEach(function(el) {
+                el.classList.remove('open');
+            });
+            btn.focus();
+        }
+
+        btn.addEventListener('click', function() {
+            if (drawer.classList.contains('is-open')) closeDrawer();
+            else openDrawer();
+        });
+
+        backdrop.addEventListener('click', closeDrawer);
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && drawer.classList.contains('is-open')) {
+                e.preventDefault();
+                closeDrawer();
+            }
+            if (e.key === 'Tab' && drawer.classList.contains('is-open')) {
+                var nodes = panel.querySelectorAll(focusables);
+                if (!nodes.length) return;
+                var first = nodes[0];
+                var last = nodes[nodes.length - 1];
+                if (e.shiftKey && document.activeElement === first) {
+                    e.preventDefault();
+                    last.focus();
+                } else if (!e.shiftKey && document.activeElement === last) {
+                    e.preventDefault();
+                    first.focus();
+                }
+            }
+        });
+
+        drawer.addEventListener('click', function(e) {
+            var link = e.target.closest('a');
+            if (!link || link.classList.contains('sub-trigger')) return;
+            if (link.getAttribute('href') === '#') return;
+            closeDrawer();
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initMobileNav);
+    } else {
+        initMobileNav();
+    }
+})();
+
 // ======================== Mermaid 图表（```mermaid 按需渲染） ========================
 // marked 扩展（scripts/marked-mermaid.js）把 ```mermaid 代码块渲染为
 // .mermaid 容器（内含源码 pre code）。本模块：

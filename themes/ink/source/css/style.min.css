@@ -1800,6 +1800,170 @@ figure.highlight td.code code br:last-child {
     color: #888;
 }
 
+/* ======================== 移动端汉堡导航（TD-002） ======================== */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.menu-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: inherit;
+    border-radius: 8px;
+}
+
+.menu-btn:focus-visible {
+    outline: 2px solid var(--color-primary, #1a8fe3);
+    outline-offset: 2px;
+}
+
+.menu-btn__line {
+    display: block;
+    width: 1.5rem;
+    height: 2px;
+    margin: 3px 0;
+    background: currentColor;
+    border-radius: 1px;
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.menu-btn.is-active .menu-btn__line:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+
+.menu-btn.is-active .menu-btn__line:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-btn.is-active .menu-btn__line:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .menu-btn__line {
+        transition: none;
+    }
+}
+
+.mobile-drawer {
+    display: none;
+}
+
+.mobile-drawer.is-open {
+    display: block;
+}
+
+.mobile-drawer__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.mobile-drawer__panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 100;
+    width: min(88vw, 320px);
+    height: 100%;
+    padding: 72px 16px 24px;
+    overflow-y: auto;
+    background: var(--color-light, #fff);
+    color: var(--color-dark, #222);
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+    transform: translateX(100%);
+    transition: transform 0.3s ease-out;
+}
+
+.mobile-drawer.is-open .mobile-drawer__panel {
+    transform: translateX(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mobile-drawer__panel {
+        transition: none;
+    }
+}
+
+[data-theme="dark"] .mobile-drawer__panel {
+    background: var(--color-light, #1a1a1a);
+    color: var(--color-dark, #f0f0f0);
+}
+
+@media (max-width: 767px) {
+    .menu-btn {
+        display: flex;
+    }
+
+    .main-nav--desktop {
+        display: none;
+    }
+
+    .mobile-drawer .main-nav {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        gap: 0;
+        margin: 0;
+    }
+
+    .mobile-drawer .main-nav > a,
+    .mobile-drawer .main-nav .has-sub {
+        width: 100%;
+    }
+
+    .mobile-drawer .main-nav a {
+        display: flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 10px 12px;
+        border-bottom: none;
+        border-radius: 8px;
+    }
+
+    .mobile-drawer .main-nav a:hover,
+    .mobile-drawer .main-nav a:focus-visible {
+        background: rgba(26, 143, 227, 0.08);
+    }
+
+    .mobile-drawer .main-nav .has-sub {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .mobile-drawer .main-nav .sub-menu {
+        position: static;
+        display: none;
+        min-width: 0;
+        margin: 0 0 4px 0;
+        padding: 0 0 0 8px;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        background: transparent;
+    }
+
+    .mobile-drawer .main-nav .has-sub.open .sub-menu {
+        display: block;
+    }
+
+    .mobile-drawer .main-nav .sub-menu a {
+        min-height: 44px;
+        white-space: normal;
+    }
+}
+
 /* ======================== 文章页头图 + TOC 双卡（banner→TOC 重构） ======================== */
 /* post.ejs 输出 .post-toc-row（图卡 + 目录槽），ink.js 将生成的 TOC 移入槽内。
    原 30vh banner 仅文章页移除；banner 样式/模板保留给普通页面（about/links 等）。 */
