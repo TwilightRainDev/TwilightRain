@@ -99,7 +99,7 @@ fetch 前先评估（默认收紧取向）；若卡片功能移除，此行一�
 
 ## 内容与仓库安全
 
-- 评论走 giscus（GitHub Discussions 作后端，主题配置见 [THEME.md](THEME.md#配置themesink_configyaml)）。
+- 评论走 giscus（GitHub Discussions 作后端，主题配置见 [THEME.md](THEME.md#配置themesink_configyaml)）。Console 分诊见 [CONSOLE-TRIAGE.md](CONSOLE-TRIAGE.md)。
 - 提交身份用 noreply 邮箱：完整地址为
   `122437146+TwilightRainDev@users.noreply.github.com`（本地两个仓库
   user.email 均已改为此地址）；**历史提交仍含真实邮箱**——GitHub 账号
