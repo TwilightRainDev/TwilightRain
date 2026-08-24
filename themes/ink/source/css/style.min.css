@@ -293,6 +293,70 @@ button:active{
     -webkit-box-orient: vertical;
 }
 
+.blog-posts--list {
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.blog-posts--list .article-item {
+    width: calc(100% - 20px);
+    aspect-ratio: auto;
+    color: var(--color-dark);
+    background: transparent;
+}
+
+.blog-posts--list .article-item a.link {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 0.85rem;
+    padding: 0.65rem;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.blog-posts--list .thumbnail,
+.blog-posts--list .article-item img {
+    width: 132px;
+    min-width: 132px;
+    aspect-ratio: 4 / 3;
+    border-radius: 8px;
+}
+
+.blog-posts--list .article-info {
+    position: static;
+    margin: 0;
+    padding: 0.15rem 0;
+    max-height: none;
+    overflow: visible;
+    background-color: transparent !important;
+    backdrop-filter: none;
+    color: inherit;
+    justify-content: center;
+}
+
+.blog-posts--list .article-info time {
+    color: #888;
+}
+
+.blog-posts--list .article-info span {
+    color: var(--color-dark);
+    -webkit-line-clamp: 3;
+}
+
+.blog-posts--list .article-excerpt {
+    color: #666;
+}
+
+[data-theme="dark"] .blog-posts--list .article-item a.link {
+    border-color: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+[data-theme="dark"] .blog-posts--list .article-info span {
+    color: var(--color-light);
+}
+
 ul.blog-posts {
     list-style-type: none;
     padding: unset;
@@ -1156,6 +1220,24 @@ pre:hover .copy-btn {
 .setting-option-desc.font-preview-hywenhei {
     font-family: 'HYWenHei 85W', sans-serif;
     font-weight: 500;
+}
+
+.setting-group--disabled > h2,
+.setting-group--disabled .setting-option-desc {
+    opacity: 0.55;
+}
+
+.setting-option--disabled {
+    opacity: 0.55;
+    pointer-events: none;
+}
+
+.setting-option--disabled:hover {
+    border-color: rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="dark"] .setting-option--disabled:hover {
+    border-color: rgba(255, 255, 255, 0.15);
 }
 
 [data-theme="dark"] .setting-option {
@@ -3488,6 +3570,10 @@ a.card-site:hover {
 }
 .cs-cover--empty {
     min-height: 96px;
+}
+.cs-cover-img--placeholder {
+    object-fit: cover;
+    background: rgba(0, 0, 0, 0.04);
 }
 .cs-cover img {
     width: 100%;

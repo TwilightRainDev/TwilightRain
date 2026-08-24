@@ -208,6 +208,10 @@ document.addEventListener('DOMContentLoaded', function () {
     function applyColumns(pref) {
         var list = document.querySelector('.blog-posts');
         if (!list) return;
+        if (localStorage.getItem('ink-home-layout') === 'list') {
+            list.style.removeProperty('--cols');
+            return;
+        }
         if (pref === '1' || pref === '2' || pref === '3' || pref === '4') {
             list.style.setProperty('--cols', pref);
         } else {
