@@ -157,6 +157,8 @@ themes/ink/layout/
     子项与普通项一样，http(s) 开头视为外链新标签打开。
     对象可另加 `categories: true`：子项改由 `site.categories` 动态生成
     （名称 + 文章数，链接分类页），`children` 仍保留为附加项，见下「分类入口」。
+  - **RSS 入口**（2026-08-24）：置于「关于」二级菜单 `children.RSS: /atom.xml`；
+    页脚不再重复；`<head>` 仍保留 atom/rss2 alternate 链接。
 - **渲染**：`partial/header.ejs` 对对象值输出
   `<span class="has-sub"><a class="sub-trigger">…</a><ul class="sub-menu">…</ul></span>`。
 - **交互**：

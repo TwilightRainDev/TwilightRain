@@ -28,6 +28,7 @@ menu:
     children:
       自己: /about/
       友链: /links/
+      RSS: /atom.xml
       GitHub: https://github.com/TwilightRainDev
   设置: /settings/
 
