@@ -1954,6 +1954,11 @@ figure.highlight td.code code br:last-child {
         background: transparent;
     }
 
+    /* 抽屉内仅 .open 控制展开；覆盖触摸设备 :hover 粘性态（否则收起后仍显示） */
+    .mobile-drawer .main-nav .has-sub:hover .sub-menu {
+        display: none;
+    }
+
     .mobile-drawer .main-nav .has-sub.open .sub-menu {
         display: block;
     }

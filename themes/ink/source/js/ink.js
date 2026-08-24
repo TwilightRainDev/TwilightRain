@@ -884,6 +884,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var coarse = window.matchMedia && window.matchMedia('(hover: none), (pointer: coarse)').matches;
     if (!coarse) return;
     document.addEventListener('click', function(e) {
+        if (e.target.closest('.mobile-drawer')) return;
         var inWrap = e.target.closest('.has-sub');
         document.querySelectorAll('.has-sub.open').forEach(function(el) {
             if (el !== inWrap) el.classList.remove('open');
@@ -963,6 +964,20 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         drawer.addEventListener('click', function(e) {
+            var trigger = e.target.closest('.sub-trigger');
+            if (trigger && panel.contains(trigger)) {
+                e.preventDefault();
+                e.stopPropagation();
+                var wrap = trigger.closest('.has-sub');
+                if (!wrap) return;
+                var wasOpen = wrap.classList.contains('open');
+                panel.querySelectorAll('.has-sub.open').forEach(function(el) {
+                    el.classList.remove('open');
+                });
+                if (!wasOpen) wrap.classList.add('open');
+                return;
+            }
+
             var link = e.target.closest('a');
             if (!link || link.classList.contains('sub-trigger')) return;
             if (link.getAttribute('href') === '#') return;
