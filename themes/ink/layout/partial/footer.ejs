@@ -1,9 +1,9 @@
 <footer style="padding:0 0;">
     <div id="footer-nav">
-        <p style="font-size:0.7em;margin: 0;">
+        <p style="margin: 0;">
             <a class="footer-nav-link" href="/atom.xml">RSS</a>
         </p>
-        <p style="font-size:0.6em;margin: 8px 0 0;opacity:0.4;">
+        <p class="footer-meta">
             &copy; <%= date(new Date(), 'YYYY') %> <%= config.author %> &middot; Powered by Hexo
         </p>
         <%# 构建版本色块（2026-08-18 移植自 SanYeCao-blog）：site.data.commit 由
@@ -14,7 +14,7 @@
                var blocks = [];
                for (var bi = 0; bi < 6; bi++) blocks.push(hash.slice(bi * 6, bi * 6 + 6).padEnd(6, '0'));
         %>
-        <p style="font-size:0.6em;margin: 8px 0 0;opacity:0.4;">
+        <p class="footer-meta">
             <span class="build-hash" title="Build <%= hash %>" aria-label="Build <%= hash %>">
                 <% blocks.forEach(function(b) { %>
                 <span class="build-block" style="background:#<%= b %>"></span>

@@ -464,15 +464,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 tocMobileToggle.setAttribute('aria-expanded', 'false');
             }
         });
-        // 滚动 80px 后显示按钮（移动端），顶部隐藏并收起面板
+        // 滚动 80px 后显示按钮；滚动中临时隐藏，停稳后再显示（减少遮挡正文）
+        var tocScrollIdle = null;
         var onTocScroll = function () {
             if (!isMobileToc() || !tocMobileToggle) return;
             var show = window.scrollY > 80;
             tocMobileToggle.classList.toggle('is-visible', show);
             if (!show) {
+                tocMobileToggle.classList.remove('is-scrolling');
                 tocMobilePanel.classList.remove('is-open');
                 tocMobileToggle.setAttribute('aria-expanded', 'false');
+                return;
             }
+            if (tocMobilePanel.classList.contains('is-open')) return;
+            tocMobileToggle.classList.add('is-scrolling');
+            clearTimeout(tocScrollIdle);
+            tocScrollIdle = setTimeout(function () {
+                tocMobileToggle.classList.remove('is-scrolling');
+            }, 180);
         };
         window.addEventListener('scroll', onTocScroll, { passive: true });
         onTocScroll();
