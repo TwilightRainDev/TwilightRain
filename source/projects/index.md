@@ -6,6 +6,7 @@ projects:
   - name: TwilightRain
     url: https://github.com/TwilightRainDev/TwilightRain
     lang: JavaScript
+    pinned: true
     desc: 本博客：Hexo 8 + ink 定制主题，Cloudflare Pages 部署，Twilight 模板功能持续迁移中
   - name: TwilightRainTimeTrack
     url: https://github.com/TwilightRainDev/TwilightRainTimeTrack

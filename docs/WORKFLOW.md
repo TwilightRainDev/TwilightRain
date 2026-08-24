@@ -17,7 +17,7 @@ npm install        # 首次或依赖变更后
 | `npm run server` | 本地预览 http://localhost:4000（热重载） |
 | `npm run build` | 生成 `public/`（构建产物，不入库） |
 | `npm run clean` | 清空 `public/` 与 `db.json` 缓存 |
-| `npm run test` | 跑 `scripts/lib/` 下纯函数单测（字数/面包屑/双链） |
+| `npm run test` | 跑 `test/lib/*.test.js` 纯函数单测（双链/面包屑/系列/marked 扩展等） |
 | `npx hexo new "标题"` | 生成新文章草稿（scaffolds/） |
 
 **预览时的已知差异**：`hexo server` 不输出安全头（CSP），因为 hexo-server 3.x 的
@@ -64,6 +64,7 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
 - `external_link` 已开启，外链自动新标签打开。
 - 文章会自动进 feed（atom.xml，限 20 篇）、搜索（search.xml）与 sitemap，无需额外操作。
 - 提交信息建议带类型前缀（仓库历史惯例：`feat:` / `fix:` / `security:` / `chore:` / `docs:`）。
+- **不要实现拍板排除项**（PlantUML、code-group、热门页等）：见 [EXCLUDED.md](EXCLUDED.md)。
 
 ## 文章内扩展语法
 
@@ -96,19 +97,19 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
   图表跟随深浅主题。**限制**：列表/引用缩进内的 mermaid 围栏不支持（会被
   Hexo 代码块预处理接管走代码高亮），图表一律顶格写。
 
-- **GitHub 仓库卡片**（单行指令）：
+- **GitHub 仓库卡片**：
 
   ```markdown
-  ::github{repo="TwilightRainDev/TwilightRain" desc="博客仓库"}
+  ::card{type="github" repo="TwilightRainDev/TwilightRain" desc="博客仓库"}
   ```
 
   渲染为仓库卡片（owner/repo + GitHub 图标 + 可选描述），点击跳转仓库页。
   repo 格式错误时输出可见的 `[WARN]` 提示。
 
-- **通用链接卡片**（单行指令，与 ::github 同风格）：
+- **通用链接卡片**：
 
   ```markdown
-  ::link{url="https://www.anthropic.com/claude" title="Claude" desc="可选描述"}
+  ::card{type="link" url="https://www.anthropic.com/claude" title="Claude" desc="可选描述"}
   ```
 
   渲染为网页卡片（link 图标 + 标题 + 域名 + 可选描述），点击跳转（新标签）。
@@ -128,31 +129,33 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
   渲染为标签页，默认显示第一个，点击按钮切换。`--- 标题` 是子页分隔符
   （顶格写）；无分隔符的块输出可见 `[WARN]`。
 
-- **文内照片墙**（纯 CSS 约定，无标签插件）：
-
-  ```html
-  <div class="photo-grid">
-  <img src="/img/360px/with-her-eyes-1.jpg" alt="图一">
-  <img src="/img/360px/with-her-eyes-2.jpg" alt="图二">
-  </div>
-  ```
-
-  多图自动网格排列（200px 起自适应列数），点击放大走 fancybox 灯箱
-  （与正文图同机制）。相册集合请用 `/gallery/` 页（front matter photos 数组）。
-
-- **隐藏 / 折叠**：
+- **文内照片墙**：
 
   ````markdown
-  :::hide[点击显示答案]
-  这里是隐藏内容，支持 **Markdown**。
-  :::
-
-  :::fold[展开说明]
-  用原生 details 折叠，摘要为括号内标题。
+  :::grid[2]
+  ![图一](/img/360px/with-her-eyes-1.jpg)
+  ![图二](/img/360px/with-her-eyes-2.jpg)
   :::
   ````
 
-- **文内时间线**（与站点页 `/timeline/` 展柜不同）：
+  列数可选（默认 2），渲染为 CSS Grid；点击放大走 fancybox。
+  旧写法 `<div class="photo-grid">` 仍可用但**已废弃**。
+
+- **剧透 / 折叠**：
+
+  ````markdown
+  :::fold[text 悬停或点击查看]
+  短剧透内容
+  :::
+
+  :::fold[details 展开说明]
+  块级折叠，支持完整 Markdown。
+  :::
+  ````
+
+  HTML 类名仍为 `.md-text` / `.md-details`。
+
+- **文内时间线**（语法与站点页 `/timeline/` 不同；DOM 由同一渲染器生成）：
 
   ````markdown
   :::timeline[版本史]
@@ -166,20 +169,12 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
 - **按钮 / 标签**：
 
   ```markdown
-  ::btn{url="https://example.com" text="打开文档"}
-  ::btn{url="/about/" text="关于本站"}
-  ::label{text="Beta" tone="blue"}
+  ::inline{type="btn" url="https://example.com" text="打开文档"}
+  ::inline{type="btn" url="/about/" text="关于本站"}
+  ::inline{type="label" text="Beta" tone="blue"}
   ```
 
   `url` 仅允许 `http(s)://` 或站内 `/path`；`tone` 可选 default/blue/green/red/orange。
-
-- **折叠容器 folding**（与 `:::fold` 不同）：
-
-  ````markdown
-  :::folding[展开详细配置说明]
-  长段补充内容，支持列表与代码块。
-  :::
-  ````
 
 - **B 站视频懒嵌入**：
 
@@ -195,16 +190,18 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
 - **站点卡 / 介绍卡**：
 
   ```markdown
-  ::site{url="https://example.com" title="站点名" screenshot="/img/360px/cover.jpg" desc="可选描述"}
-  ::intro{url="/about/" img="/img/360px/cover.jpg" tip="标签" cardtitle="卡片标题" title="主标题" subtitle="副标题" logo="/img/360px/logo.jpg"}
+  ::card{type="site" url="https://example.com" title="站点名" screenshot="/img/360px/cover.jpg" desc="可选描述"}
+  ::card{type="intro" url="/about/" img="/img/360px/cover.jpg" tip="标签" cardtitle="卡片标题" title="主标题" subtitle="副标题" logo="/img/360px/logo.jpg"}
 
-  :::site-group[分组标题]
-  ::site{url="https://a.com" title="A" screenshot="/img/360px/a.jpg"}
-  ::site{url="https://b.com" title="B" screenshot="/img/360px/b.jpg"}
+  :::card-group[分组标题]
+  ::card{type="site" url="https://a.com" title="A" screenshot="/img/360px/a.jpg"}
+  ::card{type="site" url="https://b.com" title="B" screenshot="/img/360px/b.jpg"}
   :::
   ```
 
   图片 URL 须为 `http(s)://` 或站内 `/path`；与 `::link` 同安全策略。
+  `avatar` / `screenshot` 可省略：分别回退为 `https://{domain}/favicon.ico` 与占位图
+  （见 [THEME.md → 站点卡](THEME.md#站点卡与介绍卡)）。
 
 - **系列文**：
 
@@ -219,7 +216,7 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
   ::series{name="我的连载名"}
   ```
 
-  同 `series:` 的文章会自动进入目录；当前篇高亮。样文见 `blog-writing-features.md` 与 `blog-writing-features-part2.md`。
+  同 `series:` 的文章会自动进入目录；当前篇高亮。样文见 `blog-writing-features.md`（单篇即可展示目录）。
 
 - **分享按钮**：文章页版权声明下方自动出现微博 / QQ / X 三平台分享链接，
   无需手动配置。
@@ -228,6 +225,13 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
   文章底显示「链接到 / 反向链接」。别名与锚点：`[[标题|别名]]`、`[[标题#章节]]`。
   按 **title** 匹配（次选 slug），**标题须唯一**；围栏/行内代码内的 `[[…]]` 不处理。
   未匹配的双链原样保留，便于发现写错。
+
+- **读者偏好（仅前端）**：`/settings/` 可切换主题、字体、首页布局（网格/列表）、
+  首页列数；存 `localStorage`，不上传服务器（`layout-pref.js` + `ink.js`）。
+
+- **构建期安全**：正文外链自动补 `rel="noopener noreferrer"`；`mailto:` HTML 实体编码；
+  外链 `img` 加 `referrerpolicy="no-referrer"`（`scripts/external-links.js`、
+  `scripts/image-referrerpolicy.js`）。
 
 ## 提交与推送（重要）
 

@@ -71,9 +71,13 @@ themes/ink/layout/
   （`hidden` 初始，ink.js 有 TOC 时解除）；ink.js 的 `placeToc()` 按
   <768px 断点把生成的 toc DOM 在 `.post-toc-slot`（桌面双卡）与
   `.post-toc-mobile-panel`（移动端面板）之间迁移，resize 跨界自动切换；
-  滚动 80px 后按钮出现（`.is-visible`），IntersectionObserver 高亮同时
-  更新按钮上的当前标题预览，面板内点击链接后收起。改动 TOC 结构时注意：
-  `syncTocHeight`（桌面双卡等高）移动端跳过并清空内联 height。
+  滚动 80px 后按钮出现（`.is-visible`），**滚动过程中临时隐藏**
+  （`.is-scrolling`，停稳约 180ms 后再显示，减轻遮挡正文）；
+  IntersectionObserver 高亮同时更新按钮上的当前标题预览，面板内点击链接后收起。
+- **移动端汉堡导航**：`<768px` 隐藏桌面 `.main-nav--desktop`，`#menu-btn` 打开
+  `#mobile-drawer` 侧滑抽屉；抽屉内二级菜单点击展开/收起（`ink.js` `initMobileNav`）。
+- **首页布局偏好**：`/settings/` 可选网格（默认）或列表；`layout-pref.js` 写
+  `ink-home-layout` 到 localStorage，列表模式下列数选项置灰。
 - **文章分享**：版权声明下输出三平台纯链接分享（微博 / QQ / X），
   无第三方脚本、CSP 零新增、rel noopener；URL/title 经 encodeURIComponent。
 - **双链相关文章**：文章底「链接到 / 反向链接」（无则隐藏）。
@@ -153,6 +157,8 @@ themes/ink/layout/
     子项与普通项一样，http(s) 开头视为外链新标签打开。
     对象可另加 `categories: true`：子项改由 `site.categories` 动态生成
     （名称 + 文章数，链接分类页），`children` 仍保留为附加项，见下「分类入口」。
+  - **RSS 入口**（2026-08-24）：置于「关于」二级菜单 `children.RSS: /atom.xml`；
+    页脚不再重复；`<head>` 仍保留 atom/rss2 alternate 链接。
 - **渲染**：`partial/header.ejs` 对对象值输出
   `<span class="has-sub"><a class="sub-trigger">…</a><ul class="sub-menu">…</ul></span>`。
 - **交互**：
@@ -239,20 +245,8 @@ themes/ink/layout/
   `style="max-width: Npx"`（N = 图自然宽），容器窄于 N 时浏览器按 min(容器, N)
   渲染、整图等比缩小，节点文字无法辨认。ink.js `fitMermaid` 检测自然宽 > 容器宽
   时把 width 改为自然宽、内联 maxWidth 置 none，靠 `.mermaid` 的
-  `overflow-x: auto` 横向滚动；窄图保持默认行为不变。静态化 SVG（mermaid-static.js
-  构建期输出）不经 renderAll，由 DOMContentLoaded 时统一适配；主题切换 force
+  `overflow-x: auto` 横向滚动；窄图保持默认行为不变。主题切换 force
   重渲染在渲染回调里再适配。
-- **构建期静态化（双轨）**：`scripts/mermaid-static.js`
-  （after_post_render）用 playwright 把 `.mermaid` 占位容器内的源码渲染为
-  静态 SVG，输出 `<div class="mermaid mermaid-rendered" data-code="...">SVG</div>`：
-  `mermaid-rendered` 让 ink.js 首次加载跳过（零客户端渲染开销）；`data-code`
-  让主题切换时 ink.js force 重渲染（深色适配）。
-  **双轨机制**：依赖不在 package.json——本机通过 NODE_PATH 解析 D 盘全局包
-  （`D:\npm-global`，npm prefix 已指向该目录）+ playwright 浏览器在
-  `D:\work_temp\ms-playwright`（PLAYWRIGHT_BROWSERS_PATH）；CF（Linux）
-  无这些路径 → require 失败 → 保留占位 → ink.js 客户端渲染兜底。
-  修改依赖版本时：`npm install -g mermaid-isomorphic playwright` + 重装浏览器
-  （版本号变化时 `npx playwright install chromium`）。
 
 ## 阅读时间与字数
 
@@ -272,10 +266,10 @@ themes/ink/layout/
 
 ## GitHub 仓库卡片
 
-- 语法（单行）：`::github{repo="owner/repo" desc="可选描述"}`，渲染为
+- 语法：`::card{type="github" repo="owner/repo" desc="可选描述"}`。渲染为
   `<a class="card-github">`（owner/repo + GitHub 图标 + 可选描述），点击跳转
   仓库页。repo 无 "/" 或缺失时输出可见错误提示（`[WARN]`）。
-- 实现：`scripts/marked-github-card.js` 注册 marked:use 扩展（同提示块模式）
+- 实现：`scripts/marked-card.js` 注册 marked:use 扩展
   静态渲染基础信息；`ink.js`「GitHub 仓库卡片数据」模块前端调 GitHub API
   补充动态数据（stars/forks/language/license，无静态 desc 时补 description）。
 - **API 与 CSP**：`connect-src` 放行
@@ -287,7 +281,7 @@ themes/ink/layout/
 
 ## 通用链接卡片
 
-- 语法：`::link{url="https://..." title="可选" desc="可选"}`，渲染 `<a class="card-link">`
+- 语法：`::card{type="link" url="https://..." title="可选" desc="可选"}`。渲染 `<a class="card-link">`
   （link 图标 + 标题 + 右端域名 + 可选描述），样式与 GitHub 卡片同款。
 - **纯静态**：不调 API、无前端 JS、CSP 零新增。**安全**：url 仅放行 http/https
   （防 javascript: 伪协议注入，renderer 里正则校验），全部文本 escapeHtml 转义；
@@ -315,42 +309,40 @@ themes/ink/layout/
 
 ## 隐藏块与折叠
 
-- **隐藏块**：`scripts/marked-hide.js` — `:::hide[按钮文案]` 点击后显示；
-  ink.js 事件委托处理 `.md-hide-btn`。
-- **折叠（fold）**：`:::fold[摘要]` → `<details class="md-fold">`。
-- **折叠容器（folding）**：`scripts/marked-folding.js` — `:::folding[摘要]` →
-  `<details class="md-folding">`（显式摘要条样式；与 `:::fold` / `:::hide` 区分）。
+- **实现**：`scripts/marked-fold.js`。`:::fold[text …]` / `:::fold[details …]`（无 mode 时默认 text）。
+  HTML 类名仍为 `.md-text` / `.md-details`。ink.js 点击切换 `.is-revealed`。
+
+## 图片网格
+
+- `scripts/marked-grid.js` — `:::grid[列数]`（默认 2）→ `.md-grid` CSS Grid；
+  替代旧 `<div class="photo-grid">`（已废弃）。
 
 ## 文内时间线
 
 - `scripts/marked-timeline.js` — `:::timeline` + `--- 标题` 分隔；
-  容器类 `.post-timeline`，与站点展柜 `/timeline/` 的 `.timeline-*` 隔离。
+  DOM 由 `scripts/lib/timeline-renderer.js` 生成，容器类 `.post-timeline`。
+  站点展柜 `/timeline/` 走同一渲染器的 page 变体（`.timeline-*`）。
+  两套 class 因布局不同保持隔离，见 `docs/adr/0005-timeline-shared-renderer.md`。
 
 ## 按钮与标签
 
-- `scripts/marked-btn-label.js` —
-  `::btn{url=... text=...}`（http(s) 或站内 `/path`）、
-  `::label{text=... tone=default|blue|green|red|orange}`。
+- `scripts/marked-inline.js` —
+  `::inline{type="btn" url=... text=...}`、
+  `::inline{type="label" text=... tone=default|blue|green|red|orange}`。
 
 ## 站点卡与介绍卡
 
-- `scripts/marked-site-cards.js` —
-  `::site{url=... title=... screenshot=... avatar=... desc=...}`、
-  `::intro{url=... img=... title=... subtitle=... tip=... cardtitle=... logo=...}`、
-  `:::site-group[标题]` 包多张 `::site`。纯静态；url/img 校验同 `::link`（http(s) 或 `/path`）。
+- `scripts/marked-card.js` —
+  `::card{type="site|intro|github|link" ...}`、`:::card-group[标题]`。
+  `avatar` / `screenshot` 可省略：回退 favicon 与占位图（`lib/favicon-fallback.js`；
+  可选 `screenshot-cards.js` Playwright 截图）。
 
 ## 系列文
 
 - `scripts/series.js` + `scripts/lib/series-groups.js` —
   front matter `series:`（可选 `series_index:`）；文内 `::series` 或 `::series{name="..."}` 输出
   系列目录并高亮当前篇。不做侧栏 series widget。
-  样文：`blog-writing-features.md` / `blog-writing-features-part2.md`。
-
-## 相关文章
-
-- `scripts/related-posts.js` + `scripts/lib/related-posts.js` —
-  构建期按标签交集权重取最多 6 篇，`post.ejs` 文末「相关文章」列表（与双链
-  「链接到/反向链接」独立共存）。
+  样文：`blog-writing-features.md`（单篇展示即可）。
 
 ## B 站懒嵌入
 
@@ -398,9 +390,9 @@ themes/ink/layout/
   直接显示 page.updated 是假数据——post.ejs 仅当 updatedSet 为真才输出
   "更新于"小字；过期提示条（warning 配色）输出在阅读时间 meta 下。
 
-## 文内照片墙（.photo-grid）
+## 文内照片墙（.photo-grid，已废弃）
 
-- 文章正文写
+- 推荐 `:::grid[列数]`（见上文「图片网格」与 WORKFLOW.md）。旧写法：文章正文写
   `<div class="photo-grid">` 包一组 `<img>` 即网格排列（auto-fill minmax(200px,1fr)），
   灯箱复用现有 fancybox（ink.js 已给 article 内 img 加 data-fancybox），
   不引入标签插件、不引 photoswipe。与相册页（独立集合页）场景不同质：
@@ -410,8 +402,8 @@ themes/ink/layout/
 
 - 三个独立页：`/projects/`、`/skills/`、`/timeline/`，
   数据在各自 source 目录的 index.md front matter（`projects` / `skills` /
-  `items` 数组），布局 projects.ejs / skills.ejs / timeline.ejs（卡片网格 /
-  年份分组时间线）。
+  `items` 数组），布局 projects.ejs / skills.ejs / timeline.ejs。
+  `/timeline/` 经 helper `timeline_page_html` 调用共享渲染器（年份分组）。
 - 导航：主题 `_config.yml` `menu` 的「展柜」二级菜单（url 指向 /projects/，
   子项三个）。
 - **陷阱**：front matter 数组内 `date: 2026-07-30` 会被 YAML
@@ -509,17 +501,6 @@ themes/ink/layout/
   hover title 显示完整 hash。`npm run build` 已改为
   `node scripts/commit-data.js && hexo generate`；
   `source/_data/` 已 gitignore（构建产物不入库）。
-
-## 最新评论挂件
-
-- post.ejs 在 giscus 评论区下方输出
-  `.latest-comments[data-github-repo]` 容器（与 giscus 同条件，评论关闭不显示），
-  `themes/ink/source/js/latest-comments.js`（defer 按需引入）拉取 GitHub REST
-  （`/discussions?sort=updated` + 每讨论 1 条最新评论）渲染 5 条，localStorage
-  缓存 15 分钟消解匿名限流（60req/h；6 请求/首次加载，窗口内 24 请求安全）。
-  **已知陷阱**：GitHub GraphQL API 匿名不可用（需 token），故用 REST；
-  评论 body 是 Markdown，只做纯文本化 + 转义输出（防 DOM XSS，与 search.js
-  同纪律，勿改为直接渲染 HTML）；限流/失败静默降级为"评论加载失败"。
 
 ## 中英文空格
 

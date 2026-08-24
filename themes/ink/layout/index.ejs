@@ -5,7 +5,7 @@
     <% } %>
     <%# 全站分类已并入头部「分类」二级菜单（header.ejs has-sub，2026-08-19），
          首页不再重复输出分类列表 %>
-    <ul class="blog-posts">
+    <ul class="blog-posts" data-home-posts>
       <%# 置顶：front matter pinned: true 的文章排最前，其余按日期降序
            （草稿用 source/_drafts，Hexo 原生支持，无需处理） %>
       <% var sortedPosts = page.posts.toArray().sort(function(a, b) {

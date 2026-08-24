@@ -57,6 +57,26 @@
     </section>
 
     <section class="setting-group">
+        <h2>首页布局</h2>
+        <div class="setting-options" role="radiogroup" aria-label="首页布局">
+            <label class="setting-option">
+                <input type="radio" name="home-layout" value="grid">
+                <span class="setting-option-body">
+                    <span class="setting-option-title">网格（默认）</span>
+                    <span class="setting-option-desc">卡片网格展示，可配合下方「首页列数」调整列宽</span>
+                </span>
+            </label>
+            <label class="setting-option">
+                <input type="radio" name="home-layout" value="list">
+                <span class="setting-option-body">
+                    <span class="setting-option-title">列表</span>
+                    <span class="setting-option-desc">横向列表展示；列表模式下「首页列数」不生效</span>
+                </span>
+            </label>
+        </div>
+    </section>
+
+    <section class="setting-group" id="home-columns-group">
         <h2>首页列数</h2>
         <div class="setting-options" role="radiogroup" aria-label="首页列数">
             <label class="setting-option">

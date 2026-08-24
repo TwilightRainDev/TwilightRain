@@ -10,3 +10,5 @@ docs/BlogPrivate.txt
 source/_data/
 # 构建产物：由 scripts/gen-thumbs.js 从 ori/ 生成，勿入库
 source/img/360px/
+# M5 站点卡 Playwright 截图缓存
+source/img/site-screenshots/

@@ -1,21 +1,27 @@
 ---
-title: BiliCompact 完整源码（v2.6.0）
-excerpt: BiliCompact 用户脚本 v2.6.0 完整源码，MIT 协议；复制到 Tampermonkey / Violentmonkey 新建脚本保存即可使用。
+title: BiliCompact 完整源码与解析
+excerpt: BiliCompact 用户脚本 v2.6.0 源码与回顾。
 date: 2026-07-22 12:00:00
 tags:
   - BiliCompact
   - Tampermonkey
   - JavaScript
   - 源码
+  - 前端
+  - 产品设计
+  - 架构
 categories:
   - 代码仓库
-cover: /img/360px/covers/bilicompact-source-v2.jpg
+cover: /img/360px/covers/bilicompact-source.jpg
 ---
 
 > 以下为 BiliCompact 用户脚本 v2.6.0 的完整源码，MIT 协议，可自由使用、修改、分发。
 > 安装方法：复制到 Tampermonkey / Violentmonkey 新建脚本中保存即可。
+> 从动机、设计、技术三个维度完整回顾这个非侵入式的 B 站首页精简用户脚本项目。
 
-::github{repo="TwilightRainDev/TwilightRainBiliCompact" desc="BiliCompact 官方仓库：完整源码、版本发布与 issue 追踪"}
+::card{type="github" repo="TwilightRainDev/TwilightRainBiliCompact" desc="BiliCompact 官方仓库：完整源码、版本发布与 issue 追踪"}
+
+项目地址：[GreasyFork - BiliCompact](https://greasyfork.org/scripts/585777)
 
 ```javascript
 // ==UserScript==
@@ -1712,420 +1718,231 @@ cover: /img/360px/covers/bilicompact-source-v2.jpg
 ```
 
 两种方式效果完全一致，推荐方式一，后续新版本会自动推送更新。
+![](/img/360px/bilicompact-rainbow.jpg)
 
----
+## 为什么要写这个脚本
 
-<!-- ============================================================
-     复制按钮组件（自包含）
-     功能：在页面中定位 BiliCompact 源码块，添加一键复制按钮
-     用法：直接粘贴到文章 HTML 中即可，样式和脚本全部内联
-     ============================================================ -->
+写了一天代码，晚上瘫在椅子上，打开 B 站想刷两个视频放松一下。
 
-<div id="bili-compact-copy-section">
-    <!-- 工具栏：标题 + 复制按钮 -->
-    <div class="bcc-toolbar">
-        <span class="bcc-title">
-            <span class="bcc-icon">复制</span>
-            BiliCompact v2.6.0 完整源码
-        </span>
-        <button class="bcc-btn" id="bcc-copy-btn" title="点击复制全部源码">
-            <span class="bcc-btn-icon">复制</span>
-            <span class="bcc-btn-text">复制代码</span>
-        </button>
-    </div>
+结果首页一刷新，直播，番剧，推广，付费课程铺了一整屏。我就想看两三个视频，信息量却先灌一脸，反而更累了。
 
-    <!-- 复制成功提示（浮窗） -->
-    <div class="bcc-toast" id="bcc-toast"> 已复制到剪贴板！</div>
-</div>
+这种憋屈感持续了挺久。不是说直播没人爱看，番剧没人追，但 B 站不管你想看什么，一股脑全塞给你。
 
-<style>
-    /* ===== 组件容器 ===== */
-    #bili-compact-copy-section {
-        position: relative;
-        margin: 1.5rem 0 0.5rem 0;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        font-size: 14px;
-        /* 默认跟随系统深色模式，也可通过 .bcc-dark / .bcc-light 覆盖 */;
+我忍过，也试过假装看不见。但每次打开首页都像被按着头喂饭。后来觉得与其每次都烦，不如自己动手。
+
+于是有了 **BiliCompact**。
+
+要求很简单，首页想显示几个视频就显示几个。十个太多？五个。五个还多？三个也行。直播，广告，番剧推广，不想看就别出现。评论区满屏的 @某某某 刷屏，能自动清掉最好。
+
+然后就动手了。
+
+## B 站首页的信息过载
+
+打开 B 站首页，扑面而来的是：
+
+- 直播流，大量正在直播的推荐
+- 番剧推荐，你不一定感兴趣
+- 广告与推广，商业内容
+- 付费课程，推销入口
+
+真正想看的视频，被淹没在其中。
+
+```
+直播 ████████████████████████████████████ 100%
+番剧 ██████████████████████████████ 80%
+广告 ████████████████████ 50%
+付费 ██████████ 20%
+想看 ██████ 12%
+```
+
+## 非侵入式的设计哲学：
+
+很多同类脚本会在页面注入 UI 元素，按钮、浮窗、侧边栏。好处是交互直观，坏处是**耦合太深**。B 站的前端频繁改版，每次 DOM 结构调整，注入的 UI 就可能错位、失效，甚至阻塞页面渲染。
+
+BiliCompact 的做法相反：
+
+- **不在 B 站页面注入任何 UI 元素**
+- 配置面板通过 Tampermonkey 的 `GM_registerMenuCommand` 唤起，以浮层形式展示
+- 所有过滤逻辑在后台执行，页面外观无变化
+
+```
+GM_registerMenuCommand(T('MenuSettings'), () => OpenConfigPanel());
+GM_registerMenuCommand(T('MenuRefresh'), () => LimitVideos());
+GM_registerMenuCommand(T('MenuToggle'), () => { IsActive = !IsActive; });
+```
+
+这样做的代价是交互入口不那么直观，藏在扩展菜单里，但换来的是**高稳定性**，B 站改版几次了，脚本还能正常工作。
+
+## 功能速览
+
+| 功能 | 说明 |
+|------|------|
+| 数量限制 | 设置每页最大显示视频数量，不同页面可独立设置 |
+| 智能过滤 | 排除直播 / 广告 / 番剧 / 付费课程 |
+| UP 主白名单 | 保留指定 UP 主的内容 |
+| 一键切换 | 快捷开关，随时恢复原始首页 |
+| 评论净化 | 删除 @ 提及，隐藏短评论 |
+| 配置持久化 | 跨页面保存所有设置 |
+
+### 配置面板
+
+通过 Tampermonkey 菜单打开：
+
+| 设置项 | 说明 | 默认 |
+|--------|------|------|
+| 最大显示数量 | 每页最多显示的视频数 | 10 |
+| 排除直播 | 隐藏直播推荐 | [Checked] |
+| 排除广告 | 隐藏推广内容 | [Checked] |
+| 排除番剧 | 隐藏番剧推荐 | [Checked] |
+| 排除付费课程 | 隐藏付费内容 | [Checked] |
+| 保留推广位 | 推广内容不计入数量 | [Unchecked] |
+| 调试模式 | 输出日志到控制台 | [Unchecked] |
+| 评论净化 | 自动删除 @ 提及 | [Unchecked] |
+
+每种页面可以独立配置数量：首页 10、热门 8、分区 10、动态 6、搜索 10。
+
+## 技术架构
+
+### 选择器探测机制
+
+B 站首页的 DOM 结构经常变化，直接写死 CSS 选择器是行不通的。脚本实现了一套**多层级降级探测**策略：
+
+```
+第一层  id / class 精准选择器              覆盖 2%
+第二层  data-* 属性探测 (data-video-id)     +3%
+第三层  宽泛属性选择器 [class*="video"]      +5%
+第四层  链接文本回退 (<a href="/video/">)    +80%
+────────────────────────────────────────
+最终覆盖率                                  99%+
+```
+
+具体实现上，每层依次尝试：
+
+1. **精确类名**（`.bili-video-card`, `.feed-card` 等）
+2. **通配类名**（`[class*="video-card"]` 等）
+3. **通过链接回退**（查找包含 `/video/` 链接的父级卡片）
+
+选择器被缓存，在 URL 变化时自动失效重新探测，适应 SPA 路由切换。
+
+### 过滤引擎
+
+过滤逻辑分为几个阶段，顺序执行：
+
+1. **去重**：消除嵌套卡片，避免同一个视频被重复计数
+2. **规则过滤**：按配置排除直播、广告、番剧、付费内容
+3. **UP 主白名单**：指定 ID 的 UP 主视频始终保留
+4. **数量截断**：超出限制的视频隐藏
+5. **推广位保护**：配置为保留推广位时，不计入数量限制
+
+### Grid 塌陷处理
+
+B 站使用 CSS Grid 布局，简单地 `display: none` 卡片元素不会让网格塌陷，会留下空白。
+
+BiliCompact 的处理方式是同时设置多个样式：
+
+```javascript
+El.style.display = 'none';
+El.style.visibility = 'hidden';
+El.style.opacity = '0';
+El.style.height = '0';
+El.style.margin = '0';
+El.style.padding = '0';
+El.style.overflow = 'hidden';
+El.style.flex = '0 0 0';
+El.style.position = 'absolute';
+```
+
+通过 `height: 0` + `padding: 0` + `position: absolute` + `overflow: hidden` 的组合，确保网格完全塌陷，不留视觉空白。
+
+### MutationObserver + 节流
+
+为了应对 B 站 SPA 动态加载内容，BiliCompact 使用 `MutationObserver` 监听 DOM 变化：
+
+```
+DOM 变化 → MutationObserver 触发 → 防抖/节流(200ms) → 执行精简
+                                                              ↕
+                                                      定时回查(5s)
+```
+
+- 200ms **节流**：防止高频触发
+- 300ms **防抖**：等待 DOM 稳定后再执行
+- 5s **定时回查**：兜底处理动态加载的内容
+
+### Shadow DOM 穿透
+
+B 站新版评论区使用 Web Components 技术，评论内容在多层 Shadow DOM 内部：
+
+```
+<bili-comments>
+  └─ shadowRoot →
+    <bili-comment-thread-renderer>
+      └─ shadowRoot →
+        <bili-comment-renderer>
+          └─ shadowRoot →
+            <bili-rich-text>
+              └─ shadowRoot → #contents
+```
+
+净化器递归访问 `element.shadowRoot` 属性，穿透所有 Shadow DOM 边界，找到评论内容容器：
+
+```javascript
+function purifierGetContentsEl(renderer) {
+    const richText = renderer.shadowRoot.querySelector('bili-rich-text');
+    if (richText && richText.shadowRoot) {
+        return richText.shadowRoot.getElementById('contents');
     }
+    return null;
+}
+```
 
-    /* ===== 工具栏 ===== */
-    .bcc-toolbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 12px 16px;
-        padding: 12px 20px;
-        border-radius: 12px 12px 0 0;
-        background: var(--bcc-bg, #1e1e1e);
-        border-bottom: 1px solid var(--bcc-border, #333);
-        transition: background 0.25s, border-color 0.25s;
-        /* 跟随系统深色/浅色 */;
+删除所有 `a[data-type="mention"]`（@ 提及标签），然后检查剩余文字长度，不足 5 字的评论整体隐藏。通过 MutationObserver 监听评论区动态加载，新评论出现时自动处理。同时兼容同页面其他脚本，检测到共存时仅做日志标记，不冲突。
+
+### 元素去除系统
+
+除了核心的视频数量限制，脚本还提供了一组可选的 UI 元素去除预设，涵盖首页轮播图、频道导航、创作中心入口、直播入口等 13 个可去除元素。每个预设包含多版本选择器，适配 B 站不同的 DOM 版本。
+
+### 多语言支持
+
+内置完整的 i18n 系统，支持简体中文、繁体中文、英文，自动根据浏览器语言切换：
+
+```javascript
+function ResolveLanguage() {
+    if (Config.Language && Config.Language !== 'auto') {
+        return Config.Language;
     }
+    const Nav = (navigator.language || '').toLowerCase();
+    if (/^zh-(tw|hk|mo)$/i.test(Nav) || /^zh-(hant)$/i.test(Nav)) return 'zh_TW';
+    if (/^zh/i.test(Nav)) return 'zh_CN';
+    if (/^en/i.test(Nav)) return 'en_US';
+    return 'zh_CN';
+}
+```
 
-    /* 标题 */
-    .bcc-title {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-weight: 500;
-        color: var(--bcc-text, #eee);
-        font-size: 15px;
-        letter-spacing: 0.3px;
-        user-select: none;
-    }
-    .bcc-icon {
-        font-size: 18px;
-        line-height: 1;
-    }
+所有用户可见文本通过 `T(key, ...args)` 函数统一翻译，键缺失时自动回退到中文，不会出现英文报错。语言可在配置面板中手动切换，切换后立即生效。
 
-    /* ===== 复制按钮 ===== */
-    .bcc-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 6px 18px 6px 14px;
-        border: none;
-        border-radius: 20px;
-        font-size: 13px;
-        font-weight: 500;
-        font-family: inherit;
-        cursor: pointer;
-        background: var(--bcc-accent, #fb7299);
-        color: #fff;
-        transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
-        box-shadow: 0 2px 8px rgba(251, 114, 153, 0.25);
-        white-space: nowrap;
-    }
-    .bcc-btn:hover {
-        background: var(--bcc-accent-hover, #ff85a8);
-        box-shadow: 0 4px 14px rgba(251, 114, 153, 0.35);
-        transform: translateY(-1px);
-    }
-    .bcc-btn:active {
-        transform: translateY(0px) scale(0.97);
-        box-shadow: 0 1px 4px rgba(251, 114, 153, 0.2);
-    }
-    .bcc-btn:focus-visible {
-        outline: 2px solid var(--bcc-accent, #fb7299);
-        outline-offset: 2px;
-    }
-    /* 复制成功状态 */
-    .bcc-btn.copied {
-        background: #2ea043;
-        box-shadow: 0 2px 8px rgba(46, 160, 67, 0.3);
-    }
-    .bcc-btn.copied:hover {
-        background: #3fb950;
-    }
-    .bcc-btn-icon {
-        font-size: 16px;
-        line-height: 1;
-    }
-    .bcc-btn-text {
-        line-height: 1.4;
-    }
+### 持久化与实时生效
 
-    /* ===== Toast 提示 ===== */
-    .bcc-toast {
-        position: fixed;
-        top: 24px;
-        left: 50%;
-        transform: translateX(-50%) translateY(-20px);
-        padding: 10px 28px;
-        border-radius: 12px;
-        background: rgba(30, 30, 30, 0.92);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        color: #fff;
-        font-size: 14px;
-        font-weight: 500;
-        font-family: inherit;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.3s ease, transform 0.3s ease;
-        z-index: 2147483647;
-        white-space: nowrap;
-    }
-    .bcc-toast.show {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0px);
-    }
+所有配置通过 `GM_setValue` / `GM_getValue` 持久化，刷新页面不丢失。配置变更后立即生效，无需手动刷新。同时包含定时后备检查（每 5 秒），防止 B 站 SPA 的动态加载导致视频数量超出限制，这是一种防御性编程，确保极端情况下也能正常工作。
 
-    /* ===== 深色 / 浅色 自适应（通过 prefers-color-scheme） ===== */
-    /* 深色（默认） */
-    #bili-compact-copy-section {
-        --bcc-bg: #1e1e1e;
-        --bcc-border: #333;
-        --bcc-text: #eee;
-        --bcc-accent: #fb7299;
-        --bcc-accent-hover: #ff85a8;
-    }
-    /* 浅色模式覆盖 */
-    @media (prefers-color-scheme: light) {
-        #bili-compact-copy-section {
-            --bcc-bg: #f6f6f6;
-            --bcc-border: #e0e0e0;
-            --bcc-text: #222;
-            --bcc-accent: #00aeec;
-            --bcc-accent-hover: #33c0f0;
-        }
-        .bcc-btn {
-            box-shadow: 0 2px 8px rgba(0, 174, 236, 0.2);
-        }
-        .bcc-btn:hover {
-            box-shadow: 0 4px 14px rgba(0, 174, 236, 0.3);
-        }
-        .bcc-toast {
-            background: rgba(255, 255, 255, 0.95);
-            color: #222;
-            border: 1px solid rgba(0, 0, 0, 0.06);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-        }
-    }
+## 用户反馈
 
-    /* ===== 响应式 ===== */
-    @media (max-width: 480px) {
-        .bcc-toolbar {
-            flex-direction: column;
-            align-items: stretch;
-            gap: 10px;
-            padding: 12px 16px;
-        }
-        .bcc-title {
-            font-size: 14px;
-        }
-        .bcc-btn {
-            justify-content: center;
-            padding: 8px 16px;
-            font-size: 14px;
-        }
-        .bcc-toast {
-            font-size: 13px;
-            padding: 8px 20px;
-            white-space: normal;
-            max-width: 90vw;
-        }
-    }
+没想到会有人愿意用这东西。
 
-    /* ===== 与页面已有代码块无缝衔接 ===== */
-    /* 让工具栏紧贴代码块上方，无多余间距 */
-    figure.highlight {
-        margin-top: 0 !important;
-        border-radius: 0 0 12px 12px !important;
-    }
-    /* 如果 figure 有上边距，覆盖掉 */
-    .highlight {
-        margin-top: 0 !important;
-    }
-    /* 修复可能的滚动容器样式 */
-    .highlight table {
-        border-radius: 0 !important;
-    }
-</style>
+一开始只是自己用，顺手传到了 GreasyFork，想着万一有人需要呢。后来真有人说不用被首页轰炸了，还有人问能不能加某某功能。
 
-<script>
-    (function() {
-        'use strict';
+看到这些还挺高兴的。
 
-        // ----- 配置 -----
-        const CONFIG = {
-            // 源码块选择器（精确匹配 BiliCompact 的 JS 代码块）
-            codeBlockSelector: 'figure.highlight.javascript .code pre',
-            // 备选选择器（如果主选择器匹配不到，尝试更宽泛的）
-            fallbackSelector: '.highlight.javascript .code pre',
-            // 按钮和 Toast 的 ID
-            btnId: 'bcc-copy-btn',
-            toastId: 'bcc-toast',
-            // 复制成功时按钮文字
-            successText: '已复制！',
-            // 复制成功提示持续时间（ms）
-            toastDuration: 2200,
-            // 按钮恢复文字的时间（ms）
-            btnResetDelay: 2000,
-        };
+现在的互联网产品越做越重，功能越堆越多。但用户想要的，有时候就是清静一点。在产品和用户之间，BiliCompact 尝试稍微往用户这边拉一拉。
 
-        // ----- DOM 引用 -----
-        let btn = null;
-        let toast = null;
-        let resetTimer = null;
-        let toastTimer = null;
+如果你也装了它，觉得有用，那我很高兴。觉得哪里不好用，也欢迎提。
 
-        // ----- 工具：获取源码文本 -----
-        function getSourceCode() {
-            // 尝试主选择器
-            let pre = document.querySelector(CONFIG.codeBlockSelector);
-            // 如果失败，尝试备选
-            if (!pre) {
-                pre = document.querySelector(CONFIG.fallbackSelector);
-            }
-            if (!pre) {
-                console.warn('[BCCopy] 未找到源码块，请检查选择器');
-                return null;
-            }
-            // 提取文本内容（保留换行和缩进）
-            return pre.textContent || '';
-        }
+代码完全开源，MIT 协议，想改就改，想删就删，没什么藏着掖着的。
 
-        // ----- 复制到剪贴板 -----
-        async function copyToClipboard(text) {
-            if (!text) return false;
-            try {
-                // 优先使用 Clipboard API
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    await navigator.clipboard.writeText(text);
-                    return true;
-                }
-                // 降级方案：使用 document.execCommand
-                const ta = document.createElement('textarea');
-                ta.value = text;
-                ta.style.position = 'fixed';
-                ta.style.left = '-9999px';
-                ta.style.top = '-9999px';
-                ta.style.width = '1px';
-                ta.style.height = '1px';
-                ta.style.opacity = '0';
-                document.body.appendChild(ta);
-                ta.focus();
-                ta.select();
-                const ok = document.execCommand('copy');
-                document.body.removeChild(ta);
-                return ok;
-            } catch (err) {
-                console.error('[BCCopy] 复制失败:', err);
-                return false;
-            }
-        }
+## 总结
 
-        // ----- 显示 Toast -----
-        function showToast(message) {
-            if (!toast) return;
-            // 清除之前的定时器
-            if (toastTimer) {
-                clearTimeout(toastTimer);
-                toastTimer = null;
-            }
-            toast.textContent = message || ' 已复制到剪贴板！';
-            toast.classList.add('show');
-            toastTimer = setTimeout(function() {
-                toast.classList.remove('show');
-                toastTimer = null;
-            }, CONFIG.toastDuration);
-        }
+BiliCompact 在功能上并不复杂，它的设计重心在**稳定性**和**非侵入性**上。一些值得借鉴的点：
 
-        // ----- 按钮点击处理 -----
-        async function handleCopy() {
-            if (!btn) return;
-
-            // 如果按钮处于"已复制"状态，重置后再执行
-            if (btn.classList.contains('copied')) {
-                // 但允许再次点击，重置状态
-                resetButton();
-            }
-
-            // 获取源码
-            const code = getSourceCode();
-            if (code === null || code.trim() === '') {
-                showToast(' 未找到源码，请检查页面结构');
-                return;
-            }
-
-            // 执行复制
-            const ok = await copyToClipboard(code);
-            if (ok) {
-                // 成功：按钮变绿，显示成功文字
-                btn.classList.add('copied');
-                const originalText = btn.querySelector('.bcc-btn-text');
-                if (originalText) {
-                    originalText.textContent = CONFIG.successText;
-                }
-                showToast(' 已复制到剪贴板！');
-
-                // 定时恢复按钮文字
-                if (resetTimer) {
-                    clearTimeout(resetTimer);
-                    resetTimer = null;
-                }
-                resetTimer = setTimeout(function() {
-                    resetButton();
-                }, CONFIG.btnResetDelay);
-            } else {
-                showToast(' 复制失败，请手动选择复制');
-            }
-        }
-
-        // ----- 恢复按钮原始状态 -----
-        function resetButton() {
-            if (!btn) return;
-            btn.classList.remove('copied');
-            const textEl = btn.querySelector('.bcc-btn-text');
-            if (textEl) {
-                // 从 data 属性恢复原始文字，或使用默认
-                const orig = textEl.dataset.originalText || '复制代码';
-                textEl.textContent = orig;
-            }
-            if (resetTimer) {
-                clearTimeout(resetTimer);
-                resetTimer = null;
-            }
-        }
-
-        // ----- 保存按钮原始文字 -----
-        function preserveButtonText() {
-            if (!btn) return;
-            const textEl = btn.querySelector('.bcc-btn-text');
-            if (textEl && !textEl.dataset.originalText) {
-                textEl.dataset.originalText = textEl.textContent || '复制代码';
-            }
-        }
-
-        // ----- 初始化组件 -----
-        function init() {
-            // 获取按钮和 Toast
-            btn = document.getElementById(CONFIG.btnId);
-            toast = document.getElementById(CONFIG.toastId);
-
-            if (!btn) {
-                console.warn('[BCCopy] 未找到复制按钮，请检查 ID');
-                return;
-            }
-
-            // 保存按钮原始文字
-            preserveButtonText();
-
-            // 绑定点击事件
-            btn.addEventListener('click', handleCopy);
-
-            // 键盘支持：回车/空格触发
-            btn.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleCopy();
-                }
-            });
-
-            // 初始状态：确保按钮文字正确
-            resetButton();
-
-            // 小延迟后检查是否需要适配深色/浅色模式
-            // （页面可能动态切换主题，但我们的组件使用 prefers-color-scheme，自动适配）
-            console.log('[BCCopy] 复制按钮已就绪 ');
-        }
-
-        // ----- 启动时机 -----
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', init);
-        } else {
-            // DOM 已就绪，立即执行
-            // 但为了确保所有元素都已渲染，使用微任务或短延迟
-            if (document.readyState === 'complete') {
-                init();
-            } else {
-                // interactive 状态，等待一帧
-                requestAnimationFrame(init);
-            }
-        }
-    })();
-</script>
+1. **选择器多梯队探测**，应对频繁的前端改版
+2. **非侵入式 UI**，不污染页面 DOM，降低耦合
+3. **Shadow DOM 穿透**，处理现代前端框架的封装
+4. **防御性定时检查**，SPA 动态加载的兜底策略

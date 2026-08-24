@@ -1,0 +1,48 @@
+<% for (var name in theme.menu) { %>
+    <% var item = theme.menu[name]; %>
+    <% if (typeof item === 'string') { %>
+        <% if (item.indexOf('http') === 0) { %>
+        <a href="<%- item %>" target="_blank" rel="noopener"><%= name %></a>
+        <% } else { %>
+        <a href="<%- url_for(item) %>"><%= name %></a>
+        <% } %>
+    <% } else { %>
+        <span class="has-sub">
+            <% if (item.url) { %>
+                <% if (item.url.indexOf('http') === 0) { %>
+                <a class="sub-trigger" href="<%- item.url %>" target="_blank" rel="noopener"><%= name %></a>
+                <% } else { %>
+                <a class="sub-trigger" href="<%- url_for(item.url) %>"><%= name %></a>
+                <% } %>
+            <% } else { %>
+                <a class="sub-trigger" href="#"><%= name %></a>
+            <% } %>
+            <% if (item.categories || item.children) { %>
+            <ul class="sub-menu">
+                <% if (item.categories) { %>
+                    <% site.categories.each(function(cat) { %>
+                    <li>
+                        <a href="<%- url_for(cat.path) %>">
+                            <%= cat.name %>
+                            <span class="sub-cat-count"><%= cat.posts.length %> 篇</span>
+                        </a>
+                    </li>
+                    <% }) %>
+                <% } %>
+                <% if (item.children) { %>
+                    <% for (var sub in item.children) { %>
+                        <% var subUrl = item.children[sub]; %>
+                        <li>
+                            <% if (subUrl.indexOf('http') === 0) { %>
+                            <a href="<%- subUrl %>" target="_blank" rel="noopener"><%= sub %></a>
+                            <% } else { %>
+                            <a href="<%- url_for(subUrl) %>"><%= sub %></a>
+                            <% } %>
+                        </li>
+                    <% } %>
+                <% } %>
+            </ul>
+            <% } %>
+        </span>
+    <% } %>
+<% } %>

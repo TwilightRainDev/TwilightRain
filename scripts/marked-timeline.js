@@ -1,6 +1,7 @@
 /**
  * 文内时间线（Butterfly 批一迁移）
  * 与站点页 /timeline/（.timeline-item 展柜）类名隔离，使用 .post-timeline。
+ * DOM 由 scripts/lib/timeline-renderer.js 生成。
  *
  * 语法：
  *   :::timeline[可选总标题]
@@ -12,16 +13,9 @@
  */
 'use strict';
 
-var OUTER = /^:::timeline(\[[^\]]*\])?[ \t]*\n([\s\S]*?)\n:::/i;
+var renderPostTimeline = require('./lib/timeline-renderer').renderPostTimeline;
 
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
+var OUTER = /^:::timeline(\[[^\]]*\])?[ \t]*\n([\s\S]*?)\n:::/i;
 
 var timelineExtension = {
   name: 'postTimeline',
@@ -54,20 +48,17 @@ var timelineExtension = {
     };
   },
   renderer: function (token) {
-    if (!token.items.length) {
-      return '<p class="post-timeline-error">[WARN] 无效的时间线语法，应为 :::timeline + "--- 标题" 分隔 + :::</p>';
-    }
-    var html = '<div class="post-timeline">';
-    if (token.headline) {
-      html += '\n<div class="post-timeline-headline">' + escapeHtml(token.headline) + '</div>';
-    }
+    var items = [];
     for (var i = 0; i < token.items.length; i++) {
-      html += '\n<div class="post-timeline-item">' +
-        '\n<div class="post-timeline-title">' + escapeHtml(token.items[i].title) + '</div>' +
-        '\n<div class="post-timeline-body">' + this.parser.parse(token.items[i].tokens) + '</div>' +
-        '\n</div>';
+      items.push({
+        title: token.items[i].title,
+        bodyHtml: this.parser.parse(token.items[i].tokens)
+      });
     }
-    return html + '\n</div>';
+    return renderPostTimeline({
+      headline: token.headline,
+      items: items
+    });
   }
 };
 

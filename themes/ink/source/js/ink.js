@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
         mainContent.querySelectorAll('img').forEach(img => {
             // 卡片/网格/头图等组件内图片不做 article-image 取色包裹（会破坏布局并误藏图）
             if (img.closest(
-                'a.card-site, a.card-intro, .photo-grid, .site-group, a.card-github, a.card-link, .post-imgcard'
+                'a.card-site, a.card-intro, .photo-grid, .md-grid, .site-group, a.card-github, a.card-link, .post-imgcard'
             )) {
                 return;
             }
@@ -160,19 +160,48 @@ document.addEventListener('DOMContentLoaded', function () {
 // 设置项存 localStorage，由 /settings/ 页控件修改。
 // 脚本为 defer，HTML 解析完成后立即应用偏好，尽可能减少闪烁。
 (function() {
+    var GISCUS_ORIGIN = 'https://giscus.app';
+    var giscusReady = false;
+    var pendingGiscusTheme = null;
+
+    function giscusThemeName(actual) {
+        return actual === 'dark' ? 'dark' : 'light';
+    }
+
+    /** 在 giscus client.js 执行前写入 data-theme，避免首屏闪色 */
+    function syncGiscusScriptTheme(actual) {
+        var script = document.querySelector('script[src*="giscus.app/client.js"]');
+        if (script) {
+            script.setAttribute('data-theme', giscusThemeName(actual));
+        }
+    }
+
+    function sendGiscusTheme(theme) {
+        pendingGiscusTheme = theme;
+        if (!giscusReady) return;
+        var iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe || !iframe.contentWindow) return;
+        try {
+            iframe.contentWindow.postMessage({
+                giscus: { setConfig: { theme: theme } }
+            }, GISCUS_ORIGIN);
+            pendingGiscusTheme = null;
+        } catch (e) { /* iframe 未就绪 */ }
+    }
+
+    window.addEventListener('message', function (event) {
+        if (event.origin !== GISCUS_ORIGIN) return;
+        if (!event.data || typeof event.data !== 'object' || !event.data.giscus) return;
+        giscusReady = true;
+        if (pendingGiscusTheme !== null) {
+            sendGiscusTheme(pendingGiscusTheme);
+        }
+    });
+
     function giscusTheme(actual) {
-        var theme = actual === 'dark' ? 'dark' : 'light';
-        var sync = function () {
-            var giscus = document.querySelector('iframe.giscus-frame');
-            if (giscus) {
-                giscus.contentWindow.postMessage({
-                    giscus: { setConfig: { theme: theme } }
-                }, 'https://giscus.app');
-            }
-        };
-        sync();
-        // giscus iframe 异步加载，晚些再同步一次
-        setTimeout(sync, 2000);
+        var theme = giscusThemeName(actual);
+        syncGiscusScriptTheme(actual);
+        sendGiscusTheme(theme);
     }
 
     // 主题偏好：auto（跟随系统）/ light / dark
@@ -208,6 +237,10 @@ document.addEventListener('DOMContentLoaded', function () {
     function applyColumns(pref) {
         var list = document.querySelector('.blog-posts');
         if (!list) return;
+        if (localStorage.getItem('ink-home-layout') === 'list') {
+            list.style.removeProperty('--cols');
+            return;
+        }
         if (pref === '1' || pref === '2' || pref === '3' || pref === '4') {
             list.style.setProperty('--cols', pref);
         } else {
@@ -460,15 +493,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 tocMobileToggle.setAttribute('aria-expanded', 'false');
             }
         });
-        // 滚动 80px 后显示按钮（移动端），顶部隐藏并收起面板
+        // 滚动 80px 后显示按钮；滚动中临时隐藏，停稳后再显示（减少遮挡正文）
+        var tocScrollIdle = null;
         var onTocScroll = function () {
             if (!isMobileToc() || !tocMobileToggle) return;
             var show = window.scrollY > 80;
             tocMobileToggle.classList.toggle('is-visible', show);
             if (!show) {
+                tocMobileToggle.classList.remove('is-scrolling');
                 tocMobilePanel.classList.remove('is-open');
                 tocMobileToggle.setAttribute('aria-expanded', 'false');
+                return;
             }
+            if (tocMobilePanel.classList.contains('is-open')) return;
+            tocMobileToggle.classList.add('is-scrolling');
+            clearTimeout(tocScrollIdle);
+            tocScrollIdle = setTimeout(function () {
+                tocMobileToggle.classList.remove('is-scrolling');
+            }, 180);
         };
         window.addEventListener('scroll', onTocScroll, { passive: true });
         onTocScroll();
@@ -633,6 +675,24 @@ document.addEventListener('DOMContentLoaded', function () {
             // 主站不可达，保持 fallback href
         };
         img.src = probeUrl + '/favicon.ico';
+    });
+})();
+
+// 友链头像加载失败时回退为首字（外链 favicon 防盗链等）
+(function() {
+    document.querySelectorAll('.link-avatar').forEach(function(img) {
+        if (img.dataset.fallbackReady) return;
+        img.dataset.fallbackReady = '1';
+        img.addEventListener('error', function onErr() {
+            img.removeEventListener('error', onErr);
+            if (img.classList.contains('link-avatar-fallback')) return;
+            var name = img.getAttribute('alt') || '?';
+            var span = document.createElement('span');
+            span.className = 'link-avatar link-avatar-fallback';
+            span.setAttribute('aria-hidden', 'true');
+            span.textContent = name.trim().slice(0, 1) || '?';
+            img.replaceWith(span);
+        });
     });
 })();
 
@@ -884,6 +944,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var coarse = window.matchMedia && window.matchMedia('(hover: none), (pointer: coarse)').matches;
     if (!coarse) return;
     document.addEventListener('click', function(e) {
+        if (e.target.closest('.mobile-drawer')) return;
         var inWrap = e.target.closest('.has-sub');
         document.querySelectorAll('.has-sub.open').forEach(function(el) {
             if (el !== inWrap) el.classList.remove('open');
@@ -896,6 +957,99 @@ document.addEventListener('DOMContentLoaded', function () {
             wrap.classList.toggle('open');
         }
     });
+})();
+
+// ======================== 移动端汉堡导航（TD-002） ========================
+(function() {
+    function initMobileNav() {
+        var btn = document.getElementById('menu-btn');
+        var drawer = document.getElementById('mobile-drawer');
+        if (!btn || !drawer) return;
+
+        var backdrop = drawer.querySelector('.mobile-drawer__backdrop');
+        var panel = drawer.querySelector('.mobile-drawer__panel');
+        if (!backdrop || !panel) return;
+
+        var focusables = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+        function openDrawer() {
+            drawer.classList.add('is-open');
+            drawer.setAttribute('aria-hidden', 'false');
+            btn.classList.add('is-active');
+            btn.setAttribute('aria-expanded', 'true');
+            btn.setAttribute('aria-label', '关闭菜单');
+            document.body.style.overflow = 'hidden';
+            var first = panel.querySelector(focusables);
+            if (first) first.focus();
+        }
+
+        function closeDrawer() {
+            drawer.classList.remove('is-open');
+            drawer.setAttribute('aria-hidden', 'true');
+            btn.classList.remove('is-active');
+            btn.setAttribute('aria-expanded', 'false');
+            btn.setAttribute('aria-label', '打开菜单');
+            document.body.style.overflow = '';
+            drawer.querySelectorAll('.has-sub.open').forEach(function(el) {
+                el.classList.remove('open');
+            });
+            btn.focus();
+        }
+
+        btn.addEventListener('click', function() {
+            if (drawer.classList.contains('is-open')) closeDrawer();
+            else openDrawer();
+        });
+
+        backdrop.addEventListener('click', closeDrawer);
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && drawer.classList.contains('is-open')) {
+                e.preventDefault();
+                closeDrawer();
+            }
+            if (e.key === 'Tab' && drawer.classList.contains('is-open')) {
+                var nodes = panel.querySelectorAll(focusables);
+                if (!nodes.length) return;
+                var first = nodes[0];
+                var last = nodes[nodes.length - 1];
+                if (e.shiftKey && document.activeElement === first) {
+                    e.preventDefault();
+                    last.focus();
+                } else if (!e.shiftKey && document.activeElement === last) {
+                    e.preventDefault();
+                    first.focus();
+                }
+            }
+        });
+
+        drawer.addEventListener('click', function(e) {
+            var trigger = e.target.closest('.sub-trigger');
+            if (trigger && panel.contains(trigger)) {
+                e.preventDefault();
+                e.stopPropagation();
+                var wrap = trigger.closest('.has-sub');
+                if (!wrap) return;
+                var wasOpen = wrap.classList.contains('open');
+                panel.querySelectorAll('.has-sub.open').forEach(function(el) {
+                    el.classList.remove('open');
+                });
+                if (!wasOpen) wrap.classList.add('open');
+                return;
+            }
+
+            var link = e.target.closest('a');
+            if (!link || link.classList.contains('sub-trigger')) return;
+            if (link.getAttribute('href') === '#') return;
+            closeDrawer();
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initMobileNav);
+    } else {
+        initMobileNav();
+    }
 })();
 
 // ======================== Mermaid 图表（```mermaid 按需渲染） ========================
@@ -955,8 +1109,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // width="100%" + 内联 style="max-width: Npx"（N = 图表自然宽），容器窄于 N
     // 时浏览器按 min(容器, N) 渲染，整图等比缩小、节点文字无法辨认。
     // 检测自然宽 > 容器宽时改为原始尺寸，靠容器 overflow-x: auto 横向滚动；
-    // 窄图保持默认行为不变。静态化 SVG（mermaid-static.js 构建期输出）同结构，
-    // 在 DOMContentLoaded 时统一适配。
+    // 窄图保持默认行为不变。
     function fitMermaid(el) {
         var svg = el.querySelector('svg');
         if (!svg) return;
@@ -1014,7 +1167,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // DOMContentLoaded 兜底（极端时序下保证渲染）
     document.addEventListener('DOMContentLoaded', function () {
         if (!hasMermaid) hasMermaid = !!document.querySelector('.mermaid');
-        // 静态化 SVG（mermaid-static.js 构建期输出）不经 renderAll，统一超宽适配
         document.querySelectorAll('.mermaid').forEach(fitMermaid);
         if (hasMermaid) loadLibrary(function () { renderAll(false); });
     });
@@ -1129,14 +1281,9 @@ document.addEventListener('click', function (e) {
     });
 });
 
-// ======================== 隐藏块 md-hide（2026-08-21，Butterfly 批一） ========================
-// scripts/marked-hide.js 渲染 .md-hide + .md-hide-btn；点击后显示内容并移除按钮。
+// ======================== 剧透块 md-text（拍板 M2） ========================
 document.addEventListener('click', function (e) {
-    var btn = e.target && e.target.closest ? e.target.closest('.md-hide-btn') : null;
-    if (!btn) return;
-    var root = btn.closest('.md-hide');
+    var root = e.target && e.target.closest ? e.target.closest('.md-text') : null;
     if (!root) return;
-    var content = root.querySelector('.md-hide-content');
-    if (content) content.removeAttribute('hidden');
-    btn.remove();
+    root.classList.toggle('is-revealed');
 });

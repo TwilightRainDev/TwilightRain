@@ -1,27 +1,5 @@
 <main>
     <h1>时间线</h1>
     <p class="timeline-intro">项目与博客事件记录。</p>
-    <% if (page.items && page.items.length > 0) { %>
-    <%# 按年份分组（数据按时间降序排列） %>
-    <% var sorted = page.items.slice().sort(function(a, b) { return b.date.localeCompare(a.date); }); %>
-    <% var currentYear = ''; %>
-    <% sorted.forEach(function(item) { %>
-        <% var year = item.date.substring(0, 4); %>
-        <% if (year !== currentYear) { %>
-            <% currentYear = year; %>
-            <h2 class="timeline-year"><%= year %></h2>
-        <% } %>
-        <div class="timeline-item">
-            <span class="timeline-date"><%= item.date.substring(5) %></span>
-            <div class="timeline-body">
-                <span class="timeline-title"><%= item.title %></span>
-                <% if (item.desc) { %>
-                <p class="timeline-desc"><%= item.desc %></p>
-                <% } %>
-            </div>
-        </div>
-    <% }) %>
-    <% } else { %>
-    <p>暂无记录。</p>
-    <% } %>
+    <%- timeline_page_html(page.items) %>
 </main>
