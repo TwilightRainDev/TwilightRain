@@ -164,15 +164,25 @@ document.addEventListener('DOMContentLoaded', function () {
         var theme = actual === 'dark' ? 'dark' : 'light';
         var sync = function () {
             var giscus = document.querySelector('iframe.giscus-frame');
-            if (giscus) {
+            if (!giscus || !giscus.contentWindow) return;
+            // lazy 加载或 about:blank 阶段 iframe 仍为同源，postMessage 会报错
+            var src = giscus.getAttribute('src') || '';
+            if (src.indexOf('giscus.app') === -1) return;
+            try {
                 giscus.contentWindow.postMessage({
                     giscus: { setConfig: { theme: theme } }
                 }, 'https://giscus.app');
-            }
+            } catch (e) { /* iframe 未就绪 */ }
+        };
+        var bindLoad = function () {
+            var giscus = document.querySelector('iframe.giscus-frame');
+            if (!giscus || giscus.dataset.giscusThemeBound) return;
+            giscus.dataset.giscusThemeBound = '1';
+            giscus.addEventListener('load', sync);
         };
         sync();
-        // giscus iframe 异步加载，晚些再同步一次
-        setTimeout(sync, 2000);
+        bindLoad();
+        setTimeout(function () { sync(); bindLoad(); }, 2000);
     }
 
     // 主题偏好：auto（跟随系统）/ light / dark

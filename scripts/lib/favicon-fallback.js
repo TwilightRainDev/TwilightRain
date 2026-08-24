@@ -16,7 +16,12 @@ function domainFromUrl(url) {
 
 function defaultAvatarUrl(url) {
   var host = domainFromUrl(url);
-  return host ? 'https://' + host + '/favicon.ico' : '';
+  if (!host) return '';
+  // github.com/favicon.ico 在部分 Edge 环境触发 loopback PNA 误报；改用官方 CDN
+  if (host === 'github.com') {
+    return 'https://github.githubassets.com/favicons/favicon.svg';
+  }
+  return 'https://' + host + '/favicon.ico';
 }
 
 function resolveAvatar(url, avatar) {

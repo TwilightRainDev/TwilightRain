@@ -7,7 +7,10 @@ var siteCards = require('../../scripts/marked-site-cards');
 
 test('domainFromUrl 与 defaultAvatarUrl', function () {
   assert.equal(favicon.domainFromUrl('https://www.example.com/path'), 'example.com');
-  assert.equal(favicon.defaultAvatarUrl('https://github.com/foo'), 'https://github.com/favicon.ico');
+  assert.equal(
+    favicon.defaultAvatarUrl('https://github.com/foo'),
+    'https://github.githubassets.com/favicons/favicon.svg'
+  );
   assert.equal(favicon.defaultAvatarUrl('/about/'), '');
 });
 
