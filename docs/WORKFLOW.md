@@ -96,19 +96,19 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
   图表跟随深浅主题。**限制**：列表/引用缩进内的 mermaid 围栏不支持（会被
   Hexo 代码块预处理接管走代码高亮），图表一律顶格写。
 
-- **GitHub 仓库卡片**（单行指令）：
+- **GitHub 仓库卡片**：
 
   ```markdown
-  ::github{repo="TwilightRainDev/TwilightRain" desc="博客仓库"}
+  ::card{type="github" repo="TwilightRainDev/TwilightRain" desc="博客仓库"}
   ```
 
   渲染为仓库卡片（owner/repo + GitHub 图标 + 可选描述），点击跳转仓库页。
   repo 格式错误时输出可见的 `[WARN]` 提示。
 
-- **通用链接卡片**（单行指令，与 ::github 同风格）：
+- **通用链接卡片**：
 
   ```markdown
-  ::link{url="https://www.anthropic.com/claude" title="Claude" desc="可选描述"}
+  ::card{type="link" url="https://www.anthropic.com/claude" title="Claude" desc="可选描述"}
   ```
 
   渲染为网页卡片（link 图标 + 标题 + 域名 + 可选描述），点击跳转（新标签）。
@@ -140,19 +140,21 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
   列数可选（默认 2），渲染为 CSS Grid；点击放大走 fancybox。
   旧写法 `<div class="photo-grid">` 仍可用但**已废弃**。
 
-- **剧透 / 折叠**（拍板 M2，推荐）：
+- **剧透 / 折叠**：
 
   ````markdown
-  :::text[悬停或点击查看]
+  :::fold[text 悬停或点击查看]
   短剧透内容
   :::
 
-  :::details[展开说明]
+  :::fold[details 展开说明]
   块级折叠，支持完整 Markdown。
   :::
   ````
 
-- **文内时间线**（与站点页 `/timeline/` 展柜不同）：
+  HTML 类名仍为 `.md-text` / `.md-details`。
+
+- **文内时间线**（语法与站点页 `/timeline/` 不同；DOM 由同一渲染器生成）：
 
   ````markdown
   :::timeline[版本史]
@@ -166,9 +168,9 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
 - **按钮 / 标签**：
 
   ```markdown
-  ::btn{url="https://example.com" text="打开文档"}
-  ::btn{url="/about/" text="关于本站"}
-  ::label{text="Beta" tone="blue"}
+  ::inline{type="btn" url="https://example.com" text="打开文档"}
+  ::inline{type="btn" url="/about/" text="关于本站"}
+  ::inline{type="label" text="Beta" tone="blue"}
   ```
 
   `url` 仅允许 `http(s)://` 或站内 `/path`；`tone` 可选 default/blue/green/red/orange。
@@ -187,12 +189,12 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
 - **站点卡 / 介绍卡**：
 
   ```markdown
-  ::site{url="https://example.com" title="站点名" screenshot="/img/360px/cover.jpg" desc="可选描述"}
-  ::intro{url="/about/" img="/img/360px/cover.jpg" tip="标签" cardtitle="卡片标题" title="主标题" subtitle="副标题" logo="/img/360px/logo.jpg"}
+  ::card{type="site" url="https://example.com" title="站点名" screenshot="/img/360px/cover.jpg" desc="可选描述"}
+  ::card{type="intro" url="/about/" img="/img/360px/cover.jpg" tip="标签" cardtitle="卡片标题" title="主标题" subtitle="副标题" logo="/img/360px/logo.jpg"}
 
-  :::site-group[分组标题]
-  ::site{url="https://a.com" title="A" screenshot="/img/360px/a.jpg"}
-  ::site{url="https://b.com" title="B" screenshot="/img/360px/b.jpg"}
+  :::card-group[分组标题]
+  ::card{type="site" url="https://a.com" title="A" screenshot="/img/360px/a.jpg"}
+  ::card{type="site" url="https://b.com" title="B" screenshot="/img/360px/b.jpg"}
   :::
   ```
 
@@ -213,7 +215,7 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
   ::series{name="我的连载名"}
   ```
 
-  同 `series:` 的文章会自动进入目录；当前篇高亮。样文见 `blog-writing-features.md` 与 `blog-writing-features-part2.md`。
+  同 `series:` 的文章会自动进入目录；当前篇高亮。样文见 `blog-writing-features.md`（单篇即可展示目录）。
 
 - **分享按钮**：文章页版权声明下方自动出现微博 / QQ / X 三平台分享链接，
   无需手动配置。

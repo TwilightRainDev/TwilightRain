@@ -57,7 +57,7 @@ Edge/Chrome 在私有网络访问策略、S302、DevTools 附加等环境下，�
 
 ### GitHub API 失败
 
-`::github` 卡片保留静态 owner/repo、desc；stars/forks 等为渐进增强（`themes/ink/source/js/ink.js`），失败不应判「页面损坏」。
+`::card{type="github"}` 卡片保留静态 owner/repo、desc；stars/forks 等为渐进增强（`themes/ink/source/js/ink.js`），失败不应判「页面损坏」。
 
 ### giscus postMessage
 

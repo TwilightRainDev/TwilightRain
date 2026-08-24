@@ -15,7 +15,7 @@ categories:
 
 事情是这样的。
 
-我的 Hexo 博客之前一直部署在 GitHub Pages 上，但我发现它在国内的访问体验很不稳定——时而能打开，时而转圈圈，时而直接超时。这是因为 `github.io` 域名在国内的 CDN 节点访问不畅，加上可能存在的 DNS 污染，导致博客对国内读者不太友好。
+我的 Hexo 博客之前一直部署在 GitHub Pages 上，但我发现它在国内的访问体验很不稳定，时而能打开，时而转圈圈，时而直接超时。这是因为 `github.io` 域名在国内的 CDN 节点访问不畅，加上可能存在的 DNS 污染，导致博客对国内读者不太友好。
 
 于是我开始寻找解决方案。最直接的办法是使用 Cloudflare Pages 来托管博客，利用它的全球 CDN 加速，让国内访问更稳定。
 
@@ -45,7 +45,7 @@ categories:
 
 ---
 
-## 第二步：踩坑——`package.json` 找不到了？
+## 第二步：踩坑，`package.json` 找不到了？
 
 Cloudflare Pages 的构建日志赫然写着：
 
@@ -57,7 +57,7 @@ npm error enoent Could not read package.json
 
 嗯？我的仓库里明明有 `package.json` 啊。
 
-回头一看 GitHub 仓库，我明白了——
+回头一看 GitHub 仓库，我明白了，
 
 ### 根因：推送错了内容
 
@@ -74,7 +74,7 @@ js/
 
 全是 `hexo generate` 生成的**静态文件**，没有 `package.json`，没有 `_config.yml`，没有 `source/` 文件夹。
 
-换句话说，我之前一直用 `hexo deploy` 把编译后的 `public/` 目录推到了仓库里。这在 GitHub Pages 的流程下是正常的——它只需要静态文件。但 **Cloudflare Pages 需要的是源代码**，因为它要在服务端执行 `npm install` 和 `npm run build`。
+换句话说，我之前一直用 `hexo deploy` 把编译后的 `public/` 目录推到了仓库里。这在 GitHub Pages 的流程下是正常的，它只需要静态文件。但 **Cloudflare Pages 需要的是源代码**，因为它要在服务端执行 `npm install` 和 `npm run build`。
 
 ### 修复：推送正确的源代码
 
@@ -102,7 +102,7 @@ db.json
 
 ---
 
-## 第三步：又踩一坑——分支名称
+## 第三步：又踩一坑，分支名称
 
 推送成功后，我兴冲冲地点了 **Retry deployment**，结果……还是同样的错误。
 
@@ -141,8 +141,8 @@ Cloudflare Pages 会自动检测到 push 事件，拉取代码、安装依赖、
 
 ## 总结几个要点
 
-1. **GitHub Pages 推静态文件，Cloudflare Pages 推源代码**——这两种部署方式对仓库内容的要求完全不同，搞清楚区别才能避免踩坑。
-2. **Production branch 要匹配**——Cloudflare Pages 配置的部署分支必须和 GitHub 仓库的默认分支一致。
+1. **GitHub Pages 推静态文件，Cloudflare Pages 推源代码**，这两种部署方式对仓库内容的要求完全不同，搞清楚区别才能避免踩坑。
+2. **Production branch 要匹配**，Cloudflare Pages 配置的部署分支必须和 GitHub 仓库的默认分支一致。
 3. **Cloudflare Pages 的构建命令记得用 `npm run build`**，而不是 `hexo generate`。确保 `package.json` 的 `scripts` 中有 `"build": "hexo generate"`。
 
 希望这篇文章能帮到同样想迁移到 Cloudflare Pages 的朋友。如果你也遇到了类似的报错，对照上面的步骤检查一下，大概率能解决问题。

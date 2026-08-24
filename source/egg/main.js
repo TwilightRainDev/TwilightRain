@@ -1,5 +1,9 @@
         import * as THREE from './lib/three.module.js';
         import { OrbitControls } from './lib/addons/controls/OrbitControls.js';
+        import {
+            EULER_ORDER, POLAR_MIN, POLAR_MAX,
+            clampPitchFromDeltaY, nextOrcaFacing
+        } from './orientation.mjs';
 
         // ============================================================
         //  1. 虎鲸配置 (完全不变)
@@ -83,6 +87,7 @@
         // ============================================================
         const orcaGroup = new THREE.Group();
         orcaGroup.name = "orcaGroup";
+        orcaGroup.rotation.order = EULER_ORDER;
         scene.add(orcaGroup);
 
         const profileVectors = BODY_PROFILE.map(([r, y]) => new THREE.Vector2(r, y));
@@ -801,8 +806,8 @@
         controls.autoRotate = true;
         controls.autoRotateSpeed = 0.4;
         // 避免相机翻过南北极引发球坐标万向跳变（TD-016）
-        controls.minPolarAngle = 0.12;
-        controls.maxPolarAngle = Math.PI - 0.12;
+        controls.minPolarAngle = POLAR_MIN;
+        controls.maxPolarAngle = POLAR_MAX;
         controls.minDistance = 3.8;
         controls.maxDistance = 22;
         controls.update();
@@ -957,18 +962,26 @@
                 dirZ = Math.cos((elapsedTime + 0.08) * swimSpeed * 2) * swimRadiusZ * 0.9 + patrolOffsetZ - orcaGroup
                     .position.z;
             }
-            const targetRotY = Math.atan2(dirX, dirZ);
-            let rotDiff = targetRotY - orcaGroup.rotation.y;
-            while (rotDiff > Math.PI) rotDiff -= Math.PI * 2;
-            while (rotDiff < -Math.PI) rotDiff += Math.PI * 2;
-            orcaGroup.rotation.y += rotDiff * (isChasing ? 0.09 : 0.05);
-            // 俯仰/滚转独立插值且限幅，避免三轴欧拉叠加万向死锁（TD-016）
-            const pitchTarget = THREE.MathUtils.clamp(
-                (moveTarget.y - orcaGroup.position.y) * 0.35, -0.22, 0.22);
-            orcaGroup.rotation.x = THREE.MathUtils.lerp(
-                orcaGroup.rotation.x, pitchTarget, isChasing ? 0.06 : 0.04);
-            const rollTarget = Math.sin(elapsedTime * 2) * 0.05;
-            orcaGroup.rotation.z = THREE.MathUtils.lerp(orcaGroup.rotation.z, rollTarget, 0.06);
+            const facing = nextOrcaFacing(
+                {
+                    yaw: orcaGroup.rotation.y,
+                    pitch: orcaGroup.rotation.x,
+                    roll: orcaGroup.rotation.z
+                },
+                {
+                    targetYaw: Math.atan2(dirX, dirZ),
+                    pitchTarget: clampPitchFromDeltaY(moveTarget.y - orcaGroup.position.y, 0.35),
+                    rollTarget: Math.sin(elapsedTime * 2) * 0.05
+                },
+                {
+                    yawLerp: isChasing ? 0.09 : 0.05,
+                    pitchLerp: isChasing ? 0.06 : 0.04,
+                    rollLerp: 0.06
+                }
+            );
+            orcaGroup.rotation.y = facing.yaw;
+            orcaGroup.rotation.x = facing.pitch;
+            orcaGroup.rotation.z = facing.roll;
 
             // ----- 胸鳍 & 尾鳍动画 -----
             if (pectoralLeft && pectoralRight) {

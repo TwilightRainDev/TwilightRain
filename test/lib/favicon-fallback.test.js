@@ -3,7 +3,7 @@
 var assert = require('node:assert/strict');
 var test = require('node:test');
 var favicon = require('../../scripts/lib/favicon-fallback');
-var siteCards = require('../../scripts/marked-site-cards');
+var siteCards = require('../../scripts/marked-card');
 
 test('domainFromUrl 与 defaultAvatarUrl', function () {
   assert.equal(favicon.domainFromUrl('https://www.example.com/path'), 'example.com');

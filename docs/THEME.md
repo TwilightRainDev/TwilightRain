@@ -266,10 +266,10 @@ themes/ink/layout/
 
 ## GitHub 仓库卡片
 
-- 语法（单行）：`::github{repo="owner/repo" desc="可选描述"}`，渲染为
+- 语法：`::card{type="github" repo="owner/repo" desc="可选描述"}`。渲染为
   `<a class="card-github">`（owner/repo + GitHub 图标 + 可选描述），点击跳转
   仓库页。repo 无 "/" 或缺失时输出可见错误提示（`[WARN]`）。
-- 实现：`scripts/marked-github-card.js` 注册 marked:use 扩展（同提示块模式）
+- 实现：`scripts/marked-card.js` 注册 marked:use 扩展
   静态渲染基础信息；`ink.js`「GitHub 仓库卡片数据」模块前端调 GitHub API
   补充动态数据（stars/forks/language/license，无静态 desc 时补 description）。
 - **API 与 CSP**：`connect-src` 放行
@@ -281,7 +281,7 @@ themes/ink/layout/
 
 ## 通用链接卡片
 
-- 语法：`::link{url="https://..." title="可选" desc="可选"}`，渲染 `<a class="card-link">`
+- 语法：`::card{type="link" url="https://..." title="可选" desc="可选"}`。渲染 `<a class="card-link">`
   （link 图标 + 标题 + 右端域名 + 可选描述），样式与 GitHub 卡片同款。
 - **纯静态**：不调 API、无前端 JS、CSP 零新增。**安全**：url 仅放行 http/https
   （防 javascript: 伪协议注入，renderer 里正则校验），全部文本 escapeHtml 转义；
@@ -309,10 +309,8 @@ themes/ink/layout/
 
 ## 隐藏块与折叠
 
-- **剧透揭示**：`scripts/marked-text.js` — `:::text[提示]` 悬停/点击揭示；
-  ink.js 点击切换 `.is-revealed`。
-- **块级折叠**：`scripts/marked-details.js` — `:::details[摘要]` →
-  `<details class="md-details">`。
+- **实现**：`scripts/marked-fold.js`。`:::fold[text …]` / `:::fold[details …]`（无 mode 时默认 text）。
+  HTML 类名仍为 `.md-text` / `.md-details`。ink.js 点击切换 `.is-revealed`。
 
 ## 图片网格
 
@@ -322,19 +320,20 @@ themes/ink/layout/
 ## 文内时间线
 
 - `scripts/marked-timeline.js` — `:::timeline` + `--- 标题` 分隔；
-  容器类 `.post-timeline`，与站点展柜 `/timeline/` 的 `.timeline-*` 隔离。
+  DOM 由 `scripts/lib/timeline-renderer.js` 生成，容器类 `.post-timeline`。
+  站点展柜 `/timeline/` 走同一渲染器的 page 变体（`.timeline-*`）。
+  两套 class 因布局不同保持隔离，见 `docs/adr/0005-timeline-shared-renderer.md`。
 
 ## 按钮与标签
 
-- `scripts/marked-btn-label.js` —
-  `::btn{url=... text=...}`（http(s) 或站内 `/path`）、
-  `::label{text=... tone=default|blue|green|red|orange}`。
+- `scripts/marked-inline.js` —
+  `::inline{type="btn" url=... text=...}`、
+  `::inline{type="label" text=... tone=default|blue|green|red|orange}`。
 
 ## 站点卡与介绍卡
 
-- `scripts/marked-site-cards.js` —
-  `::site{url=... title=... screenshot=... avatar=... desc=...}`、
-  `::intro{...}`、`:::site-group[标题]` 包多张 `::site`。
+- `scripts/marked-card.js` —
+  `::card{type="site|intro|github|link" ...}`、`:::card-group[标题]`。
   `avatar` / `screenshot` 可省略：回退 favicon 与占位图（`lib/favicon-fallback.js`；
   可选 `screenshot-cards.js` Playwright 截图）。
 
@@ -343,7 +342,7 @@ themes/ink/layout/
 - `scripts/series.js` + `scripts/lib/series-groups.js` —
   front matter `series:`（可选 `series_index:`）；文内 `::series` 或 `::series{name="..."}` 输出
   系列目录并高亮当前篇。不做侧栏 series widget。
-  样文：`blog-writing-features.md` / `blog-writing-features-part2.md`。
+  样文：`blog-writing-features.md`（单篇展示即可）。
 
 ## B 站懒嵌入
 
@@ -403,8 +402,8 @@ themes/ink/layout/
 
 - 三个独立页：`/projects/`、`/skills/`、`/timeline/`，
   数据在各自 source 目录的 index.md front matter（`projects` / `skills` /
-  `items` 数组），布局 projects.ejs / skills.ejs / timeline.ejs（卡片网格 /
-  年份分组时间线）。
+  `items` 数组），布局 projects.ejs / skills.ejs / timeline.ejs。
+  `/timeline/` 经 helper `timeline_page_html` 调用共享渲染器（年份分组）。
 - 导航：主题 `_config.yml` `menu` 的「展柜」二级菜单（url 指向 /projects/，
   子项三个）。
 - **陷阱**：front matter 数组内 `date: 2026-07-30` 会被 YAML

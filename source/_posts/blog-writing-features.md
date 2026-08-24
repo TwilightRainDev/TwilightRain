@@ -9,11 +9,11 @@ tags:
   - 写作
 ---
 
-本文是 ink 写作能力的**验收样文**：早期段落演示 Twilight 第一批迁移；后半收录 Reimu / Butterfly 批一至批三尚未在此文出现过的语法，并附带模板层能力（分享、相关文章、双链等）。
+本文是 ink 写作能力的**验收样文**，并附带模板层能力（分享、相关文章、双链等）。
 
 ![](/img/360px/blog-writing-features.jpg)
 
-文内双链示例：[[关于我]]、[[BiliCompact 完全解析：从动机到架构|BiliCompact 解析]]。
+文内双链示例：[[关于我]]。
 
 ## 提示块（admonitions）
 
@@ -75,13 +75,13 @@ $$\int_0^1 x^2 \, dx = \frac{1}{3}$$
 
 ## 通用链接卡片
 
-::link{url="https://twilightrain.com/about/" title="关于本站" desc="个人介绍与站点说明"}
+::card{type="link" url="https://twilightrain.com/about/" title="关于本站" desc="个人介绍与站点说明"}
 
 ## GitHub 仓库卡片
 
-::github{repo="TwilightRainDev/TwilightRain" desc="本博客源码仓库"}
+::card{type="github" repo="TwilightRainDev/TwilightRain" desc="本博客源码仓库"}
 
-::github{repo="hexojs/hexo" desc="Hexo 博客框架"}
+::card{type="github" repo="hexojs/hexo" desc="Hexo 博客框架"}
 
 ## 标签页 tabs
 
@@ -104,14 +104,14 @@ $$\int_0^1 x^2 \, dx = \frac{1}{3}$$
 
 > [NOTE] 旧写法 `<div class="photo-grid">` 仍可用但已废弃，请改用 `:::grid[列数]`。
 
-## 隐藏与折叠（拍板 M2 推荐语法）
+## 隐藏与折叠（推荐 `:::fold`）
 
-:::text[悬停或点击查看剧透]
-这是 `:::text` 行内揭示块，适合短剧透或答案。
+:::fold[text 悬停或点击查看剧透]
+这是 `:::fold[text]` 行内揭示块，适合短剧透或答案。
 :::
 
-:::details[展开详细说明]
-`:::details` 是统一的块级折叠容器，支持 **Markdown** 与列表。
+:::fold[details 展开详细说明]
+`:::fold[details]` 是统一的块级折叠容器，支持 **Markdown** 与列表。
 :::
 
 ## 文内时间线（Butterfly 批一）
@@ -127,33 +127,34 @@ B 站嵌入
 站点卡、系列文
 :::
 
-## 按钮与标签（Butterfly 批一）
+## 按钮与标签
 
-::btn{url="/about/" text="关于本站"}
-::btn{url="https://github.com/TwilightRainDev/TwilightRain" text="GitHub 仓库"}
-::label{text="验收" tone="blue"}
-::label{text="批三" tone="green"}
+::inline{type="btn" url="/about/" text="关于本站"}
+::inline{type="btn" url="https://github.com/TwilightRainDev/TwilightRain" text="GitHub 仓库"}
+::inline{type="label" text="验收" tone="blue"}
+::inline{type="label" text="批三" tone="green"}
 
 ## B 站懒嵌入（Butterfly 批二）
 
 ::bilibili{id="av170001"}
 
-## 站点卡与介绍卡（Butterfly 批三）
+## 站点卡与介绍卡
 
-::site{url="https://twilightrain.com/" title="暮光雨" screenshot="/img/360px/blog-writing-features.jpg" desc="个人技术博客"}
+::card{type="site" url="https://twilightrain.com/" title="暮光雨" screenshot="/img/360px/blog-writing-features.jpg" desc="个人技术博客"}
 
-::intro{url="/about/" img="/img/360px/blog-writing-features.jpg" tip="关于" cardtitle="本站" title="暮光雨" subtitle="Hexo + ink" logo="/img/360px/blog-writing-features.jpg"}
+::card{type="intro" url="/about/" img="/img/360px/blog-writing-features.jpg" tip="关于" cardtitle="本站" title="暮光雨" subtitle="Hexo + ink" logo="/img/360px/blog-writing-features.jpg"}
 
-:::site-group[常用链接]
-::site{url="https://github.com/TwilightRainDev/TwilightRain" title="GitHub" screenshot="/img/360px/blog-writing-features.jpg" desc="博客源码"}
-::site{url="/about/" title="关于页" screenshot="/img/360px/blog-writing-features.jpg"}
+:::card-group[常用链接]
+::card{type="site" url="https://github.com/TwilightRainDev/TwilightRain" title="GitHub" screenshot="/img/360px/blog-writing-features.jpg" desc="博客源码"}
+::card{type="site" url="/about/" title="关于页" screenshot="/img/360px/blog-writing-features.jpg"}
 :::
 
-## 系列文目录（Butterfly 批三）
+## 系列文目录
 
-本篇 front matter 含 `series: 写作特性验收`；同系列第二篇见 [[博客写作验收（下）]]。
+本篇 front matter 含 `series: 写作特性验收`，文内 `::series` 会输出系列目录（当前仅一篇，作展示）。
 
 ::series
+
 
 ## 代码块复制与超长折叠
 

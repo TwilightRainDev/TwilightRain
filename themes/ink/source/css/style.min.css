@@ -2261,7 +2261,7 @@ blockquote.admonition.bdm-caution .bdm-title::before {
 }
 
 /* ======================== GitHub 仓库卡片 ========================
-   ::github{repo="owner/repo" desc="可选"}（scripts/marked-github-card.js），
+   ::card{type="github" repo="owner/repo"}（scripts/marked-card.js），
    静态卡片：不调 API，不展示动态数据；样式参考 Twilight a.card-github。 */
 a.card-github {
     display: block;
@@ -2357,7 +2357,7 @@ a.card-github:hover {
 }
 
 /* ======================== 通用链接卡片（2026-08-18，Reimu 批二迁移） ========================
-   ::link{url="..." title="..." desc="..."}（scripts/marked-link-card.js），
+   ::card{type="link" url="..."}（scripts/marked-card.js），
    纯静态卡片：不调 API、无前端 JS、CSP 零新增；样式与 GitHub 卡片同款。 */
 a.card-link {
     display: block;
