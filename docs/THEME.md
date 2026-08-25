@@ -323,12 +323,10 @@ themes/ink/layout/
   站点展柜 `/timeline/` 走同一渲染器的 page 变体（`.timeline-*`）。
   两套 class 因布局不同保持隔离，见 `docs/adr/0005-timeline-shared-renderer.md`。
 
-## 站点卡与介绍卡
+## 卡片（github / link）
 
-- `scripts/marked-card.js` —
-  `::card{type="site|intro|github|link" ...}`、`:::card-group[标题]`。
-  `avatar` / `screenshot` 可省略：回退 favicon 与占位图（`lib/favicon-fallback.js`；
-  可选 `screenshot-cards.js` Playwright 截图）。
+- `scripts/marked-card.js` — `::card{type="github|link" ...}`。
+  github 卡由 ink.js 前端打 GitHub API 补 stars/forks；link 卡纯静态。
 
 ## 系列文
 

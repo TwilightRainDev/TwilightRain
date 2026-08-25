@@ -129,17 +129,6 @@ B 站嵌入
 
 ::bilibili{id="av170001"}
 
-## 站点卡与介绍卡
-
-::card{type="site" url="https://twilightrain.com/" title="暮光雨" screenshot="/img/360px/blog-writing-features.jpg" desc="个人技术博客"}
-
-::card{type="intro" url="/about/" img="/img/360px/blog-writing-features.jpg" tip="关于" cardtitle="本站" title="暮光雨" subtitle="Hexo + ink" logo="/img/360px/blog-writing-features.jpg"}
-
-:::card-group[常用链接]
-::card{type="site" url="https://github.com/TwilightRainDev/TwilightRain" title="GitHub" screenshot="/img/360px/blog-writing-features.jpg" desc="博客源码"}
-::card{type="site" url="/about/" title="关于页" screenshot="/img/360px/blog-writing-features.jpg"}
-:::
-
 ## 系列文目录
 
 本篇 front matter 含 `series: 写作特性验收`，文内 `::series` 会输出系列目录（当前仅一篇，作展示）。

@@ -2310,7 +2310,7 @@ a.card-github:hover {
     font-size: var(--size-step-0);
     color: #888;
 }
-.github-card-error {
+.card-error {
     color: var(--admonitions-color-caution);
     font-size: var(--size-step-0);
 }
@@ -2405,10 +2405,6 @@ a.card-link:hover {
     margin-top: 0.4rem;
     font-size: var(--size-step-0);
     color: #888;
-}
-.link-card-error {
-    color: var(--admonitions-color-caution);
-    font-size: var(--size-step-0);
 }
 [data-theme="dark"] a.card-link {
     background: rgba(255, 255, 255, 0.05);
@@ -3393,176 +3389,6 @@ figure.highlight {
 }
 .md-bili-error {
     color: var(--admonitions-color-caution);
-}
-
-/* ======================== 站点卡 / 介绍卡（2026-08-23，Butterfly 批三） ======================== */
-.site-group {
-    margin-block: calc(var(--spacing) * 1.25);
-}
-.site-group-title {
-    margin: 0 0 0.65rem;
-    font-weight: 600;
-    font-size: 0.95em;
-    color: var(--color-text-muted, #666);
-}
-.site-group-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 0.75rem;
-}
-a.card-site {
-    display: flex;
-    flex-direction: column;
-    min-height: 100%;
-    border: 1px solid rgba(0, 0, 0, 0.12);
-    border-radius: 0.5rem;
-    overflow: hidden;
-    background: rgba(0, 0, 0, 0.03);
-    color: inherit;
-    text-decoration: none;
-    transition: border-color 0.2s ease, transform 0.15s ease;
-}
-a.card-site:hover {
-    border-color: var(--color-primary, #1a8fe3);
-    transform: translateY(-1px);
-}
-.cs-cover {
-    aspect-ratio: 16 / 9;
-    background: rgba(0, 0, 0, 0.06);
-    overflow: hidden;
-}
-.cs-cover--empty {
-    min-height: 96px;
-}
-.cs-cover-img--placeholder {
-    object-fit: cover;
-    background: rgba(0, 0, 0, 0.04);
-}
-.cs-cover img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-.cs-info {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.65rem 0.75rem 0.35rem;
-    min-width: 0;
-}
-.cs-avatar {
-    width: 1.75rem;
-    height: 1.75rem;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
-}
-.cs-title {
-    font-weight: 600;
-    font-size: 0.92em;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-.cs-desc {
-    margin: 0;
-    padding: 0 0.75rem 0.75rem;
-    font-size: 0.85em;
-    color: #777;
-    line-height: 1.5;
-}
-a.card-intro {
-    display: block;
-    border: 1px solid rgba(0, 0, 0, 0.12);
-    border-radius: 0.65rem;
-    overflow: hidden;
-    background: rgba(0, 0, 0, 0.03);
-    color: inherit;
-    text-decoration: none;
-    margin-block: calc(var(--spacing) * 1.25);
-    max-width: 360px;
-    transition: border-color 0.2s ease;
-}
-a.card-intro:hover {
-    border-color: var(--color-primary, #1a8fe3);
-}
-.ci-top {
-    position: relative;
-}
-.ci-meta {
-    position: absolute;
-    left: 0.75rem;
-    top: 0.75rem;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-.ci-tip,
-.ci-cardtitle {
-    display: inline-block;
-    padding: 0.15rem 0.45rem;
-    border-radius: 0.25rem;
-    font-size: 0.75em;
-    font-weight: 600;
-    background: rgba(0, 0, 0, 0.55);
-    color: #fff;
-}
-.ci-hero {
-    display: block;
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-}
-.ci-bottom {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-    padding: 0.75rem;
-    border-top: 1px solid rgba(0, 0, 0, 0.08);
-}
-.ci-bottom-left {
-    display: flex;
-    align-items: center;
-    gap: 0.55rem;
-    min-width: 0;
-}
-.ci-logo {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 0.35rem;
-    object-fit: cover;
-    flex-shrink: 0;
-}
-.ci-title {
-    font-weight: 600;
-    font-size: 0.92em;
-}
-.ci-subtitle {
-    font-size: 0.82em;
-    color: #777;
-}
-.ci-go {
-    flex-shrink: 0;
-    font-size: 0.85em;
-    color: var(--color-primary, #1a8fe3);
-    font-weight: 600;
-}
-.card-site-error,
-.card-intro-error {
-    color: var(--admonitions-color-caution);
-    font-size: var(--size-step-0);
-}
-[data-theme="dark"] a.card-site,
-[data-theme="dark"] a.card-intro {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.15);
-}
-[data-theme="dark"] .cs-desc,
-[data-theme="dark"] .ci-subtitle {
-    color: #aaa;
 }
 
 /* ======================== 系列文目录（2026-08-23，Butterfly 批三） ======================== */

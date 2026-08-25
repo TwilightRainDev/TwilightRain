@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
         mainContent.querySelectorAll('img').forEach(img => {
             // 卡片/网格/头图等组件内图片不做 article-image 取色包裹（会破坏布局并误藏图）
             if (img.closest(
-                'a.card-site, a.card-intro, .md-grid, .site-group, a.card-github, a.card-link, .post-imgcard'
+                '.md-grid, a.card-github, a.card-link, .post-imgcard'
             )) {
                 return;
             }

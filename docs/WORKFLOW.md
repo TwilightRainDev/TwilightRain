@@ -176,22 +176,6 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
   `av` 号与纯数字 aid 会经 `scripts/lib/av-bv-convert.js` 规范为 BV 后再嵌入；
   滚动到可视区或点击占位卡片后加载 `player.bilibili.com` 播放器（sandbox iframe）。
 
-- **站点卡 / 介绍卡**：
-
-  ```markdown
-  ::card{type="site" url="https://example.com" title="站点名" screenshot="/img/360px/cover.jpg" desc="可选描述"}
-  ::card{type="intro" url="/about/" img="/img/360px/cover.jpg" tip="标签" cardtitle="卡片标题" title="主标题" subtitle="副标题" logo="/img/360px/logo.jpg"}
-
-  :::card-group[分组标题]
-  ::card{type="site" url="https://a.com" title="A" screenshot="/img/360px/a.jpg"}
-  ::card{type="site" url="https://b.com" title="B" screenshot="/img/360px/b.jpg"}
-  :::
-  ```
-
-  图片 URL 须为 `http(s)://` 或站内 `/path`；与 `::link` 同安全策略。
-  `avatar` / `screenshot` 可省略：分别回退为 `https://{domain}/favicon.ico` 与占位图
-  （见 [THEME.md → 站点卡](THEME.md#站点卡与介绍卡)）。
-
 - **系列文**：
 
   ```yaml
