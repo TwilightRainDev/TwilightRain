@@ -165,16 +165,6 @@ updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章�
   :::
   ````
 
-- **按钮 / 标签**：
-
-  ```markdown
-  ::inline{type="btn" url="https://example.com" text="打开文档"}
-  ::inline{type="btn" url="/about/" text="关于本站"}
-  ::inline{type="label" text="Beta" tone="blue"}
-  ```
-
-  `url` 仅允许 `http(s)://` 或站内 `/path`；`tone` 可选 default/blue/green/red/orange。
-
 - **B 站视频懒嵌入**：
 
   ```markdown

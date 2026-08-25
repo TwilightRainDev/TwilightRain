@@ -6,7 +6,7 @@
 拍板合计曾写「排除 16 项」。第二批表格里「列表/网格布局切换」实际已迁移，
 故 **不做项为 15**。理由以拍板原文为准，此处不改决策。
 
-当前写作语法见 [WORKFLOW.md](WORKFLOW.md)；折叠/卡片/内联以 `:::fold`、`::card`、`::inline` 为准。
+当前写作语法见 [WORKFLOW.md](WORKFLOW.md)；折叠/卡片以 `:::fold`、`::card` 为准。
 
 ## 第一批：写作增强（5）
 
@@ -50,5 +50,5 @@
 
 ## 不要再当成缺口的已有能力
 
-`:::tabs`、客户端 Mermaid、`:::grid`、`:::fold`、`::card`、`::inline`、友链工具箱、
-展柜置顶、站点卡 fallback、首页布局切换、外链/邮箱保护、图片 `referrerpolicy`。
+`:::tabs`、客户端 Mermaid、`:::grid`、`:::fold`、`::card`、友链工具箱、
+展柜置顶、首页布局切换、外链/邮箱保护、图片 `referrerpolicy`。

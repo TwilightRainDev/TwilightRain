@@ -125,13 +125,6 @@ B 站嵌入
 站点卡、系列文
 :::
 
-## 按钮与标签
-
-::inline{type="btn" url="/about/" text="关于本站"}
-::inline{type="btn" url="https://github.com/TwilightRainDev/TwilightRain" text="GitHub 仓库"}
-::inline{type="label" text="验收" tone="blue"}
-::inline{type="label" text="批三" tone="green"}
-
 ## B 站懒嵌入（Butterfly 批二）
 
 ::bilibili{id="av170001"}

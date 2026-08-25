@@ -323,12 +323,6 @@ themes/ink/layout/
   站点展柜 `/timeline/` 走同一渲染器的 page 变体（`.timeline-*`）。
   两套 class 因布局不同保持隔离，见 `docs/adr/0005-timeline-shared-renderer.md`。
 
-## 按钮与标签
-
-- `scripts/marked-inline.js` —
-  `::inline{type="btn" url=... text=...}`、
-  `::inline{type="label" text=... tone=default|blue|green|red|orange}`。
-
 ## 站点卡与介绍卡
 
 - `scripts/marked-card.js` —
