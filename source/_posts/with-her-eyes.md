@@ -25,7 +25,7 @@ cover: /img/360px/covers/with-her-eyes.jpg
 
 [Github链接](https://github.com/me9rez/llm-vision-mcp)
 
-:::important
+:::admon[important]
 得装node依赖！有依赖洁癖的尽快邪灵退散，否则我一个一个退治了！（红白认真脸）
 :::
 

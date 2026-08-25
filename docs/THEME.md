@@ -209,6 +209,8 @@ themes/ink/layout/
 
 ## 提示块（admonitions）
 
+- **语法**：`:::admon[类型 可选标题]`（写法见 GRAMMAR.md）。方括号省略默认 `note`；
+  首词非类型时宽容兜底为 `note` + 全串作标题（同 fold 先例）。
 - **产物**：渲染为 `<blockquote class="admonition bdm-类型" data-callout="类型">` +
   `.bdm-title`。
 - **实现**：`scripts/marked-admonitions.js` 注册 **marked:use** 过滤器——hexo-renderer-marked
@@ -449,7 +451,7 @@ themes/ink/layout/
 - 选择器是 `article details.md-details`（顶部主色粗边框 + 圆角 +
   summary `>` 箭头旋转 + 列表缩进），深色模式适配。只服务 `:::fold[details]`，
   不美化手写原生 `<details>`。归档页的折叠（`details.archive-month`）不受影响。
-  与提示块（:::note，渲染为 blockquote.admonition）互不干扰。
+  与提示块（:::admon，渲染为 blockquote.admonition）互不干扰。
 
 ## JSON-LD BlogPosting
 

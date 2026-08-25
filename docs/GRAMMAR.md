@@ -47,22 +47,24 @@ math: true                     # 可选：强制加载 MathJax；false 强制不
 - 文章会自动进 feed（atom.xml，限 20 篇）、搜索（search.xml）与 sitemap，
   无需额外操作。
 
-## 提示块（admonitions）
+## 提示块（:::admon）
 
-五类彩色块，语法与 markdown-it-container 一致：
+五类彩色块，类型在方括号首词指定：
 
 ```markdown
-:::note
+:::admon[note]
 内容，支持 **Markdown** 与代码块
 :::
 
-:::tip[自定义标题]
+:::admon[tip 自定义标题]
 内容
 :::
 ```
 
-类型：`note` / `tip` / `important` / `warning` / `caution`；`[标题]` 省略时
-显示类型名。未闭合的 `:::` 会原样输出为文本（写错时显眼暴露）。
+类型：`note` / `tip` / `important` / `warning` / `caution`（不区分大小写）；
+类型后文本作标题，省略时显示类型名。方括号可整体省略（等价于 `[note]`）；
+首词不是类型时整块按 `note` 渲染、全串作标题（如 `:::admon[注意]`）。
+未闭合的 `:::` 会原样输出为文本（写错时显眼暴露）。
 样式与图标见 [THEME.md → 提示块](THEME.md#提示块admonitions)。
 
 ## Mermaid 图表
