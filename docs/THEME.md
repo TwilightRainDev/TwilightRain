@@ -314,8 +314,7 @@ themes/ink/layout/
 
 ## 图片网格
 
-- `scripts/marked-grid.js` — `:::grid[列数]`（默认 2）→ `.md-grid` CSS Grid；
-  替代旧 `<div class="photo-grid">`（已废弃）。
+- `scripts/marked-grid.js` — `:::grid[列数]`（默认 2）→ `.md-grid` CSS Grid。
 
 ## 文内时间线
 
@@ -389,14 +388,6 @@ themes/ink/layout/
   **陷阱**：Hexo 默认 updated 取文件 mtime，git checkout/克隆会刷新 mtime，
   直接显示 page.updated 是假数据——post.ejs 仅当 updatedSet 为真才输出
   "更新于"小字；过期提示条（warning 配色）输出在阅读时间 meta 下。
-
-## 文内照片墙（.photo-grid，已废弃）
-
-- 推荐 `:::grid[列数]`（见上文「图片网格」与 WORKFLOW.md）。旧写法：文章正文写
-  `<div class="photo-grid">` 包一组 `<img>` 即网格排列（auto-fill minmax(200px,1fr)），
-  灯箱复用现有 fancybox（ink.js 已给 article 内 img 加 data-fancybox），
-  不引入标签插件、不引 photoswipe。与相册页（独立集合页）场景不同质：
-  相册是长期照片集合，photo-grid 是文章上下文内的图片组。
 
 ## 展柜页（projects / skills / timeline）
 
