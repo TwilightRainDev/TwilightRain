@@ -6,6 +6,7 @@ node_modules/
 public/
 .deploy*/
 _multiconfig.yml
+.codegraph/
 docs/BlogPrivate.txt
 source/_data/
 # 构建产物：由 scripts/gen-thumbs.js 从 ori/ 生成，勿入库

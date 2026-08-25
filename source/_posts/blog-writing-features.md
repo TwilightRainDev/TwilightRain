@@ -17,32 +17,32 @@ tags:
 
 ## 提示块（admonitions）
 
-用 `:::` 包裹内容即可生成彩色提示块，支持五种类型，各自有独立的颜色与图标：
+用 `:::admon[类型]` 包裹内容即可生成彩色提示块，类型有五种，各自有独立的颜色与图标：
 
-:::note
+:::admon[note]
 高亮读者需要留意的信息，即使只是扫读也该看到。
 :::
 
-:::tip
+:::admon[tip]
 可选信息，帮助读者更顺利地使用。
 :::
 
-:::important
+:::admon[important]
 读者成功所需的关键信息。
 :::
 
-:::warning
+:::admon[warning]
 需要立即注意的潜在风险内容。
 :::
 
-:::caution
+:::admon[caution]
 某个操作可能带来的负面后果。
 :::
 
 标题可以自定义：
 
-:::note[提示块的标题可以自定义]
-默认标题显示类型名（Note / Tip 等），用 `:::类型[标题]` 可以覆盖。块内支持完整的 Markdown：**加粗**、`行内代码`、列表与代码块。
+:::admon[note 提示块的标题可以自定义]
+默认标题显示类型名（Note / Tip 等），用 `:::admon[类型 标题]` 可以覆盖。块内支持完整的 Markdown：**加粗**、`行内代码`、列表与代码块。
 :::
 
 ## Mermaid 图表
@@ -102,8 +102,6 @@ $$\int_0^1 x^2 \, dx = \frac{1}{3}$$
 ![图三](/img/360px/blog-writing-features.jpg)
 :::
 
-> [NOTE] 旧写法 `<div class="photo-grid">` 仍可用但已废弃，请改用 `:::grid[列数]`。
-
 ## 隐藏与折叠（推荐 `:::fold`）
 
 :::fold[text 悬停或点击查看剧透]
@@ -127,27 +125,9 @@ B 站嵌入
 站点卡、系列文
 :::
 
-## 按钮与标签
-
-::inline{type="btn" url="/about/" text="关于本站"}
-::inline{type="btn" url="https://github.com/TwilightRainDev/TwilightRain" text="GitHub 仓库"}
-::inline{type="label" text="验收" tone="blue"}
-::inline{type="label" text="批三" tone="green"}
-
 ## B 站懒嵌入（Butterfly 批二）
 
 ::bilibili{id="av170001"}
-
-## 站点卡与介绍卡
-
-::card{type="site" url="https://twilightrain.com/" title="暮光雨" screenshot="/img/360px/blog-writing-features.jpg" desc="个人技术博客"}
-
-::card{type="intro" url="/about/" img="/img/360px/blog-writing-features.jpg" tip="关于" cardtitle="本站" title="暮光雨" subtitle="Hexo + ink" logo="/img/360px/blog-writing-features.jpg"}
-
-:::card-group[常用链接]
-::card{type="site" url="https://github.com/TwilightRainDev/TwilightRain" title="GitHub" screenshot="/img/360px/blog-writing-features.jpg" desc="博客源码"}
-::card{type="site" url="/about/" title="关于页" screenshot="/img/360px/blog-writing-features.jpg"}
-:::
 
 ## 系列文目录
 
@@ -214,6 +194,6 @@ B 站嵌入
 - **相关文章**：文末按标签交集推荐（本篇标签「博客」「写作」）
 - **双链**：文首与文末「链接到 / 反向链接」区块
 
-:::important
+:::admon[important]
 验收通过标准：上述块级语法均渲染为对应 DOM 类名；交互类（hide、tabs、代码折叠、B 站占位）可无控制台错误地响应点击/滚动。
 :::

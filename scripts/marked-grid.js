@@ -7,7 +7,6 @@
  *   :::
  *
  * 列数可选，默认 2；渲染为 .md-grid CSS Grid 容器。
- * 替代旧 <div class="photo-grid">（保留兼容，文档标废弃）。
  */
 'use strict';
 

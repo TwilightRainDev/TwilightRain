@@ -2,6 +2,9 @@
 
 主题 fork 自 `hoytzhang/hexo-theme-ink`，已深度定制并整体入库（`themes/ink/` 内全部文件受 git 跟踪，无独立 git 仓库），修改直接进版本控制。
 
+> 正文扩展语法（`:::…`、`::…`、`[[…]]`、公式分隔符）的写法统一见
+> [GRAMMAR.md](GRAMMAR.md)；本文只记实现、样式与陷阱。
+
 ## 布局文件职责
 
 ```
@@ -206,10 +209,10 @@ themes/ink/layout/
 
 ## 提示块（admonitions）
 
-- **语法**：`:::note` / `:::tip` / `:::important` / `:::warning` / `:::caution`
-  包裹内容，`:::类型[自定义标题]` 可指定标题（缺省显示类型名，如 Note）。
-  渲染为 `<blockquote class="admonition bdm-类型" data-callout="类型">` +
-  `.bdm-title`（语法与 markdown-it-container / remark-directive 一致）。
+- **语法**：`:::admon[类型 可选标题]`（写法见 GRAMMAR.md）。方括号省略默认 `note`；
+  首词非类型时宽容兜底为 `note` + 全串作标题（同 fold 先例）。
+- **产物**：渲染为 `<blockquote class="admonition bdm-类型" data-callout="类型">` +
+  `.bdm-title`。
 - **实现**：`scripts/marked-admonitions.js` 注册 **marked:use** 过滤器——hexo-renderer-marked
   每次渲染前执行该过滤器（lib/renderer.js:235 `execFilterSync('marked:use', marked.use)`），
   用 marked 块级扩展（tokenizer 二次解析块内内容 + renderer）实现，无需切换渲染器、
@@ -221,7 +224,7 @@ themes/ink/layout/
 
 ## Mermaid 图表
 
-- **语法**：mermaid 围栏代码块 → `<div class="mermaid"><pre><code>源码</code></pre></div>`，
+- **产物**：mermaid 围栏代码块 → `<div class="mermaid"><pre><code>源码</code></pre></div>`，
   源码保留在 DOM（无 JS 可见、可复制）；ink.js 按需加载自托管
   `themes/ink/source/js/mermaid.min.js`（v11.16.1，约 3.6MB 未压缩 / gzip 约 1MB）
   渲染为 SVG 替换容器；渲染失败显示错误信息并保留源码。
@@ -266,9 +269,8 @@ themes/ink/layout/
 
 ## GitHub 仓库卡片
 
-- 语法：`::card{type="github" repo="owner/repo" desc="可选描述"}`。渲染为
-  `<a class="card-github">`（owner/repo + GitHub 图标 + 可选描述），点击跳转
-  仓库页。repo 无 "/" 或缺失时输出可见错误提示（`[WARN]`）。
+- 产物：`<a class="card-github">`（owner/repo + GitHub 图标 + 可选描述），
+  点击跳转仓库页。repo 无 "/" 或缺失时输出可见错误提示（`[WARN]`）。
 - 实现：`scripts/marked-card.js` 注册 marked:use 扩展
   静态渲染基础信息；`ink.js`「GitHub 仓库卡片数据」模块前端调 GitHub API
   补充动态数据（stars/forks/language/license，无静态 desc 时补 description）。
@@ -281,74 +283,47 @@ themes/ink/layout/
 
 ## 通用链接卡片
 
-- 语法：`::card{type="link" url="https://..." title="可选" desc="可选"}`。渲染 `<a class="card-link">`
-  （link 图标 + 标题 + 右端域名 + 可选描述），样式与 GitHub 卡片同款。
+- 产物：`<a class="card-link">`（link 图标 + 标题 + 右端域名 + 可选描述），
+  样式与 GitHub 卡片同款。
 - **纯静态**：不调 API、无前端 JS、CSP 零新增。**安全**：url 仅放行 http/https
   （防 javascript: 伪协议注入，renderer 里正则校验），全部文本 escapeHtml 转义；
   title 缺省取域名。无效语法输出可见 `[WARN]`。
 
 ## 标签页（tabs）
 
-- 语法（与提示块 ::: 体系统一）：
-
-  ```markdown
-  :::tabs
-  --- 方案A
-  内容 A（完整 Markdown）
-  --- 方案B
-  内容 B
-  :::
-  ```
-
-  渲染 `.tabs`（tabs-nav 按钮条 + 各 tabs-panel，默认激活第一个）；
+- 产物：`.tabs`（tabs-nav 按钮条 + 各 tabs-panel，默认激活第一个）；
   ink.js 事件委托切换（is-active / aria-selected），无框架依赖。
-  块内用 `this.lexer.blockTokens` 二次解析（列表/代码块/强调均支持）。
-  注意：`--- 标题` 分隔符要求顶格且 `---` 后跟标题文本，与 Markdown 水平线
-  （顶格 `---` 后无文本）不冲突；无子 tab 的块输出可见 `[WARN]`。
-- 实现：`scripts/marked-tabs.js`。
+- 实现：`scripts/marked-tabs.js`。块内用 `this.lexer.blockTokens` 二次解析
+  （列表/代码块/强调均支持）。`--- 标题` 分隔符要求顶格且 `---` 后跟标题文本，
+  与 Markdown 水平线（顶格 `---` 后无文本）不冲突；无子 tab 的块输出可见 `[WARN]`。
 
 ## 隐藏块与折叠
 
-- **实现**：`scripts/marked-fold.js`。`:::fold[text …]` / `:::fold[details …]`（无 mode 时默认 text）。
-  HTML 类名仍为 `.md-text` / `.md-details`。ink.js 点击切换 `.is-revealed`。
+- **实现**：`scripts/marked-fold.js`。HTML 类名 `.md-text` / `.md-details`。
+  ink.js 点击切换 `.is-revealed`。
 
 ## 图片网格
 
-- `scripts/marked-grid.js` — `:::grid[列数]`（默认 2）→ `.md-grid` CSS Grid；
-  替代旧 `<div class="photo-grid">`（已废弃）。
+- `scripts/marked-grid.js` → `.md-grid` CSS Grid（`--md-grid-cols` 变量控列数）。
 
 ## 文内时间线
 
-- `scripts/marked-timeline.js` — `:::timeline` + `--- 标题` 分隔；
-  DOM 由 `scripts/lib/timeline-renderer.js` 生成，容器类 `.post-timeline`。
-  站点展柜 `/timeline/` 走同一渲染器的 page 变体（`.timeline-*`）。
-  两套 class 因布局不同保持隔离，见 `docs/adr/0005-timeline-shared-renderer.md`。
-
-## 按钮与标签
-
-- `scripts/marked-inline.js` —
-  `::inline{type="btn" url=... text=...}`、
-  `::inline{type="label" text=... tone=default|blue|green|red|orange}`。
-
-## 站点卡与介绍卡
-
-- `scripts/marked-card.js` —
-  `::card{type="site|intro|github|link" ...}`、`:::card-group[标题]`。
-  `avatar` / `screenshot` 可省略：回退 favicon 与占位图（`lib/favicon-fallback.js`；
-  可选 `screenshot-cards.js` Playwright 截图）。
+- `scripts/marked-timeline.js`；DOM 由 `scripts/lib/timeline-renderer.js` 生成，
+  容器类 `.post-timeline`。站点展柜 `/timeline/` 走同一渲染器的 page 变体
+  （`.timeline-*`）。两套 class 因布局不同保持隔离，见
+  `docs/adr/0005-timeline-shared-renderer.md`。
 
 ## 系列文
 
-- `scripts/series.js` + `scripts/lib/series-groups.js` —
-  front matter `series:`（可选 `series_index:`）；文内 `::series` 或 `::series{name="..."}` 输出
+- `scripts/series.js` + `scripts/lib/series-groups.js` — 输出
   系列目录并高亮当前篇。不做侧栏 series widget。
   样文：`blog-writing-features.md`（单篇展示即可）。
 
 ## B 站懒嵌入
 
 - `scripts/marked-bilibili.js` + `scripts/lib/av-bv-convert.js` + ink.js —
-  `::bilibili{id="BV..."}` / `av` 号 / URL；av 自动规范为 BV 后嵌入 sandbox iframe
-  （`player.bilibili.com`）。CSP：`scripts/csp.js` 的 `frame-src` 已加
+  av 自动规范为 BV 后嵌入 sandbox iframe（`player.bilibili.com`）。
+  CSP：`scripts/csp.js` 的 `frame-src` 已加
   `https://player.bilibili.com`（见 SECURITY.md）。
 
 ## 层级面包屑
@@ -359,21 +334,22 @@ themes/ink/layout/
 
 ## 双链（wikilinks）
 
-- 自研 `scripts/wikilinks.js`（未引 npm 插件）。`[[Title]]` / `[[Title|Alias]]` / `[[Title#Anchor]]`
-  在 `before_post_render` 换成 Markdown 链接；图写入 `global`，由
+- 自研 `scripts/wikilinks.js`（未引 npm 插件）。双链在 `before_post_render`
+  换成 Markdown 链接；图写入 `global`，由
   `reading-time.js` 的 `after_post_render` 注入 `wikiOutbounds` / `wikiInbounds`
   （独立 after_post_render 拿不到图，与字数同钩子才进得了模板）。
   图键用 `post.source`（勿用 `_id`，generate 各阶段会变）。
 
 ## 段落锚点
 
-- `scripts/heading-anchor.js`（after_post_render）给正文 h2/h3 注入
-  `<a class="heading-anchor">#</a>` 锚点链接。id **复用 hexo-renderer-marked 默认
-  生成的中文 id**（如 `id="做过什么"`），无 id 的标题按 ink.js TOC 同规则 slug
-  生成——TOC 运行时仅补缺 id，两者规则一致，深链 #hash 构建期已就绪、加载即定位。
-  CSS：标题 hover/聚焦显示 #、`:target` 高亮闪烁、h2/h3 `scroll-margin-top` 防
-  遮挡。**注意**：hexo 默认还会输出空 `<a class="headerlink">`（marked headerLink
-  功能），与 heading-anchor 并存，勿混淆。
+- `scripts/heading-anchor.js`（after_post_render，纯函数在 `lib/heading-anchor.js`）
+  给正文 h2/h3 注入 `<a class="heading-anchor">#</a>` 锚点链接。id **复用
+  hexo-renderer-marked 默认生成的中文 id**（如 `id="做过什么"`），无 id 的标题按
+  ink.js TOC 同规则 slug 生成——TOC 运行时仅补缺 id，两者规则一致，深链 #hash
+  构建期已就绪、加载即定位。CSS：标题 hover/聚焦显示 #、`:target` 高亮闪烁、
+  h2/h3 `scroll-margin-top` 防遮挡。hexo-renderer-marked 在 `headerIds` 开启时
+  会顺带插空 `<a class="headerlink">`；`headerIds` 不能关（关掉标题丢 id），
+  过滤器渲染后剥掉 headerlink，正文只留 `.heading-anchor`。
 
 ## 图片懒加载
 
@@ -389,14 +365,6 @@ themes/ink/layout/
   **陷阱**：Hexo 默认 updated 取文件 mtime，git checkout/克隆会刷新 mtime，
   直接显示 page.updated 是假数据——post.ejs 仅当 updatedSet 为真才输出
   "更新于"小字；过期提示条（warning 配色）输出在阅读时间 meta 下。
-
-## 文内照片墙（.photo-grid，已废弃）
-
-- 推荐 `:::grid[列数]`（见上文「图片网格」与 WORKFLOW.md）。旧写法：文章正文写
-  `<div class="photo-grid">` 包一组 `<img>` 即网格排列（auto-fill minmax(200px,1fr)），
-  灯箱复用现有 fancybox（ink.js 已给 article 内 img 加 data-fancybox），
-  不引入标签插件、不引 photoswipe。与相册页（独立集合页）场景不同质：
-  相册是长期照片集合，photo-grid 是文章上下文内的图片组。
 
 ## 展柜页（projects / skills / timeline）
 
@@ -478,13 +446,12 @@ themes/ink/layout/
 - **替换光标集**：只改 `:root` 内 13 个变量的 url 与热点即可，无需动元素规则。
 - **注意事项**：giscus 评论 iframe 内光标不受本站 CSS 控制（iframe 独立文档）。
 
-## details 折叠块样式
+## :::fold[details] 折叠块样式
 
-- `article details` 规则（顶部主色粗边框 + 圆角 +
-  summary `>` 箭头旋转动画 + 列表缩进），深色模式适配。文章内写原生
-  `<details><summary>标题</summary>内容</details>` 即生效；选择器限定
-  article，不影响归档页 summary 折叠。与提示块（:::note，渲染为
-  blockquote.admonition）互不干扰。
+- 选择器是 `article details.md-details`（顶部主色粗边框 + 圆角 +
+  summary `>` 箭头旋转 + 列表缩进），深色模式适配。只服务 `:::fold[details]`，
+  不美化手写原生 `<details>`。归档页的折叠（`details.archive-month`）不受影响。
+  与提示块（:::admon，渲染为 blockquote.admonition）互不干扰。
 
 ## JSON-LD BlogPosting
 

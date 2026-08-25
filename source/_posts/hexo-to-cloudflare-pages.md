@@ -119,7 +119,7 @@ HEAD is now at 8eb197c Site updated: 2026-07-13 18:25:29
 
 解决方案：在 Cloudflare Pages 项目设置中，把 **Production branch** 从 `master` 改为 `main`，然后再次重试部署。
 
-这次终于成功了！🎉
+这次终于成功了！
 
 ---
 

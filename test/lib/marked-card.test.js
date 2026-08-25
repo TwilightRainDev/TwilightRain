@@ -4,11 +4,11 @@ var assert = require('node:assert/strict');
 var test = require('node:test');
 var card = require('../../scripts/marked-card');
 
-test('parseCardType 只接受四种 type', function () {
+test('parseCardType 只接受 github / link', function () {
   assert.equal(card.parseCardType({ type: 'github' }), 'github');
   assert.equal(card.parseCardType({ type: 'link' }), 'link');
-  assert.equal(card.parseCardType({ type: 'site' }), 'site');
-  assert.equal(card.parseCardType({ type: 'intro' }), 'intro');
+  assert.equal(card.parseCardType({ type: 'site' }), '');
+  assert.equal(card.parseCardType({ type: 'intro' }), '');
   assert.equal(card.parseCardType({ type: 'nope' }), '');
 });
 
@@ -16,6 +16,12 @@ test('::card github 输出 card-github', function () {
   var html = card.renderGithubCard({ repo: 'owner/repo', desc: '说明' });
   assert.match(html, /class="card-github"/);
   assert.match(html, /data-repo="owner\/repo"/);
+});
+
+test('::card github 缺 repo 输出可见 WARN', function () {
+  var html = card.renderGithubCard({});
+  assert.match(html, /card-error/);
+  assert.match(html, /\[WARN\]/);
 });
 
 test('::card link 输出 card-link', function () {
@@ -28,25 +34,17 @@ test('::card link 输出 card-link', function () {
   assert.match(html, /example\.com/);
 });
 
-test('renderSiteCard 空 avatar/screenshot 自动补全', function () {
-  var html = card.renderSiteCard({ url: 'https://example.com', title: '示例站' });
-  assert.match(html, /class="card-site"/);
-  assert.match(html, /https:\/\/example\.com\/favicon\.ico/);
-  assert.match(html, /site-card-placeholder\.svg/);
+test('::card link 省略 title 时显示域名', function () {
+  var html = card.renderLinkCard({ url: 'https://example.com/x' });
+  assert.match(html, /class="lc-title">example\.com</);
 });
 
-test('parseGroupBody 只接受 ::card type=site', function () {
-  var body = [
-    '::card{type="site" url="https://a.com" title="A"}',
-    '::card{type="site" url="https://b.com" title="B"}',
-    '::card{type="github" repo="o/r"}'
-  ].join('\n');
-  var parsed = card.parseGroupBody(body);
-  assert.equal(parsed.count, 2);
-  assert.match(parsed.inner, /class="card-site"/);
+test('::card link 拒绝非 http(s) url', function () {
+  assert.match(card.renderLinkCard({ url: '/about/' }), /card-error/);
+  assert.match(card.renderLinkCard({ url: 'javascript:alert(1)' }), /card-error/);
 });
 
 test('卡片围栏正则', function () {
   assert.ok(card.CARD_RULE.exec('::card{type="github" repo="o/r"}\n'));
-  assert.ok(card.CARD_GROUP_RULE.exec(':::card-group[组]\n::card{type="site" url="https://a.com" title="A"}\n:::\n'));
+  assert.equal(card.CARD_RULE.exec(':::card-group\n'), null);
 });

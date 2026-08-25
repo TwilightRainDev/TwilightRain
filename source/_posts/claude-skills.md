@@ -15,7 +15,10 @@ cover: /img/360px/covers/claude-skills.jpg
 
 我在 Windows 上用 Claude Code 干活，环境有点特殊，H 盘是 exFAT，路径里有中文，终端默认 GBK，脚本用 PowerShell 写，核心逻辑扔给 Python 跑。这四个条件凑齐，乱码就是日常，不是事故。
 
-最早几次我还认真排查，编码声明写没写？管道是不是在作怪？后来学乖了，每踩一个坑就把结论写成一条规则，攒多了变成一个技能（skill），让 Claude Code 在需要的时候自己读。[claude-skills](https://github.com/TwilightRainDev/claude-skills) 这个仓库就是攒下来的东西，目前收着两个技能。
+最早几次我还认真排查，编码声明写没写？管道是不是在作怪？后来学乖了，每踩一个坑就把结论写成一条规则，攒多了变成一个技能（skill），让 Claude Code 在需要的时候自己读。
+
+::card{type="github" repo="TwilightRainDev/claude-skills" desc="这个仓库就是攒下来的东西"}
+
 
 ## EncodingGuide，一条铁律，七个陷阱
 
@@ -49,4 +52,4 @@ CreatePrompts 是另一个画风。它不是排坑清单，是流程设计，两
 
 这两个技能都不大。但技能和笔记的区别在于，笔记要自己翻，技能在合适的时机自己跳出来。踩坑攒成技能，下次 AI 动手之前先被提醒，比事后再查文档省事得多。
 
-仓库地址 https://github.com/TwilightRainDev/claude-skills ，MIT 许可，目录拷进 `~/.claude/skills/` 就能用。后续踩到新坑会继续往里加。
+仓库是MIT 许可，目录拷进 `~/.claude/skills/` 就能用。后续踩到新坑会继续往里加。

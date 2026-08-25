@@ -24,7 +24,6 @@
 
 | # | 现象 | 分类 | 状态 | 说明 |
 |---|------|------|------|------|
-| 1 | `github.com/favicon.ico` CORS / loopback | 站点卡 avatar 回退 | 已修 | `scripts/lib/favicon-fallback.js` 对 `github.com` 改用 `github.githubassets.com` favicon |
 | 2 | `api.github.com` fetch loopback 失败 | GitHub 卡片动态数据 | 环境噪声 | 同 TD-014；静态卡片仍可用，无 S302 时 API 正常 |
 | 3 | giscus `postMessage` origin 不匹配 | 评论主题同步 | 已修 | giscus `defer` + ink.js 预先写 `data-theme`；仅收到 giscus.app 首条 `message` 后再 postMessage |
 | 4 | 图片 lazy-load `[Intervention]` | 浏览器提示 | 忽略 | 非错误 |

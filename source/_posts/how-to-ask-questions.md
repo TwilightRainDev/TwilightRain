@@ -25,7 +25,7 @@ cover: /img/360px/covers/how-to-ask-questions.jpg
 
 DeepSeek，ChatGPT，Claude这三尊大佛，秒级识别低级问题跟喝汤一样。拼写错误啊，环境变量没配啊，版本不兼容啊，缩进比狗啃的还难看啊，AI都秒了，你就不用去社区社死。
 
-:::important
+:::admon[important]
 千万别找豆包！经典梗图：医生，你的诊断结果怎么跟豆包说的不一样啊？
 :::
 

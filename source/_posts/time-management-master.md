@@ -13,6 +13,8 @@ cover: /img/360px/covers/time-management-master.jpg
 
 # 如果我想成为时间管理大师
 
+$$ \tau = \int_{t_1}^{t_2} \sqrt{1 - \frac{v(t)^2}{c^2}} \, dt $$
+
 我想成为Timegame高手，把一天过出两倍效果，但说实话，咱连自己每天在手机上耗了多少时间都说不清楚。于是咱决定给自己写个应用，让它替咱盯着。反正自己写的东西，总比那些“屏幕使用时间”里的黑盒数据可信吧？说干就干。没想到，两天后它居然真能跑了。应用本身挺糙的，没啥可炫耀的。但就做它的这两天，咱的收获比这几年翻过的所有鸡汤叠起来都大。
 
 先交代动机，其实很简单。咱总觉得最近好像刷手机有点多，但有点多是几小时？三小时？五小时？咱没概念。没概念就没法管。咱写了 TimeTrack，每15分钟采样一次系统事件流，算亮屏时长，算每个应用占多少，画成 GitHub 提交记录那种绿格子热力图，一年365天铺开。
@@ -69,6 +71,6 @@ TimeTrack 的停止记录是真停。取消后台任务，撤掉白名单，杀�
 
 ---
 
-如果现在有人问咱怎么成为时间管理大师，咱的建议是先装个计数器。剩下的都是工程问题。
+如果现在有人问咱怎么成为时间管理大师，咱的建议是先装个计数器。剩下的都是工程问题。咱的计数器数据全在本地，连联网权限都没申请。
 
-咱的计数器开源在 [https://github.com/TwilightRainDev/TwilightRainTimeTrack](https://github.com/TwilightRainDev/TwilightRainTimeTrack) 数据全在本地，连联网权限都没申请。
+::card{type="github" repo="TwilightRainDev/TwilightRainTimeTrack" desc="咱的计数器"}
