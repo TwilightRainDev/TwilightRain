@@ -11,27 +11,18 @@
  *   id 会错过浏览器初始定位；hexo 默认 id 则无此问题）。
  * - 已带 id 的标题跳过 id 生成、仍注入锚点链接；不注入链接的情况只有
  *   标题无文本可 slug 化。
+ * - hexo-renderer-marked 在 headerIds 开启时会顺带插入空 <a class="headerlink">，
+ *   与 heading-anchor 叠成双锚点；headerIds 不能关（关掉标题会丢 id），
+ *   故在本过滤器里剥掉 headerlink，只留可见的 #。
+ *
+ * 纯函数实现见 lib/heading-anchor.js。
  */
 'use strict';
 
-// 与 ink.js TOC 相同的 slug 规则（themes/ink/source/js/ink.js:313）
-function slugify(text) {
-  return text.trim().toLowerCase().replace(/[^a-z0-9一-鿿]+/g, '-').replace(/^-|-$/g, '');
-}
-
-var HEADING_RE = /<h([23])([^>]*)>([\s\S]*?)<\/h\1>/g;
+var applyHeadingAnchors = require('./lib/heading-anchor').applyHeadingAnchors;
 
 hexo.extend.filter.register('after_post_render', function (data) {
-  if (!data.content || data.content.indexOf('<h2') === -1 && data.content.indexOf('<h3') === -1) return data;
-  data.content = data.content.replace(HEADING_RE, function (match, level, attrs, inner) {
-    // 复用现有 id（hexo-renderer-marked 默认生成，中文原文）；无则按 TOC 规则生成
-    var idMatch = attrs.match(/\bid=["']([^"']+)["']/);
-    var id = idMatch ? idMatch[1] : slugify(inner.replace(/<[^>]+>/g, ''));
-    if (!id) return match;
-    var idAttr = idMatch ? '' : ' id="' + id + '"';
-    return '<h' + level + attrs + idAttr + '>' +
-      '<a class="heading-anchor" href="#' + id + '" aria-hidden="true">#</a>' +
-      inner + '</h' + level + '>';
-  });
+  if (!data.content) return data;
+  data.content = applyHeadingAnchors(data.content);
   return data;
 });

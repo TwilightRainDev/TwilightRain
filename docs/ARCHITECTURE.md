@@ -67,7 +67,7 @@ blog/
 | marked 扩展 | `marked-{admonitions,grid,fold,mermaid,card,bilibili,timeline,inline,tabs}.js` | 正文扩展语法（fold/card/inline 仅规范名） |
 | 可选 | `screenshot-cards.js` | 站点卡 Playwright 截图（CF 无浏览器时跳过） |
 | 系列 | `series.js` + `lib/series-*.js` | `::series` 与分组 |
-| 纯函数库 | `lib/{char-stats,breadcrumbs,wikilinks,av-bv-convert,favicon-fallback,external-links,image-referrerpolicy,timeline-renderer}.js` | 被钩子或单测 require |
+| 纯函数库 | `lib/{char-stats,breadcrumbs,wikilinks,av-bv-convert,favicon-fallback,external-links,image-referrerpolicy,timeline-renderer,heading-anchor}.js` | 被钩子或单测 require |
 | 展柜 helper | `timeline-page.js` | `/timeline/` 调用 `renderPageTimeline` |
 
 ## themes/ink/source/js/ink.js 模块

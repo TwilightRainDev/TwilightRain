@@ -366,13 +366,14 @@ themes/ink/layout/
 
 ## 段落锚点
 
-- `scripts/heading-anchor.js`（after_post_render）给正文 h2/h3 注入
-  `<a class="heading-anchor">#</a>` 锚点链接。id **复用 hexo-renderer-marked 默认
-  生成的中文 id**（如 `id="做过什么"`），无 id 的标题按 ink.js TOC 同规则 slug
-  生成——TOC 运行时仅补缺 id，两者规则一致，深链 #hash 构建期已就绪、加载即定位。
-  CSS：标题 hover/聚焦显示 #、`:target` 高亮闪烁、h2/h3 `scroll-margin-top` 防
-  遮挡。**注意**：hexo 默认还会输出空 `<a class="headerlink">`（marked headerLink
-  功能），与 heading-anchor 并存，勿混淆。
+- `scripts/heading-anchor.js`（after_post_render，纯函数在 `lib/heading-anchor.js`）
+  给正文 h2/h3 注入 `<a class="heading-anchor">#</a>` 锚点链接。id **复用
+  hexo-renderer-marked 默认生成的中文 id**（如 `id="做过什么"`），无 id 的标题按
+  ink.js TOC 同规则 slug 生成——TOC 运行时仅补缺 id，两者规则一致，深链 #hash
+  构建期已就绪、加载即定位。CSS：标题 hover/聚焦显示 #、`:target` 高亮闪烁、
+  h2/h3 `scroll-margin-top` 防遮挡。hexo-renderer-marked 在 `headerIds` 开启时
+  会顺带插空 `<a class="headerlink">`；`headerIds` 不能关（关掉标题丢 id），
+  过滤器渲染后剥掉 headerlink，正文只留 `.heading-anchor`。
 
 ## 图片懒加载
 
