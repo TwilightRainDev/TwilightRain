@@ -470,13 +470,12 @@ themes/ink/layout/
 - **替换光标集**：只改 `:root` 内 13 个变量的 url 与热点即可，无需动元素规则。
 - **注意事项**：giscus 评论 iframe 内光标不受本站 CSS 控制（iframe 独立文档）。
 
-## details 折叠块样式
+## :::fold[details] 折叠块样式
 
-- `article details` 规则（顶部主色粗边框 + 圆角 +
-  summary `>` 箭头旋转动画 + 列表缩进），深色模式适配。文章内写原生
-  `<details><summary>标题</summary>内容</details>` 即生效；选择器限定
-  article，不影响归档页 summary 折叠。与提示块（:::note，渲染为
-  blockquote.admonition）互不干扰。
+- 选择器是 `article details.md-details`（顶部主色粗边框 + 圆角 +
+  summary `>` 箭头旋转 + 列表缩进），深色模式适配。只服务 `:::fold[details]`，
+  不美化手写原生 `<details>`。归档页的折叠（`details.archive-month`）不受影响。
+  与提示块（:::note，渲染为 blockquote.admonition）互不干扰。
 
 ## JSON-LD BlogPosting
 

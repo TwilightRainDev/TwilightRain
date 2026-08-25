@@ -2842,12 +2842,12 @@ select:disabled {
 }
 
 /* ======================== SanYeCao 移植（2026-08-18） ========================
-   1. Markdown details 折叠块样式（来源：SanYeCao-blog src/styles/posts.css）
+   1. :::fold[details] 折叠块样式（来源：SanYeCao-blog src/styles/posts.css）
    2. 块级公式过长时独立横向滚动（MathJax 3 CHTML 适配，来源同上）
-   选择器限定 article（文章正文容器），不影响归档页 summary 折叠。 */
+   选择器限定 article details.md-details，不美化手写原生 details，也不影响归档页。 */
 
-/* 1. details 折叠块：顶部粗边框 + 圆角 + summary 箭头旋转 */
-article details {
+/* 1. :::fold[details] 折叠块：顶部粗边框 + 圆角 + summary 箭头旋转 */
+article details.md-details {
     min-width: 0;
     max-width: 100%;
     box-sizing: border-box;
@@ -2858,7 +2858,7 @@ article details {
     background: rgba(128, 128, 128, 0.14);
 }
 
-article details summary {
+article details.md-details summary {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -2872,11 +2872,11 @@ article details summary {
     list-style: none;
 }
 
-article details summary::-webkit-details-marker {
+article details.md-details summary::-webkit-details-marker {
     display: none;
 }
 
-article details summary::before {
+article details.md-details summary::before {
     content: '>';
     display: inline-block;
     flex: 0 0 auto;
@@ -2885,11 +2885,11 @@ article details summary::before {
     transition: transform 0.2s ease;
 }
 
-article details[open] summary::before {
+article details.md-details[open] summary::before {
     transform: rotate(90deg);
 }
 
-article details > :not(summary) {
+article details.md-details > :not(summary) {
     min-width: 0;
     max-width: 100%;
     box-sizing: border-box;
@@ -2898,16 +2898,20 @@ article details > :not(summary) {
     padding-right: 1rem;
 }
 
-article details > ol,
-article details > ul {
+article details.md-details > .md-details-body {
+    padding-top: 0.5rem;
+}
+
+article details.md-details > ol,
+article details.md-details > ul {
     padding: 0.6rem 1rem 1rem 3rem;
 }
 
-article details li {
+article details.md-details li {
     margin: 0.8rem 0;
 }
 
-[data-theme="dark"] article details {
+[data-theme="dark"] article details.md-details {
     border-top-color: #6ab0f3;
     background: rgba(160, 160, 160, 0.16);
 }
@@ -3324,14 +3328,6 @@ figure.highlight {
 }
 [data-theme="dark"] .md-text-body {
     background: rgba(255, 255, 255, 0.08);
-}
-
-/* :::details 块级折叠（拍板 M2） */
-article details.md-details {
-    margin-block: calc(var(--spacing) * 1.25);
-}
-article details.md-details > .md-details-body {
-    padding-top: 0.5rem;
 }
 
 /* B 站懒嵌入 */
