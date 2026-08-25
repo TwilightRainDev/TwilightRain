@@ -102,8 +102,6 @@ $$\int_0^1 x^2 \, dx = \frac{1}{3}$$
 ![图三](/img/360px/blog-writing-features.jpg)
 :::
 
-> [NOTE] 旧写法 `<div class="photo-grid">` 仍可用但已废弃，请改用 `:::grid[列数]`。
-
 ## 隐藏与折叠（推荐 `:::fold`）
 
 :::fold[text 悬停或点击查看剧透]

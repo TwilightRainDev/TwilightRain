@@ -1736,6 +1736,8 @@ cover: /img/360px/covers/bilicompact-source.jpg
 
 然后就动手了。
 
+::bilibili{id="BV1KEgk64EHJ"}
+
 ## B 站首页的信息过载
 
 打开 B 站首页，扑面而来的是：
