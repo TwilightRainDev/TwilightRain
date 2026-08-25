@@ -13,7 +13,8 @@ TwilightRain 博客源码仓库的维护文档。
 | 文件 | 内容 | 何时看 |
 |---|---|---|
 | [ARCHITECTURE.md](ARCHITECTURE.md) | 系统组成、构建链路、目录地图、关键文件 | 想理解整个博客怎么运转时 |
-| [WORKFLOW.md](WORKFLOW.md) | 本地开发、写作发布、提交推送全流程 | 每次写文章/改代码时 |
+| [GRAMMAR.md](GRAMMAR.md) | 写作规范与全部正文扩展语法（唯一来源） | 每次写文章时 |
+| [WORKFLOW.md](WORKFLOW.md) | 本地开发、提交推送、发布验证流程 | 改代码/发布时 |
 | [EXCLUDED.md](EXCLUDED.md) | 拍板排除项（PlantUML、code-group、热门页等，不做） | 评估「要不要加某功能」时 |
 | [SECURITY.md](SECURITY.md) | CSP 安全头、`_headers`/`_redirects` 机制、已知陷阱 | 改安全策略、排查线上问题时 |
 | [CONSOLE-TRIAGE.md](CONSOLE-TRIAGE.md) | 浏览器 Console 现象分诊、验收清单 | 真机验收、排查 giscus/GitHub/B 站报错时 |
@@ -28,7 +29,7 @@ npm run server        # 本地预览 → http://localhost:4000
 npm run build         # 生成 public/（构建产物）
 ```
 
-- 写新文章：`source/_posts/` 下建 `标题.md`，格式见 [WORKFLOW.md → 写作规范](WORKFLOW.md#写作规范)。
+- 写新文章：`source/_posts/` 下建 `标题.md`，格式见 [GRAMMAR.md → 写作规范](GRAMMAR.md#写作规范)。
 - 发布：提交推送到 GitHub `main` 分支，Cloudflare Pages 自动构建部署（约 1–2 分钟），无需手动操作。
 - 预览时安全头不生效是**已知限制**（见 [SECURITY.md → 开发模式限制](SECURITY.md#开发模式限制)），不要试图修。
 

@@ -24,6 +24,7 @@ npm run build    # 构建产物 → public/
 面向后续维护者的完整手册见 [docs/](docs/README.md)：
 
 - [架构总览](docs/ARCHITECTURE.md)
+- [写作语法](docs/GRAMMAR.md)
 - [日常开发与发布流程](docs/WORKFLOW.md)
 - [安全基线（CSP 与已知陷阱）](docs/SECURITY.md)
 - [主题定制](docs/THEME.md)
