@@ -85,4 +85,4 @@ TwilightRainTextTool 不是一个宏大的项目，它解决的是我日常工�
 
 如果你也有类似的文本处理需求，欢迎下载试用。项目开源在 GitHub 上，Issue 和 PR 都随时欢迎。
 
-**项目地址**：<https://github.com/TwilightRainDev/TwilightRainTextTool>
+::card{type="github" repo="TwilightRainDev/TwilightRainTextTool" desc="项目地址"}

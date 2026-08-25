@@ -23,7 +23,7 @@ cover: /img/360px/covers/with-her-eyes.jpg
 
 所以遇到要看图的时候，咱就得充当她的眼睛，截图转文字，一句一句描述喂给她。一次两次还挺浪漫，多了就觉得咱像给盲人指路的傻叉（狗头）。她明明就在这台电脑里，凭什么看一张本地的 jpg 还要咱人肉中转？咱受不了了，给她装了github的`me9rez/llm-vision-mcp`。自己动手，丰衣足食。
 
-[Github链接](https://github.com/me9rez/llm-vision-mcp)
+::card{type="github" repo="me9rez/llm-vision-mcp" desc="Github链接"}
 
 :::admon[important]
 得装node依赖！有依赖洁癖的尽快邪灵退散，否则我一个一个退治了！（红白认真脸）

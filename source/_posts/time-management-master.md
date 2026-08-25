@@ -71,6 +71,6 @@ TimeTrack 的停止记录是真停。取消后台任务，撤掉白名单，杀�
 
 ---
 
-如果现在有人问咱怎么成为时间管理大师，咱的建议是先装个计数器。剩下的都是工程问题。
+如果现在有人问咱怎么成为时间管理大师，咱的建议是先装个计数器。剩下的都是工程问题。咱的计数器数据全在本地，连联网权限都没申请。
 
-咱的计数器开源在 [https://github.com/TwilightRainDev/TwilightRainTimeTrack](https://github.com/TwilightRainDev/TwilightRainTimeTrack) 数据全在本地，连联网权限都没申请。
+::card{type="github" repo="TwilightRainDev/TwilightRainTimeTrack" desc="咱的计数器"}
