@@ -9,5 +9,6 @@
 | [0003](0003-csp-self-hosted.md) | CSP 自托管与白名单策略 | 已实施 |
 | [0004](0004-syntax-convergence.md) | 卡片 `::card` + 内联 `::inline` | 已实施 |
 | [0005](0005-timeline-shared-renderer.md) | 时间线共享渲染器；CSS 仍两套 | 已实施 |
+| [0006](0006-product-surface.md) | 产品面再收敛（删 `::inline`、卡片收 github+link、残留清理） | 已实施 |
 
 新增决策：在本目录追加 `000N-简短标题.md`，并在本表登记一行。
