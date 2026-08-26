@@ -21,6 +21,8 @@ $$ \tau = \int_{t_1}^{t_2} \sqrt{1 - \frac{v(t)^2}{c^2}} \, dt $$
 
 两天，22 个任务，92 个单测全绿，装到我的 iQOO 上实测。Token 成本折下来大概 23 块人民币，比买高效能人士的七个习惯还便宜二分之一。这波血赚。
 
+::card{type="github" repo="TwilightRainDev/TwilightRainTimeTrack" desc="咱的计数器"}
+
 ## 数据给咱的第一记耳光
 
 应用跑起来后的第一批数字就教育了我。昨天我手机亮了 10.7 个小时。近七天咱在小说应用上花了 881 分钟，排第一。我以为自己是偶尔看看，数据说，不是，你是天天看。
@@ -72,5 +74,3 @@ TimeTrack 的停止记录是真停。取消后台任务，撤掉白名单，杀�
 ---
 
 如果现在有人问咱怎么成为时间管理大师，咱的建议是先装个计数器。剩下的都是工程问题。咱的计数器数据全在本地，连联网权限都没申请。
-
-::card{type="github" repo="TwilightRainDev/TwilightRainTimeTrack" desc="咱的计数器"}

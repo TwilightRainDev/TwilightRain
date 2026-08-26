@@ -39,8 +39,8 @@
         <meta property="article:modified_time" content="<%= page.updated.toISOString() %>">
     <% } %>
     <% if (page.tags && page.tags.length) { %>
-        <% page.tags.each(function(tag) { %>
-            <meta property="article:tag" content="<%= tag.name %>">
+        <% page.tags.forEach(function(tag) { %>
+            <meta property="article:tag" content="<%= typeof tag === 'string' ? tag : tag.name %>">
         <% }); %>
     <% } %>
 
