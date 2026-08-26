@@ -1,6 +1,6 @@
 ---
 title: Windows Terminal酱的暴走！打开目录的连环物语。
-excerpt: %CD%这个伪神欺骗了所有人，我查遍注册表视图，然后用VBS脚本把窗口送进了虚数之海。
+excerpt: "%CD%这个伪神欺骗了所有人，我查遍注册表视图，然后用VBS脚本把窗口送进了虚数之海。"
 date: 2026-08-25 22:45:00
 tags:
   - Windows
