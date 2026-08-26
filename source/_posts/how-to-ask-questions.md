@@ -16,8 +16,12 @@ cover: /img/360px/covers/how-to-ask-questions.jpg
 千禧年那会儿，Eric S. Raymond和Rick Moen这俩老哥写了篇东西，叫提问的智慧，最后一次动笔是2014年，那阵子大伙还在IRC里“/me 拍了拍你”，能让人爽一整天。中文圈靠D.H.Grand几位老翻译抬了一手，ryanhanwu那个仓库的版本流传最广，跟祖传秘方似的。
 但它的时代背景停在"Google 是你的朋友"。2026年的提问现场是 Discord，GitHub Discussions，还有一道当年不存在的前置关卡，AI。
 道理到今天依然管用。你问得多蠢，决定你被喷得多惨。社区不歧视无知，只过滤不带脑子来的。
-我把它改写了一版，基于那些早期译本续命 2026年，仓库叫 [HowToAskQue](https://github.com/TwilightRainDev/HowToAskQue)
+我把它改写了一版，基于那些早期译本续命 2026年。
+
+::card{type="github" repo="TwilightRainDev/HowToAskQue" desc="仓库叫HowToAskQue"}
+
 改写原则是，骨架不动，血肉换新。
+
 
 ## 最大的改动，AI 成了第一道关
 

@@ -20,6 +20,8 @@ categories:
 
 这些碎片化的处理方式困扰了我很久。于是我把它们攒到了一起，做成了一个 Windows 桌面工具，**TwilightRainTextTool**。
 
+::card{type="github" repo="TwilightRainDev/TwilightRainTextTool" desc="项目地址"}
+
 ## 为什么会有这个工具
 
 最开始，我维护着四五个功能重叠的批处理/PowerShell 脚本，散落在不同项目的角落里。每次要用的时候，得先回忆"那个处理中文截断的脚本放在哪个文件夹了"，再手动改参数，拖文件，等执行。更麻烦的是，这些脚本的输入输出格式还不统一，有的原地修改，有的生成新文件，有的需要手动指定编码。
@@ -84,5 +86,3 @@ categories:
 TwilightRainTextTool 不是一个宏大的项目，它解决的是我日常工作中真实遇到的小问题。但正是这些小工具，积少成多，最终能节省下可观的时间。
 
 如果你也有类似的文本处理需求，欢迎下载试用。项目开源在 GitHub 上，Issue 和 PR 都随时欢迎。
-
-::card{type="github" repo="TwilightRainDev/TwilightRainTextTool" desc="项目地址"}
