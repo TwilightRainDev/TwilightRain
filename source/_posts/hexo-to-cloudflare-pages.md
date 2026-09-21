@@ -11,7 +11,7 @@ categories:
   - 技术笔记
 ---
 
-## 缘起
+## 一、缘起
 
 事情是这样的。
 
@@ -23,7 +23,7 @@ categories:
 
 ---
 
-## 第一步：在 Cloudflare Pages 创建项目
+## 二、在 Cloudflare Pages 创建项目
 
 操作本身不复杂：
 
@@ -45,7 +45,7 @@ categories:
 
 ---
 
-## 第二步：踩坑，`package.json` 找不到了？
+## 三、踩坑，`package.json` 找不到了？
 
 Cloudflare Pages 的构建日志赫然写着：
 
@@ -102,7 +102,7 @@ db.json
 
 ---
 
-## 第三步：又踩一坑，分支名称
+## 四、又踩一坑，分支名称
 
 推送成功后，我兴冲冲地点了 **Retry deployment**，结果……还是同样的错误。
 
@@ -123,7 +123,7 @@ HEAD is now at 8eb197c Site updated: 2026-07-13 18:25:29
 
 ---
 
-## 最终效果
+## 五、最终效果
 
 博客成功部署到了 `twilightrain.pages.dev`，构建和部署都自动完成。以后更新博客只需要：
 
@@ -139,7 +139,7 @@ Cloudflare Pages 会自动检测到 push 事件，拉取代码、安装依赖、
 
 ---
 
-## 总结几个要点
+## 六、总结几个要点
 
 1. **GitHub Pages 推静态文件，Cloudflare Pages 推源代码**，这两种部署方式对仓库内容的要求完全不同，搞清楚区别才能避免踩坑。
 2. **Production branch 要匹配**，Cloudflare Pages 配置的部署分支必须和 GitHub 仓库的默认分支一致。

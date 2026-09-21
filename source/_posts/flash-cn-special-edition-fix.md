@@ -118,16 +118,14 @@ powershell -Command "Start-Process '%~sdpnx0' -Verb RunAs"&&EXIT)
 | mms.cfg | AutoUpdateDisable=1、DisableAnalytics=1 |
 | 备份 | A:\work_zone\Temp\FlashFix_backup_20260826 |
 
-## 经验
-
+## 八、经验
 - **中国特供版续命软件的原罪**，版本号比官方高、弹窗、更新检查全都自己说了算。能用官方版就不用代理版。（代理商全家活暗暗了）
 - **安装器"完成"不等于装上**。文件落没落地、注册表有没有键，才是真相。
 - **SFX 自解压包可以解包看源码**。7z 直接解 exe。py7zr 遇到 BCJ2 就换 p7zip（msys2 一个 pacman 搞定）。
 - **改 hosts 只补不盖**。先备份，注意末尾换行。
 - **settings.sol 清空是合法的**，但同目录的 #SharedObjects 是游戏存档，删了就是进度清零。
 
-## 尾声
-
+## 九、尾声
 Flash 酱安静下来了。版本 32.0.0.465，官方最终版，不再有"版本过旧"的问候，也不再有闪退的告别。
 
 玩你的臭游戏去吧。（什么狗公主，粉红兔子，羔羊，lostlife，才没有听说过呢，笑）
