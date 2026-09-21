@@ -4,7 +4,7 @@
 
 ```
 ┌────────────────────────────────────────────────────────────┐
-│ 本地（Windows，A:\work_zone\Blog\blog）                    │
+│ 本地（Windows，E:\work_zone\Blog\blog）                    │
 │  Hexo 8.1.2 + Node 20  →  hexo generate → public/         │
 │  scripts/csp.js       → public/_headers   （安全头）       │
 │  scripts/redirects.js → public/_redirects（重定向）        │
@@ -114,4 +114,4 @@ blog/
 
 ## 决策档案
 
-重大取舍见 [adr/README.md](adr/README.md)。work_zone 侧历史决策与债务台账见 `A:\work_zone\Docs\Blog-文档索引.md`。
+重大取舍见 [adr/README.md](adr/README.md)。work_zone 侧历史决策与债务台账见 `E:\work_zone\Docs\Blog-文档索引.md`。

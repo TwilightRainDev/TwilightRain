@@ -6,7 +6,7 @@
 - 依赖已提交 `package-lock.json`；改依赖后同步更新锁文件
 
 ```bash
-cd A:/work_zone/Blog/blog
+cd E:/work_zone/Blog/blog
 npm install        # 首次或依赖变更后
 ```
 
@@ -32,7 +32,7 @@ npm install        # 首次或依赖变更后
 ## 提交与推送（重要）
 
 仓库在 Windows 本机、**无 gh CLI、无 SSH 密钥**，推送凭据走
-`A:\work_zone\ApiKey` 目录下的 GitHub PAT（Basic 认证 extraheader 注入）。
+`E:\work_zone\ApiKey` 目录下的 GitHub PAT（Basic 认证 extraheader 注入）。
 具体命令形式以当时凭据注入方式为准（git 全局/仓库级 http.extraheader 或
 `git -c http.extraheader=... push`）。
 

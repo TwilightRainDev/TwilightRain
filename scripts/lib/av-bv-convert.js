@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * B 站 av 号 ↔ BV 号互转（算法自 A:\work_zone\Resources\AvBvConvert.js，博客侧 canonical 副本）。
+ * B 站 av 号 ↔ BV 号互转（算法自 E:\work_zone\Resources\AvBvConvert.js，博客侧 canonical 副本）。
  * 仅导出纯函数，加载时无副作用。
  */
 
