@@ -4,7 +4,7 @@
 
 ```
 ┌────────────────────────────────────────────────────────────┐
-│ 本地（Windows，E:\work_zone\Blog\blog）                    │
+│ 本地（Windows，E:\work_zone\Blog）                         │
 │  Hexo 8.1.2 + Node 20  →  hexo generate → public/         │
 │  scripts/csp.js       → public/_headers   （安全头）       │
 │  scripts/redirects.js → public/_redirects（重定向）        │

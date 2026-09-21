@@ -6,7 +6,7 @@
 - 依赖已提交 `package-lock.json`；改依赖后同步更新锁文件
 
 ```bash
-cd E:/work_zone/Blog/blog
+cd E:/work_zone/Blog
 npm install        # 首次或依赖变更后
 ```
 
