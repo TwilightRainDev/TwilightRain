@@ -1,1 +1,4 @@
 * text=auto eol=lf
+
+# 二进制产物：禁止行尾转换与 diff
+*.zip binary

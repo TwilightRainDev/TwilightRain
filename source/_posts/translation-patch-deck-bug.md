@@ -110,6 +110,13 @@ categories:
 
 最后把修复做成了自包含的补丁包：一个打补丁脚本、一份打好的元数据、那个缺失的 `DeadEndCity.exe`、说明文档和校验和，压缩后 2.4 MB。
 
+补丁包在这里，需要的自取：[DeadEndCity_fix.zip](/downloads/DeadEndCity_fix.zip)（2.4 MB）。用法、参数和已知限制都写在包内的 `README.md` 里。
+
+| 项目 | 值 |
+|---|---|
+| zip 校验和 | `ad9ee7c4f87d9302ad2283be51a90bf50cf236cc2dca4c6121c1ebb5906fa315` |
+| 包内校验 | `SHA256SUMS.txt`，覆盖打补丁脚本、元数据、exe 与说明文档 |
+
 脚本做了几件事来保证它不会帮倒忙：
 
 - 幂等，已修复的文件会被识别并跳过
