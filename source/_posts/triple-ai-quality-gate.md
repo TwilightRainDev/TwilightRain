@@ -1,6 +1,6 @@
 ---
 title: 三AI单向门禁的流水线
-excerpt: Vibe Coding 质量由找审修 bug的 AI 各司其职保证。
+excerpt: Vibe Coding 质量由找审修 bug 的三个 AI 各司其职保证。
 date: 2026-07-30 14:00:00
 tags:
   - Vibe Coding
