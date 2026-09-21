@@ -21,6 +21,36 @@ cover: /img/360px/covers/bilicompact-source.jpg
 
 ::card{type="github" repo="TwilightRainDev/TwilightRainBiliCompact" desc="BiliCompact 官方仓库：完整源码、版本发布与 issue 追踪"}
 
+## 一、一键安装
+
+<span class="install-badge">推荐</span>
+
+### 方式一：Greasyfork 直接安装（推荐）
+
+点击下方按钮，一键安装到 Tampermonkey / Violentmonkey：
+
+<div class="install-block">
+    <a class="install-btn" href="https://greasyfork.org/scripts/585777" target="_blank" rel="noopener">
+        从 Greasyfork 安装
+    </a>
+    <p class="install-hint">已上架 Greasyfork，自动更新，省心省力。</p>
+</div>
+
+### 方式二：复制源码，手动创建
+
+如果你想审查每一行代码再安装，也可以复制源码，在 Tampermonkey 中新建脚本，粘贴保存即可。
+
+```bash
+1. 打开浏览器的 Tampermonkey / Violentmonkey 扩展
+2. 点击「新建脚本」
+3. 删除默认内容，粘贴上方源码
+4. Ctrl+S 保存
+```
+
+两种方式效果完全一致，推荐方式一，后续新版本会自动推送更新。
+![](/img/360px/bilicompact-rainbow.jpg)
+
+
 项目地址：[GreasyFork - BiliCompact](https://greasyfork.org/scripts/585777)
 
 ```javascript
@@ -1691,36 +1721,8 @@ cover: /img/360px/covers/bilicompact-source.jpg
 
 ---
 
-## 一键安装
 
-<span class="install-badge">推荐</span>
-
-### 方式一：Greasyfork 直接安装（推荐）
-
-点击下方按钮，一键安装到 Tampermonkey / Violentmonkey：
-
-<div class="install-block">
-    <a class="install-btn" href="https://greasyfork.org/scripts/585777" target="_blank" rel="noopener">
-        从 Greasyfork 安装
-    </a>
-    <p class="install-hint">已上架 Greasyfork，自动更新，省心省力。</p>
-</div>
-
-### 方式二：复制源码，手动创建
-
-如果你想审查每一行代码再安装，也可以复制上面的源码，在 Tampermonkey 中新建脚本，粘贴保存即可。
-
-```bash
-1. 打开浏览器的 Tampermonkey / Violentmonkey 扩展
-2. 点击「新建脚本」
-3. 删除默认内容，粘贴上方源码
-4. Ctrl+S 保存
-```
-
-两种方式效果完全一致，推荐方式一，后续新版本会自动推送更新。
-![](/img/360px/bilicompact-rainbow.jpg)
-
-## 为什么要写这个脚本
+## 二、为什么要写这个脚本
 
 写了一天代码，晚上瘫在椅子上，打开 B 站想刷两个视频放松一下。
 
@@ -1738,7 +1740,7 @@ cover: /img/360px/covers/bilicompact-source.jpg
 
 ::bilibili{id="BV1KEgk64EHJ"}
 
-## B 站首页的信息过载
+## 三、B 站首页的信息过载
 
 打开 B 站首页，扑面而来的是：
 
@@ -1757,7 +1759,7 @@ cover: /img/360px/covers/bilicompact-source.jpg
 想看 ██████ 12%
 ```
 
-## 非侵入式的设计哲学：
+## 四、非侵入式的设计哲学：
 
 很多同类脚本会在页面注入 UI 元素，按钮、浮窗、侧边栏。好处是交互直观，坏处是**耦合太深**。B 站的前端频繁改版，每次 DOM 结构调整，注入的 UI 就可能错位、失效，甚至阻塞页面渲染。
 
@@ -1775,7 +1777,7 @@ GM_registerMenuCommand(T('MenuToggle'), () => { IsActive = !IsActive; });
 
 这样做的代价是交互入口不那么直观，藏在扩展菜单里，但换来的是**高稳定性**，B 站改版几次了，脚本还能正常工作。
 
-## 功能速览
+## 五、功能速览
 
 | 功能 | 说明 |
 |------|------|
@@ -1803,7 +1805,7 @@ GM_registerMenuCommand(T('MenuToggle'), () => { IsActive = !IsActive; });
 
 每种页面可以独立配置数量：首页 10、热门 8、分区 10、动态 6、搜索 10。
 
-## 技术架构
+## 六、技术架构
 
 ### 选择器探测机制
 
@@ -1926,7 +1928,7 @@ function ResolveLanguage() {
 
 所有配置通过 `GM_setValue` / `GM_getValue` 持久化，刷新页面不丢失。配置变更后立即生效，无需手动刷新。同时包含定时后备检查（每 5 秒），防止 B 站 SPA 的动态加载导致视频数量超出限制，这是一种防御性编程，确保极端情况下也能正常工作。
 
-## 用户反馈
+## 七、用户反馈
 
 没想到会有人愿意用这东西。
 
@@ -1940,7 +1942,7 @@ function ResolveLanguage() {
 
 代码完全开源，MIT 协议，想改就改，想删就删，没什么藏着掖着的。
 
-## 总结
+## 八、总结
 
 BiliCompact 在功能上并不复杂，它的设计重心在**稳定性**和**非侵入性**上。一些值得借鉴的点：
 

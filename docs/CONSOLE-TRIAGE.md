@@ -3,7 +3,7 @@
 本页记录**真机/桌面浏览器**在验收页上的 Console 现象、分诊结论与修复状态。  
 改 `ink.js`、giscus、GitHub 卡片或站点卡回退逻辑前可先查此表。
 
-**关联文档**：[SECURITY.md](SECURITY.md)（CSP / loopback 误报）、[THEME.md](THEME.md#giscus)、移动端台账 `A:\work_zone\Docs\TwilightRain-移动端技术债务.md`（TD-014）。
+**关联文档**：[SECURITY.md](SECURITY.md)（CSP / loopback 误报）、[THEME.md](THEME.md#giscus)、移动端台账 `E:\work_zone\Docs\TwilightRain-移动端技术债务.md`（TD-014）。
 
 **末次复核**：2026-08-24 | 验收页：`/2026/08/17/blog-writing-features/` | 环境：真机 + PC Edge
 

@@ -15,7 +15,7 @@ tags:
 
 文内双链示例：[[关于我]]。
 
-## 提示块（admonitions）
+## 一、提示块（admonitions）
 
 用 `:::admon[类型]` 包裹内容即可生成彩色提示块，类型有五种，各自有独立的颜色与图标：
 
@@ -45,7 +45,7 @@ tags:
 默认标题显示类型名（Note / Tip 等），用 `:::admon[类型 标题]` 可以覆盖。块内支持完整的 Markdown：**加粗**、`行内代码`、列表与代码块。
 :::
 
-## Mermaid 图表
+## 二、Mermaid 图表
 
 ```mermaid
 graph TD
@@ -65,7 +65,7 @@ sequenceDiagram
     博客-->>读者: 渲染 HTML
 ```
 
-## 阅读时间、公式与目录
+## 三、阅读时间、公式与目录
 
 文章页显示「约 N 字 · 阅读约 M 分钟」（构建期计算）。行内公式 $E=mc^2$，块级公式：
 
@@ -73,17 +73,17 @@ $$\int_0^1 x^2 \, dx = \frac{1}{3}$$
 
 长文自动生成目录卡（与头图并排）；标题 hover 显示 `#` 锚点。
 
-## 通用链接卡片
+## 四、通用链接卡片
 
 ::card{type="link" url="https://twilightrain.com/about/" title="关于本站" desc="个人介绍与站点说明"}
 
-## GitHub 仓库卡片
+## 五、GitHub 仓库卡片
 
 ::card{type="github" repo="TwilightRainDev/TwilightRain" desc="本博客源码仓库"}
 
 ::card{type="github" repo="hexojs/hexo" desc="Hexo 博客框架"}
 
-## 标签页 tabs
+## 六、标签页 tabs
 
 :::tabs
 --- 写法
@@ -92,7 +92,7 @@ $$\int_0^1 x^2 \, dx = \frac{1}{3}$$
 点击按钮切换面板，默认激活第一个。
 :::
 
-## 文内照片墙
+## 七、文内照片墙
 
 :::grid[2]
 ![图一](/img/360px/with-her-eyes-1.jpg)
@@ -102,7 +102,7 @@ $$\int_0^1 x^2 \, dx = \frac{1}{3}$$
 ![图三](/img/360px/blog-writing-features.jpg)
 :::
 
-## 隐藏与折叠（推荐 `:::fold`）
+## 八、隐藏与折叠（推荐 `:::fold`）
 
 :::fold[text 悬停或点击查看剧透]
 这是 `:::fold[text]` 行内揭示块，适合短剧透或答案。
@@ -112,7 +112,7 @@ $$\int_0^1 x^2 \, dx = \frac{1}{3}$$
 `:::fold[details]` 是统一的块级折叠容器，支持 **Markdown** 与列表。
 :::
 
-## 文内时间线（Butterfly 批一）
+## 九、文内时间线（Butterfly 批一）
 
 :::timeline[写作特性演进]
 --- Reimu 批一
@@ -125,18 +125,18 @@ B 站嵌入
 站点卡、系列文
 :::
 
-## B 站懒嵌入（Butterfly 批二）
+## 十、B 站懒嵌入（Butterfly 批二）
 
 ::bilibili{id="av170001"}
 
-## 系列文目录
+## 十一、系列文目录
 
 本篇 front matter 含 `series: 写作特性验收`，文内 `::series` 会输出系列目录（当前仅一篇，作展示）。
 
 ::series
 
 
-## 代码块复制与超长折叠
+## 十二、代码块复制与超长折叠
 
 下方为 45 行占位代码，应出现「展开全部」按钮且预览区可见正文开头（非空列对行号）。
 
@@ -188,7 +188,7 @@ B 站嵌入
 // fold-demo line 45
 ```
 
-## 模板层能力（无需正文语法）
+## 十三、模板层能力（无需正文语法）
 
 - **分享**：版权声明下方微博 / QQ / X 链接（`post.ejs`）
 - **相关文章**：文末按标签交集推荐（本篇标签「博客」「写作」）
