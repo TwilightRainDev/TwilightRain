@@ -51,9 +51,15 @@ function renderPageTimeline(items) {
   });
   var html = '';
   var currentYear = '';
-  for (var i = 0; i < sorted.length; i++) {
-    var item = sorted[i] || {};
-    var date = String(item.date || '');
+  var i = 0;
+  while (i < sorted.length) {
+    var date = String((sorted[i] || {}).date || '');
+    // 收集同一日期的全部事件（git 日志单日可达 20+ 条）
+    var group = [];
+    while (i < sorted.length && String((sorted[i] || {}).date || '') === date) {
+      group.push(sorted[i] || {});
+      i++;
+    }
     var year = date.substring(0, 4);
     if (year !== currentYear) {
       currentYear = year;
@@ -62,9 +68,17 @@ function renderPageTimeline(items) {
     html += '<div class="timeline-item">\n';
     html += '<span class="timeline-date">' + escapeHtml(date.substring(5)) + '</span>\n';
     html += '<div class="timeline-body">\n';
-    html += '<span class="timeline-title">' + escapeHtml(item.title || '') + '</span>\n';
-    if (item.desc) {
-      html += '<p class="timeline-desc">' + escapeHtml(item.desc) + '</p>\n';
+    html += '<span class="timeline-title">' + escapeHtml(group[0].title || '') + '</span>\n';
+    if (group.length === 1) {
+      if (group[0].desc) {
+        html += '<p class="timeline-desc">' + escapeHtml(group[0].desc) + '</p>\n';
+      }
+    } else {
+      html += '<ul class="timeline-subitems">\n';
+      for (var j = 1; j < group.length; j++) {
+        html += '<li>' + escapeHtml(group[j].title || '') + '</li>\n';
+      }
+      html += '</ul>\n';
     }
     html += '</div>\n</div>\n';
   }

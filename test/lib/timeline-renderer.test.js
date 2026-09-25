@@ -74,3 +74,35 @@ test('renderPageTimeline 转义标题与描述', function () {
   assert.match(html, /&lt;b&gt;x&lt;\/b&gt;/);
   assert.match(html, /a&amp;b/);
 });
+
+test('renderPageTimeline 同日多条合并为一个时间线条目', function () {
+  var html = renderer.renderPageTimeline([
+    { date: '2026-08-24', title: 'P1 能力收敛', desc: '' },
+    { date: '2026-08-24', title: '修复移动端标题断词', desc: '' },
+    { date: '2026-08-17', title: '依赖审查', desc: '' }
+  ]);
+  // 顶层条目数 = 不同日期数（2），不是事件数（3）
+  assert.strictEqual((html.match(/class="timeline-item"/g) || []).length, 2);
+  assert.match(html, /class="timeline-subitems"/);
+  // 同日 2 条时，首条渲染 .timeline-title，只有「其余」进子列表，故 <li> 为 1。
+  // （任务 brief 的步骤 5 此处写 2，与同 brief 步骤 6 的实现及其契约「首条渲染
+  //  .timeline-title，其余渲染为 .timeline-subitems 里的 <li>」冲突，按契约更正。）
+  assert.strictEqual((html.match(/<li>/g) || []).length, 1);
+  assert.match(html, /<span class="timeline-title">P1 能力收敛<\/span>/);
+  assert.match(html, /<li>修复移动端标题断词<\/li>/);
+});
+
+test('renderPageTimeline 单日单条输出与分组前逐字节一致', function () {
+  var html = renderer.renderPageTimeline([
+    { date: '2026-07-30', title: '博客上线', desc: 'Hexo + ink' }
+  ]);
+  var expected =
+    '<h2 class="timeline-year">2026</h2>\n' +
+    '<div class="timeline-item">\n' +
+    '<span class="timeline-date">07-30</span>\n' +
+    '<div class="timeline-body">\n' +
+    '<span class="timeline-title">博客上线</span>\n' +
+    '<p class="timeline-desc">Hexo + ink</p>\n' +
+    '</div>\n</div>\n';
+  assert.strictEqual(html, expected);
+});

@@ -25,3 +25,10 @@ EXCLUDED 是「不要做」，本文件是「要做，等下一轮」。
   则删除整支（`scripts/wikilinks.js` + `scripts/lib/wikilinks.js` + `test/lib/wikilinks.test.js`
   + `themes/ink/layout/post.ejs` 文末区块 + `.post-wikilinks*` CSS），文末只留 prev/next
 - 已定：届时直接执行，不再单独拍板
+
+## 移除时间线的 front matter 兜底快照
+
+- 来源：ADR-0011（时间线改读 git 日志）
+- 条件：Cloudflare Pages 构建命令已改为 `git fetch --unshallow && npm run build`，
+  且线上 `/timeline/` 连续若干次部署都显示 git 来源的事件（而非兜底快照）
+- 动作：删除 `source/timeline/index.md` 的 `items:` front matter

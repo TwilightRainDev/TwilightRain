@@ -25,3 +25,10 @@ items:
     title: Twilight 第二批迁移上线
     desc: 置顶、GitHub 仓库卡片（API 数据）、友链增强、相册页、RSS 双格式、展柜页
 ---
+
+<!--
+本文件 front matter 的 items 是兜底快照，保留至 2026-08-17。
+页面主数据源是构建期解析的 git 日志（见仓库 docs/adr/0011-timeline-from-git.md）。
+当构建环境为浅克隆或无 git 时，页面回退到这组手写条目。
+git 自动化稳定运行后，这组条目可以删除。
+-->

@@ -14,5 +14,6 @@
 | [0008](0008-build-residue-cleanup.md) | 构建期残留清理 | 已实施 |
 | [0009](0009-indexnow-key-file.md) | IndexNow 密钥文件保留并登记归属 | 已实施 |
 | [0010](0010-wikilinks-retained.md) | 双链保留，并补两条真实用例作为验证条件 | 已实施 |
+| [0011](0011-timeline-from-git.md) | 时间线改为构建期解析 git 日志 | 已实施 |
 
 新增决策：在本目录追加 `000N-简短标题.md`，并在本表登记一行。
