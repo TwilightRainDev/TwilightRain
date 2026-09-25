@@ -57,6 +57,9 @@ blog/
 └── .gitattributes         # 行尾 LF
 ```
 
+**隐藏页**：`source/egg/` 是一个 Three.js 彩蛋页（`_config.yml` 的 `skip_render` 保留 `egg/**`，
+不进 sitemap）。**全站无任何入口链接是刻意的**，不要当死代码删除。见 ADR-0014。
+
 ## scripts/ 模块一览
 
 | 类别 | 文件 | 作用 |
