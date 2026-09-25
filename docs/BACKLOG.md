@@ -29,6 +29,7 @@ EXCLUDED 是「不要做」，本文件是「要做，等下一轮」。
 ## 移除时间线的 front matter 兜底快照
 
 - 来源：ADR-0011（时间线改读 git 日志）
-- 条件：Cloudflare Pages 构建命令已改为 `git fetch --unshallow && npm run build`，
+- 条件：Cloudflare Pages 构建命令已按 [WORKFLOW.md → 构建前置](WORKFLOW.md#构建前置构建环境必须有完整-git-历史)
+  配好完整 git 历史（命令写法见该节，不要在此复制一份，免得两处各自漂移），
   且线上 `/timeline/` 连续若干次部署都显示 git 来源的事件（而非兜底快照）
 - 动作：删除 `source/timeline/index.md` 的 `items:` front matter
