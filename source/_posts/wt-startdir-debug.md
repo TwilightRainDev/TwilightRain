@@ -12,6 +12,8 @@ categories:
 
 > 你所生活的世界，不过是cmd.exe的一场梦。
 
+同类 Windows 端工具链的整理见 [[用Win文本工具箱告别散装脚本]]。
+
 那一天，人类终于回想起了，被**C:\Windows\system32**支配的恐惧。
 
 说人话，最近 Windows Terminal 酱抽风了。无论从开始菜单、资源管理器地址栏敲 `wt`，还是在终端里敲 `wt`，新窗口一律落在 `C:\Windows\system32`。这一定，是世界的意志吧！（并不是）

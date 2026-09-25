@@ -17,3 +17,11 @@ EXCLUDED 是「不要做」，本文件是「要做，等下一轮」。
   为适配 fancybox 3.5.7 的 `afterClose` 行为写了兼容代码（原图被移进灯箱后需恢复）
 - 要做：重写灯箱（缩略图/原图切换、键盘导航、`data-ori` 原图入口），下线两个第三方依赖
 - 已定：单独一轮做，不与其他收敛任务混提
+
+## 双链复核（验证条件）
+
+- 来源：ADR-0010（2026-09-25 拍板保留双链并补两条用例）
+- 条件：下一轮功能扫描时，若双链仍只有 2026-09-25 补的这两条、且无新增用例，
+  则删除整支（`scripts/wikilinks.js` + `scripts/lib/wikilinks.js` + `test/lib/wikilinks.test.js`
+  + `themes/ink/layout/post.ejs` 文末区块 + `.post-wikilinks*` CSS），文末只留 prev/next
+- 已定：届时直接执行，不再单独拍板
