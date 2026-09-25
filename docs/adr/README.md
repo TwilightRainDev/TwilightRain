@@ -12,5 +12,6 @@
 | [0006](0006-product-surface.md) | 产品面再收敛（删 `::inline`、卡片收 github+link、残留清理） | 已实施 |
 | [0007](0007-admon-syntax.md) | 提示块语法收敛为 `:::admon[...]` | 已实施 |
 | [0008](0008-build-residue-cleanup.md) | 构建期残留清理 | 已实施 |
+| [0009](0009-indexnow-key-file.md) | IndexNow 密钥文件保留并登记归属 | 已实施 |
 
 新增决策：在本目录追加 `000N-简短标题.md`，并在本表登记一行。

@@ -29,7 +29,7 @@
 | 功能 | 排除理由 |
 |------|----------|
 | 课表页 | 非技术博客刚需 |
-| IndexNow 提交 | SEO 辅助，与主题无关；若要做应走独立 CI |
+| IndexNow 提交 | 密钥文件已就位（站点根 `7facecda-*.txt`，见 ADR-0009），提交环节未做；若要做见 [BACKLOG.md](BACKLOG.md) |
 | GitHub Contributions 挂件 | 纯装饰，要 token 和构建期网络 |
 | 捐赠 / 赞助页 | 非刚需；真要做复制静态页即可 |
 | 分享海报 | UI 工作量大，非核心 |

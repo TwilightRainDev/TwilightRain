@@ -31,6 +31,7 @@ i18n_dir: :lang
 skip_render:
   - 'egg/**' # 彩蛋页：原样拷贝，不套主题布局、不进 sitemap
   - 'BingSiteAuth.xml' # Bing 站点验证文件：原样拷贝到根路径，不得套主题布局或改内容
+  - '7facecda-3b42-4e79-ac12-ccddb9a0270e.txt' # IndexNow 密钥文件：文件名与内容同为该 UUID，原样输出到站点根
 
 # Writing
 new_post_name: :title.md # File name of new posts
