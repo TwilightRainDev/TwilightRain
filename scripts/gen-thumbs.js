@@ -1,7 +1,7 @@
 /**
  * 从 source/img/ori 生成 source/img/360px（居中裁切 360×360）。
  * CLI：node scripts/gen-thumbs.js [--force]
- * 亦可被 scripts/img-thumbs.js（before_generate）require。
+ * 由 package.json 的 build / server 脚本在 hexo 之前调用。
  */
 'use strict';
 

@@ -62,7 +62,7 @@ blog/
 | 类别 | 文件 | 作用 |
 |------|------|------|
 | 安全/路由 | `csp.js`、`redirects.js` | `_headers`、`_redirects` |
-| 构建辅助 | `commit-data.js`、`gen-thumbs.js`、`img-thumbs.js` | 版本色块、360px 缩略图 |
+| 构建辅助 | `commit-data.js`、`gen-thumbs.js` | 版本色块、360px 缩略图 |
 | 文章后处理 | `reading-time.js`、`wikilinks.js`、`heading-anchor.js`、`lazy-load.js`、`post-staleness.js`、`external-links.js`、`image-referrerpolicy.js` | 字数/双链/锚点/懒加载/时效/外链安全 |
 | marked 扩展 | `marked-{admonitions,grid,fold,mermaid,card,bilibili,timeline,tabs}.js` | 正文扩展语法（fold/card 仅规范名） |
 | 系列 | `series.js` + `lib/series-*.js` | `::series` 与分组 |
@@ -101,7 +101,7 @@ blog/
 | `public/search.xml` | `hexo-generator-searchdb` | 站内搜索数据源 |
 | `public/atom.xml` | `hexo-generator-feed` | RSS 订阅（limit 20 篇） |
 | `public/sitemap.xml` / `sitemap.txt` | `hexo-generator-sitemap` | SEO |
-| `source/img/360px/**` | `gen-thumbs.js` / `img-thumbs.js` | 展示图（gitignore，构建生成） |
+| `source/img/360px/**` | `gen-thumbs.js` | 展示图（gitignore，构建生成） |
 
 ## 站点配置速览（`_config.yml`）
 
@@ -114,4 +114,4 @@ blog/
 
 ## 决策档案
 
-重大取舍见 [adr/README.md](adr/README.md)。work_zone 侧历史决策与债务台账见 `E:\work_zone\Docs\Blog-文档索引.md`。
+重大取舍见 [adr/README.md](adr/README.md)。work_zone 侧历史决策与债务台账见 `E:\work_zone\Docs\Blog-docs\Blog-文档索引.md`。

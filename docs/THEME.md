@@ -429,7 +429,10 @@ themes/ink/layout/
 - 每个可放大的 `<img>`（或 gallery 的 `<a>`）带 `data-ori="/img/ori/..."`，供「查看原图」使用。
 - `og:image` / JSON-LD 等社交预览使用 **ori**（质量优先）。
 - 生成：`scripts/gen-thumbs.js` 扫描 ori，居中裁 360×360，写入 `source/img/360px/`；
-  `hexo before_generate` 钩子兜底；`npm run build` 内先跑缩略图生成再 `hexo generate`。
+  `npm run build` 与 `npm run server` 都先跑它，再启动 hexo。
+  **不要改用 `hexo before_generate` 钩子**：hexo 在 `source.process()`（`hexo/index.js` 第 299 行）
+  就加载完了源目录，早于 `before_generate`（第 425 行），钩子写进去的图当次构建看不到；
+  全新树（无 `source/img/360px/`，即 Cloudflare Pages 每次构建的状态）会让 `public/img/360px` 归 0。
 - 例外不进双轨：`icon.svg`、主题光标等非内容栅格资源保持原路径。
 - 首页取色在 360px 图上取色，且 canvas 降采样后再统计，避免主线程扫满像素。
 

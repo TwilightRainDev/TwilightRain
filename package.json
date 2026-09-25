@@ -7,7 +7,7 @@
     "build": "node scripts/commit-data.js && node scripts/gen-thumbs.js && hexo generate",
     "clean": "hexo clean",
     "deploy": "hexo deploy",
-    "server": "hexo server",
+    "server": "node scripts/gen-thumbs.js && hexo server",
     "test": "node --test"
   },
   "engines": {
@@ -31,7 +31,6 @@
     "hexo-generator-tag": "^2.0.0",
     "hexo-renderer-ejs": "^2.0.0",
     "hexo-renderer-marked": "^7.0.0",
-    "hexo-renderer-stylus": "^3.0.1",
     "hexo-server": "^3.0.0",
     "sharp": "^0.35.4"
   }
