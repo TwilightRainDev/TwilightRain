@@ -57,13 +57,13 @@ cover: /img/360px/avatar.jpg
 ### 做过什么
 
 :::fold[details 全部作品（7 项）]
-- **TwilightRain**（JavaScript）— 本博客：Hexo 8 + ink 定制主题，Cloudflare Pages 部署
-- **TwilightRainTimeTrack**（Kotlin）— 时间热力图：记录手机使用时间，GitHub 式格点展示，数据全本地
-- **TwilightRainBiliCompact**（JavaScript）— BiliCompact：精简 B 站网页信息流的 Tampermonkey 用户脚本，四语言界面
-- **TwilightRainTextTool**（C#）— Windows 文本处理桌面工具：行合并、文件拼接、中文截断修复、标点替换
-- **DSClaudeCodeRouter**（JavaScript）— 将 dsh-routing-suite 移植到 Claude Code
-- **claude-skills**（Markdown）— Claude Code 技能聚合仓库
-- **HowToAskQue**（Markdown）— 《提问的智慧》中文版：2026 现代版 + 经典原文对照
+- [TwilightRain](https://github.com/TwilightRainDev/TwilightRain)（JavaScript）— 本博客：Hexo 8 + ink 定制主题，Cloudflare Pages 部署
+- [TwilightRainTimeTrack](https://github.com/TwilightRainDev/TwilightRainTimeTrack)（Kotlin）— 时间热力图：记录手机使用时间，GitHub 式格点展示，数据全本地
+- [TwilightRainBiliCompact](https://github.com/TwilightRainDev/TwilightRainBiliCompact)（JavaScript）— BiliCompact：精简 B 站网页信息流的 Tampermonkey 用户脚本，四语言界面；在 [Greasy Fork 安装](https://greasyfork.org/scripts/585777)
+- [TwilightRainTextTool](https://github.com/TwilightRainDev/TwilightRainTextTool)（C#）— Windows 文本处理桌面工具：行合并、文件拼接、中文截断修复、标点替换
+- [DSClaudeCodeRouter](https://github.com/TwilightRainDev/DSClaudeCodeRouter)（JavaScript）— 将 dsh-routing-suite 移植到 Claude Code
+- [claude-skills](https://github.com/TwilightRainDev/claude-skills)（Markdown）— Claude Code 技能聚合仓库
+- [HowToAskQue](https://github.com/TwilightRainDev/HowToAskQue)（Markdown）— 《提问的智慧》中文版：2026 现代版 + 经典原文对照
 :::
 
 写作与运维常用的几个入口：GitHub、Cloudflare Dashboard、Greasy Fork、npm、Can I Use、MDN，
