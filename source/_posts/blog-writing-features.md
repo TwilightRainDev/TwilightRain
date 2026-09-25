@@ -15,7 +15,7 @@ tags:
 
 ![](/img/360px/blog-writing-features.jpg)
 
-文内双链示例：[[关于我]]。
+文内双链示例：`[[关于我]]`。
 
 ## 一、提示块（admonitions）
 
