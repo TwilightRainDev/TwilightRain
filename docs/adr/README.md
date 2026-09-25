@@ -9,7 +9,7 @@
 | [0003](0003-csp-self-hosted.md) | CSP 自托管与白名单策略 | 已实施 |
 | [0004](0004-syntax-convergence.md) | 卡片 `::card` + 内联 `::inline` | 已实施（内联部分被 0006 取代） |
 | [0005](0005-timeline-shared-renderer.md) | 时间线共享渲染器；CSS 仍两套 | 已实施 |
-| [0006](0006-product-surface.md) | 产品面再收敛（删 `::inline`、卡片收 github+link、残留清理） | 已实施 |
+| [0006](0006-product-surface.md) | 产品面再收敛（删 `::inline`、卡片收 github+link、残留清理） | 已实施（`/skills/` 等独立页部分被 0012 取代） |
 | [0007](0007-admon-syntax.md) | 提示块语法收敛为 `:::admon[...]` | 已实施 |
 | [0008](0008-build-residue-cleanup.md) | 构建期残留清理 | 已实施 |
 | [0009](0009-indexnow-key-file.md) | IndexNow 密钥文件保留并登记归属 | 已实施 |

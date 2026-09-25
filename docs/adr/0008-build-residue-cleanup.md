@@ -52,7 +52,11 @@ _generate(options = {}) {
 
 即：钩子并非「兜底」，它在一次性 `hexo generate` 下根本不生效。它唯一有效的场景是 `hexo server` 的热重载
 （那条路径有 `this.source.watch()` 会捕获新文件并触发重新生成，`index.js` 第 330 行），而该场景现在由
-`server` 脚本前置 `gen-thumbs` 覆盖。
+`server` 脚本前置 `gen-thumbs` 在**启动时**覆盖。
+
+**随之失去的能力**：`hexo server` **运行期**往 `source/img/ori/` 新增的图片，不再自动补出 360px 缩略图
+（旧钩子靠 `source.watch()` 能在热重载路径上做到）。修法是重启 `npm run server`，或先跑
+`npm run thumbs` 再刷新页面。
 
 ## 决策
 
@@ -82,4 +86,7 @@ _generate(options = {}) {
   都会改变该文件，**属于预期**，不要再把这里更新成「当前值」（追着更新必然再次过期）。
   本条的论点只是「移除 stylus 时样式产物逐字节未变」，该结论只在那次改动的前后比对中成立
 - 锁文件 `package-lock.json` 净删 154 行、新增 0 行，全部为 stylus 依赖链，无其他包版本漂移
-- **不要再把 `before_generate` 钩子加回来**，理由见上节；`docs/THEME.md` 的缩略图一节已同步写明这条禁忌
+- **不要再把 `before_generate` 钩子加回来**（用于生成源目录文件），理由见上节；`docs/THEME.md` 的缩略图一节已同步写明这条禁忌。
+  该禁忌**仅针对「用钩子往 `source/` 写文件」**：用 `before_generate` 只做计算、把结果交给渲染期 helper 取用是可行的，
+  仓库内已有两处合法用例——`scripts/timeline-page.js:48`（解析 git 日志后缓存进模块变量）与
+  `scripts/wikilinks.js:58`（构建全站双链图存进 `global`），两者都不写 `source/` 下的文件

@@ -6,7 +6,6 @@
     "thumbs": "node scripts/gen-thumbs.js",
     "build": "node scripts/commit-data.js && node scripts/gen-thumbs.js && hexo generate",
     "clean": "hexo clean",
-    "deploy": "hexo deploy",
     "server": "node scripts/gen-thumbs.js && hexo server",
     "test": "node --test"
   },

@@ -33,7 +33,7 @@
 | 托管 | Cloudflare Pages | 免费计划，绑 GitHub 仓库 main 分支 |
 
 插件（`package.json` dependencies）：`hexo-generator-{archive,category,feed,index,searchdb,sitemap,tag}`（归档/分类/
-RSS/首页/搜索/站点地图/标签）、`hexo-renderer-{ejs,marked,stylus}`（模板/内容/样式渲染）、
+RSS/首页/搜索/站点地图/标签）、`hexo-renderer-{ejs,marked}`（模板/内容渲染）、
 `hexo-server`（本地预览）。
 
 ## 目录地图
@@ -41,7 +41,7 @@ RSS/首页/搜索/站点地图/标签）、`hexo-renderer-{ejs,marked,stylus}`�
 ```
 blog/
 ├── _config.yml            # Hexo 主配置（站点信息/URL/生成器/部署）
-├── package.json           # 依赖与 npm scripts（build/clean/deploy/server/test）
+├── package.json           # 依赖与 npm scripts（build/clean/server/test）
 ├── CLAUDE.md              # Claude Code 会话提示（精简版，细节指向 docs/）
 ├── docs/                  # 维护手册（入库）
 │   └── adr/               # 架构决策记录
@@ -69,8 +69,8 @@ blog/
 | 文章后处理 | `reading-time.js`、`wikilinks.js`、`heading-anchor.js`、`lazy-load.js`、`post-staleness.js`、`external-links.js`、`image-referrerpolicy.js` | 字数/双链/锚点/懒加载/时效/外链安全 |
 | marked 扩展 | `marked-{admonitions,grid,fold,mermaid,card,bilibili,timeline,tabs}.js` | 正文扩展语法（fold/card 仅规范名） |
 | 系列 | `series.js` + `lib/series-*.js` | `::series` 与分组 |
-| 纯函数库 | `lib/{char-stats,breadcrumbs,wikilinks,av-bv-convert,external-links,image-referrerpolicy,timeline-renderer,heading-anchor}.js` | 被钩子或单测 require |
-| 展柜 helper | `timeline-page.js` | `/timeline/` 调用 `renderPageTimeline` |
+| 纯函数库 | `lib/{char-stats,breadcrumbs,wikilinks,av-bv-convert,external-links,image-referrerpolicy,timeline-renderer,git-events,heading-anchor}.js` | 被钩子或单测 require |
+| 时间线 helper | `timeline-page.js` | 数据源为构建期解析的 git 日志（`lib/git-events.js`），浅克隆或无 git 时回退 front matter 兜底快照；渲染走 `lib/timeline-renderer.js` 的 page 变体 |
 
 ## themes/ink/source/js/ink.js 模块
 

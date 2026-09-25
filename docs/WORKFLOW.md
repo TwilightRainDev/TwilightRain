@@ -49,7 +49,28 @@ npm install        # 首次或依赖变更后
 
 ## 发布与验证
 
-1. `npm run build` 本地构建，确认无报错。
+### 构建前置：构建环境必须有完整 git 历史
+
+`/timeline/` 的事件在构建期解析 `git log` 生成（机制见
+[adr/0011-timeline-from-git.md](adr/0011-timeline-from-git.md)）。**浅克隆下 `git log` 只返回极短历史，
+页面会静默退回 7 条手写兜底快照并 exit 0**——不报错、不告警，页面看起来正常，同类「绿着出错」见
+[adr/0008](adr/0008-build-residue-cleanup.md)。
+
+- **构建命令**（Cloudflare Pages 与本机通用）：
+
+  ```bash
+  if [ "$(git rev-parse --is-shallow-repository)" = "true" ]; then git fetch --unshallow; fi && npm run build
+  ```
+
+  注意**不要**写成裸的 `git fetch --unshallow && npm run build`：该子命令在完整仓库上会以
+  `fatal: --unshallow on a complete repository does not make sense` 退出 128，`&&` 于是吃掉后面的构建
+  （本机是完整克隆，实测 exit 128）。上面带判据的写法才是幂等的：完整仓库上判据为 false、直接构建，
+  浅克隆上才补历史，且 `--unshallow` 真失败时不会继续构建（不会静默退回兜底）。
+- **判据**：构建日志里出现 `timeline: 从 git 日志取到 N 条事件`
+- **反例**：若 `/timeline/` 只显示 7 条手写条目，即为浅克隆退化，构建命令需修正
+- 现状：线上 Cloudflare Pages 当前**不是**浅克隆，时间线正常；但重建 Pages 项目或照本页重配构建命令时会踩这个坑
+
+1. 用上面的构建命令本地构建，确认无报错，并核对日志里的 `timeline:` 行。
 2. `git push origin main`（凭据见上）。
 3. Cloudflare Pages 自动构建（约 1–2 分钟）。可在
    Cloudflare Dashboard → Pages → TwilightRain → Deployments 查看状态。

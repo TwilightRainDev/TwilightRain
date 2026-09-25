@@ -309,7 +309,7 @@ themes/ink/layout/
 ## 文内时间线
 
 - `scripts/marked-timeline.js`；DOM 由 `scripts/lib/timeline-renderer.js` 生成，
-  容器类 `.post-timeline`。站点展柜 `/timeline/` 走同一渲染器的 page 变体
+  容器类 `.post-timeline`。站点页 `/timeline/` 走同一渲染器的 page 变体
   （`.timeline-*`）。两套 class 因布局不同保持隔离，见
   `docs/adr/0005-timeline-shared-renderer.md`。
 
@@ -418,8 +418,9 @@ themes/ink/layout/
 - 原图：`source/img/ori/<rel>` → 公开 URL `/img/ori/<rel>`（入库）。
 - 展示图：`source/img/360px/<rel>`（构建生成，**gitignore**）→ `/img/360px/<rel>`。
 - 同一逻辑资源共用相对路径 `<rel>`（例：`covers/cover-01.jpg`）。
-- 正文 / `cover` / gallery 等**展示用**路径写 `/img/360px/...`。
-- 每个可放大的 `<img>`（或 gallery 的 `<a>`）带 `data-ori="/img/ori/..."`，供「查看原图」使用。
+- 正文 / `cover` / `:::grid` 照片墙等**展示用**路径写 `/img/360px/...`。
+- 每个可放大的 `<img>` 带 `data-ori="/img/ori/..."`，供「查看原图」使用
+  （正文图——含 `:::grid` 照片墙内的图——由 `ink.js` 自动补；`cover` 与首页缩略图由模板写死）。
 - `og:image` / JSON-LD 等社交预览使用 **ori**（质量优先）。
 - 生成：`scripts/gen-thumbs.js` 扫描 ori，居中裁 360×360，写入 `source/img/360px/`；
   `npm run build` 与 `npm run server` 都先跑它，再启动 hexo。
