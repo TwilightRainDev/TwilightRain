@@ -56,8 +56,27 @@ cover: /img/360px/avatar.jpg
 
 ### 做过什么
 
-- [TwilightRain Text Tool](https://github.com/TwilightRainDev/TwilightRainTextTool) -- 集行合并、文件拼接、中文截断修复、标点替换于一体的 Windows 文本处理桌面工具，纯 C# 构建，支持国际化与深色模式。
-- [BiliCompact](https://greasyfork.org/scripts/585777) -- 一个 Tampermonkey 用户脚本，用于精简 B 站网页端首页。支持控制视频数量、过滤直播/广告/番剧推广、净化评论区。非侵入式设计，不在页面注入 UI。
+:::fold[details 全部作品（7 项）]
+- **TwilightRain**（JavaScript）— 本博客：Hexo 8 + ink 定制主题，Cloudflare Pages 部署
+- **TwilightRainTimeTrack**（Kotlin）— 时间热力图：记录手机使用时间，GitHub 式格点展示，数据全本地
+- **TwilightRainBiliCompact**（JavaScript）— BiliCompact：精简 B 站网页信息流的 Tampermonkey 用户脚本，四语言界面
+- **TwilightRainTextTool**（C#）— Windows 文本处理桌面工具：行合并、文件拼接、中文截断修复、标点替换
+- **DSClaudeCodeRouter**（JavaScript）— 将 dsh-routing-suite 移植到 Claude Code
+- **claude-skills**（Markdown）— Claude Code 技能聚合仓库
+- **HowToAskQue**（Markdown）— 《提问的智慧》中文版：2026 现代版 + 经典原文对照
+:::
+
+写作与运维常用的几个入口：GitHub、Cloudflare Dashboard、Greasy Fork、npm、Can I Use、MDN，
+整理在[友链页](/links/)。
+
+### 技能
+
+- **JavaScript / TypeScript** — 前端与脚本开发（博客主题、用户脚本、工具链）
+- **Kotlin** — Android 应用开发（TimeTrack 时间热力图）
+- **C#** — Windows 桌面应用（TextTool 文本工具）
+- **Node.js** — 构建工具链、Claude Code 技能与自动化脚本
+- **Hexo** — 静态博客框架（本博客，含主题深度定制）
+- **Git / GitHub** — 版本管理与 CI/CD 工作流（Cloudflare Pages 部署）
 
 ### 写博客干嘛
 

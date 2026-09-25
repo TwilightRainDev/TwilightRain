@@ -16,17 +16,11 @@ menu:
       标签云: /tags/
       全量归档: /archives/
   搜索: /search/
-  展柜:
-    url: /projects/
-    children:
-      项目: /projects/
-      技能: /skills/
-      时间线: /timeline/
-      相册: /gallery/
   关于:
     url: /about/
     children:
       自己: /about/
+      时间线: /timeline/
       友链: /links/
       RSS: /atom.xml
       GitHub: https://github.com/TwilightRainDev

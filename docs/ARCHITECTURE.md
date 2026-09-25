@@ -48,7 +48,7 @@ blog/
 ├── scripts/               # Hexo 钩子与 marked 扩展（见下表）
 ├── source/
 │   ├── _posts/            # 文章（Markdown，写作语法见 GRAMMAR.md）
-│   ├── about/ settings/ search/ tags/ categories/ links/ projects/ …
+│   ├── about/ settings/ search/ tags/ categories/ links/ …
 │   ├── 404.md             # 自定义 404 页
 │   └── img/               # icon.svg；ori/ 原图入库，360px/ 构建生成（gitignore）
 ├── themes/ink/            # 定制主题（见 THEME.md）
