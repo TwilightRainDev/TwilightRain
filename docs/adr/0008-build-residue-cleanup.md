@@ -76,6 +76,10 @@ _generate(options = {}) {
 - 缩略图生成入口收敛为 `scripts/gen-thumbs.js` 单点，由 `build` / `server` 两个脚本在 hexo 之前调用
 - 全新树构建恢复正确：`public/img/360px` 47 个文件，与 `source/img/ori` 的栅格文件数一致
 - 主题样式仍是入库的 `style.min.css`，没有样式源文件，本次改动不触及样式；
-  经 `hexo clean` 全量重建后该文件 85281 字节、md5 `e6a176632f32fa0a6684821aff5b1298`，与改动前逐字节一致
+  经 `hexo clean` 全量重建后该文件与改动前逐字节一致
+- 上述比对的具体数值是**历史快照**：本 ADR 落地时（commit `445ec39`）实测 85281 字节、
+  md5 `e6a176632f32fa0a6684821aff5b1298`。此后 ADR-0011 追加 `.timeline-subitems`、以及后续死 CSS 清理
+  都会改变该文件，**属于预期**，不要再把这里更新成「当前值」（追着更新必然再次过期）。
+  本条的论点只是「移除 stylus 时样式产物逐字节未变」，该结论只在那次改动的前后比对中成立
 - 锁文件 `package-lock.json` 净删 154 行、新增 0 行，全部为 stylus 依赖链，无其他包版本漂移
 - **不要再把 `before_generate` 钩子加回来**，理由见上节；`docs/THEME.md` 的缩略图一节已同步写明这条禁忌
