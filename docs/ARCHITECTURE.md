@@ -33,7 +33,7 @@
 | 托管 | Cloudflare Pages | 免费计划，绑 GitHub 仓库 main 分支 |
 
 插件（`package.json` dependencies）：`hexo-generator-{archive,category,feed,index,searchdb,sitemap,tag}`（归档/分类/
-RSS/首页/搜索/站点地图/标签）、`hexo-renderer-{ejs,marked,stylus}`（模板/内容/样式渲染）、
+RSS/首页/搜索/站点地图/标签）、`hexo-renderer-{ejs,marked}`（模板/内容渲染）、
 `hexo-server`（本地预览）。
 
 ## 目录地图
@@ -41,14 +41,14 @@ RSS/首页/搜索/站点地图/标签）、`hexo-renderer-{ejs,marked,stylus}`�
 ```
 blog/
 ├── _config.yml            # Hexo 主配置（站点信息/URL/生成器/部署）
-├── package.json           # 依赖与 npm scripts（build/clean/deploy/server/test）
+├── package.json           # 依赖与 npm scripts（build/clean/server/test）
 ├── CLAUDE.md              # Claude Code 会话提示（精简版，细节指向 docs/）
 ├── docs/                  # 维护手册（入库）
 │   └── adr/               # 架构决策记录
 ├── scripts/               # Hexo 钩子与 marked 扩展（见下表）
 ├── source/
 │   ├── _posts/            # 文章（Markdown，写作语法见 GRAMMAR.md）
-│   ├── about/ settings/ search/ tags/ categories/ links/ projects/ …
+│   ├── about/ settings/ search/ tags/ categories/ links/ …
 │   ├── 404.md             # 自定义 404 页
 │   └── img/               # icon.svg；ori/ 原图入库，360px/ 构建生成（gitignore）
 ├── themes/ink/            # 定制主题（见 THEME.md）
@@ -57,17 +57,20 @@ blog/
 └── .gitattributes         # 行尾 LF
 ```
 
+**隐藏页**：`source/egg/` 是一个 Three.js 彩蛋页（`_config.yml` 的 `skip_render` 保留 `egg/**`，
+不进 sitemap）。**全站无任何入口链接是刻意的**，不要当死代码删除。见 ADR-0014。
+
 ## scripts/ 模块一览
 
 | 类别 | 文件 | 作用 |
 |------|------|------|
 | 安全/路由 | `csp.js`、`redirects.js` | `_headers`、`_redirects` |
-| 构建辅助 | `commit-data.js`、`gen-thumbs.js`、`img-thumbs.js` | 版本色块、360px 缩略图 |
+| 构建辅助 | `commit-data.js`、`gen-thumbs.js` | 版本色块、360px 缩略图 |
 | 文章后处理 | `reading-time.js`、`wikilinks.js`、`heading-anchor.js`、`lazy-load.js`、`post-staleness.js`、`external-links.js`、`image-referrerpolicy.js` | 字数/双链/锚点/懒加载/时效/外链安全 |
 | marked 扩展 | `marked-{admonitions,grid,fold,mermaid,card,bilibili,timeline,tabs}.js` | 正文扩展语法（fold/card 仅规范名） |
 | 系列 | `series.js` + `lib/series-*.js` | `::series` 与分组 |
-| 纯函数库 | `lib/{char-stats,breadcrumbs,wikilinks,av-bv-convert,external-links,image-referrerpolicy,timeline-renderer,heading-anchor}.js` | 被钩子或单测 require |
-| 展柜 helper | `timeline-page.js` | `/timeline/` 调用 `renderPageTimeline` |
+| 纯函数库 | `lib/{char-stats,breadcrumbs,wikilinks,av-bv-convert,external-links,image-referrerpolicy,timeline-renderer,git-events,heading-anchor}.js` | 被钩子或单测 require |
+| 时间线 helper | `timeline-page.js` | 数据源为构建期解析的 git 日志（`lib/git-events.js`），浅克隆或无 git 时回退 front matter 兜底快照；渲染走 `lib/timeline-renderer.js` 的 page 变体 |
 
 ## themes/ink/source/js/ink.js 模块
 
@@ -101,7 +104,7 @@ blog/
 | `public/search.xml` | `hexo-generator-searchdb` | 站内搜索数据源 |
 | `public/atom.xml` | `hexo-generator-feed` | RSS 订阅（limit 20 篇） |
 | `public/sitemap.xml` / `sitemap.txt` | `hexo-generator-sitemap` | SEO |
-| `source/img/360px/**` | `gen-thumbs.js` / `img-thumbs.js` | 展示图（gitignore，构建生成） |
+| `source/img/360px/**` | `gen-thumbs.js` | 展示图（gitignore，构建生成） |
 
 ## 站点配置速览（`_config.yml`）
 
@@ -114,4 +117,4 @@ blog/
 
 ## 决策档案
 
-重大取舍见 [adr/README.md](adr/README.md)。work_zone 侧历史决策与债务台账见 `E:\work_zone\Docs\Blog-文档索引.md`。
+重大取舍见 [adr/README.md](adr/README.md)。work_zone 侧历史决策与债务台账见 `E:\work_zone\Docs\Blog-docs\Blog-文档索引.md`。

@@ -9,6 +9,9 @@
 var fs = require('hexo-fs');
 
 var REDIRECTS = [
+  // 2026-09-25 作品集独立页并入关于页：旧入口 301 过去，导航与外部链接不断
+  '/projects/ /about/ 301',
+  '/projects /about/ 301',
   // 旧 hello-world 文章 → 关于页（永久重定向，带/不带尾斜杠都覆盖）
   '/2026/07/13/hello-world/ /about/ 301',
   '/2026/07/13/hello-world /about/ 301',

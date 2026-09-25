@@ -24,7 +24,7 @@ themes/ink/layout/
 ├── 404.ejs           # 404 页（source/404.md 指定 layout: 404）
 ├── settings.ejs      # 设置页（source/settings/index.md → 主题/字体/首页列数偏好）
 ├── search.ejs        # 搜索页（source/search/index.md → search.js 前端检索）
-├── categories.ejs / tags.ejs / gallery.ejs
+├── categories.ejs / tags.ejs / timeline.ejs
 ```
 
 ## 配置（themes/ink/_config.yml）
@@ -56,7 +56,7 @@ themes/ink/layout/
   整体左对齐。改动双卡结构时注意：TOC 由 ink.js 运行时生成并移入槽位，
   `figure.highlight` 等文章结构不受影响。
 - **图片灯箱**：文章内图片点击放大（fancybox 3）。资源由 post.ejs 按页引入
-  （cdnjs + integrity，与 gallery.ejs 同款，CSP script-src/style-src 已含
+  （cdnjs + integrity，CSP script-src/style-src 已含
   cdnjs.cloudflare.com，改安全头前读 [SECURITY.md](SECURITY.md)）。
   `ink.js` 在运行时给 article 内 img 加 `data-fancybox` 属性，fancybox 事件委托自动绑定。
   **已知陷阱**：fancybox 3.5.7 对直接 `<img>` 触发（无 `<a>`
@@ -309,7 +309,7 @@ themes/ink/layout/
 ## 文内时间线
 
 - `scripts/marked-timeline.js`；DOM 由 `scripts/lib/timeline-renderer.js` 生成，
-  容器类 `.post-timeline`。站点展柜 `/timeline/` 走同一渲染器的 page 变体
+  容器类 `.post-timeline`。站点页 `/timeline/` 走同一渲染器的 page 变体
   （`.timeline-*`）。两套 class 因布局不同保持隔离，见
   `docs/adr/0005-timeline-shared-renderer.md`。
 
@@ -366,25 +366,18 @@ themes/ink/layout/
   直接显示 page.updated 是假数据——post.ejs 仅当 updatedSet 为真才输出
   "更新于"小字；过期提示条（warning 配色）输出在阅读时间 meta 下。
 
-## 展柜页（projects / skills / timeline）
+## 时间线页（timeline.ejs）
 
-- 三个独立页：`/projects/`、`/skills/`、`/timeline/`，
-  数据在各自 source 目录的 index.md front matter（`projects` / `skills` /
-  `items` 数组），布局 projects.ejs / skills.ejs / timeline.ejs。
+- 一个独立页：`/timeline/`，数据在 `source/timeline/index.md` front matter
+  （`items` 数组，现为构建期解析 git 日志后的兜底），布局 timeline.ejs。
   `/timeline/` 经 helper `timeline_page_html` 调用共享渲染器（年份分组）。
-- 导航：主题 `_config.yml` `menu` 的「展柜」二级菜单（url 指向 /projects/，
-  子项三个）。
+  原 `/projects/`、`/skills/` 两页已于 2026-09-25 并入关于页（见
+  [ADR-0012](adr/0012-nav-restructure.md)）。
+- 导航：主题 `_config.yml` `menu` 的「关于」子菜单含「时间线」；
+  原「展柜」二级菜单层级已取消（见 [ADR-0012](adr/0012-nav-restructure.md)）。
 - **陷阱**：front matter 数组内 `date: 2026-07-30` 会被 YAML
   解析为 Date 对象（裸日期是 YAML timestamp 类型），模板里 `.substring()`
   直接崩溃、页面输出 0 字节——**日期值必须加引号**（`date: "2026-07-30"`）。
-
-## 相册页（gallery.ejs）
-
-- 数据源 `source/gallery/index.md` 的 front matter `photos` 数组（`src` / `title` / `date`），
-  Fancybox 灯箱由 gallery.ejs 自行引入（cdnjs + integrity）。
-- **加照片**：原图放 `source/img/ori/photos/`（或其它 ori 子目录），构建出 360px 后，
-  `photos[].src` 写 `/img/360px/photos/xxx.jpg`。gallery 模板会自动加 `data-ori` 供「查看原图」。
-- 导航入口在主题 `_config.yml` `menu`（`相册: /gallery/`）。
 
 ## 友链页（links.ejs）
 
@@ -425,11 +418,18 @@ themes/ink/layout/
 - 原图：`source/img/ori/<rel>` → 公开 URL `/img/ori/<rel>`（入库）。
 - 展示图：`source/img/360px/<rel>`（构建生成，**gitignore**）→ `/img/360px/<rel>`。
 - 同一逻辑资源共用相对路径 `<rel>`（例：`covers/cover-01.jpg`）。
-- 正文 / `cover` / gallery 等**展示用**路径写 `/img/360px/...`。
-- 每个可放大的 `<img>`（或 gallery 的 `<a>`）带 `data-ori="/img/ori/..."`，供「查看原图」使用。
+- 正文 / `cover` / `:::grid` 照片墙等**展示用**路径写 `/img/360px/...`。
+- 每个可放大的 `<img>` 带 `data-ori="/img/ori/..."`，供「查看原图」使用。写 `data-ori` 分两类：
+  **有 cover** 的首页缩略图与文章头图由模板写死（`index.ejs:21`、`post.ejs:19`）；
+  **无 cover** 的与正文图由 `ink.js` 运行时补——无 cover 时模板只输出 `<img data-random-cover>`
+  （`index.ejs:24`、`post.ejs:21`），由 `ink.js:101-105` 从封面池取图并写 `data-ori`；
+  正文图（含 `:::grid` 照片墙内的图）由 `ink.js:703-708` 按 `/img/360px/` 前缀补。
 - `og:image` / JSON-LD 等社交预览使用 **ori**（质量优先）。
 - 生成：`scripts/gen-thumbs.js` 扫描 ori，居中裁 360×360，写入 `source/img/360px/`；
-  `hexo before_generate` 钩子兜底；`npm run build` 内先跑缩略图生成再 `hexo generate`。
+  `npm run build` 与 `npm run server` 都先跑它，再启动 hexo。
+  **不要改用 `hexo before_generate` 钩子**：hexo 在 `source.process()`（`hexo/index.js` 第 299 行）
+  就加载完了源目录，早于 `before_generate`（第 425 行），钩子写进去的图当次构建看不到；
+  全新树（无 `source/img/360px/`，即 Cloudflare Pages 每次构建的状态）会让 `public/img/360px` 归 0。
 - 例外不进双轨：`icon.svg`、主题光标等非内容栅格资源保持原路径。
 - 首页取色在 360px 图上取色，且 canvas 降采样后再统计，避免主线程扫满像素。
 
