@@ -419,8 +419,11 @@ themes/ink/layout/
 - 展示图：`source/img/360px/<rel>`（构建生成，**gitignore**）→ `/img/360px/<rel>`。
 - 同一逻辑资源共用相对路径 `<rel>`（例：`covers/cover-01.jpg`）。
 - 正文 / `cover` / `:::grid` 照片墙等**展示用**路径写 `/img/360px/...`。
-- 每个可放大的 `<img>` 带 `data-ori="/img/ori/..."`，供「查看原图」使用
-  （正文图——含 `:::grid` 照片墙内的图——由 `ink.js` 自动补；`cover` 与首页缩略图由模板写死）。
+- 每个可放大的 `<img>` 带 `data-ori="/img/ori/..."`，供「查看原图」使用。写 `data-ori` 分两类：
+  **有 cover** 的首页缩略图与文章头图由模板写死（`index.ejs:21`、`post.ejs:19`）；
+  **无 cover** 的与正文图由 `ink.js` 运行时补——无 cover 时模板只输出 `<img data-random-cover>`
+  （`index.ejs:24`、`post.ejs:21`），由 `ink.js:101-105` 从封面池取图并写 `data-ori`；
+  正文图（含 `:::grid` 照片墙内的图）由 `ink.js:703-708` 按 `/img/360px/` 前缀补。
 - `og:image` / JSON-LD 等社交预览使用 **ori**（质量优先）。
 - 生成：`scripts/gen-thumbs.js` 扫描 ori，居中裁 360×360，写入 `source/img/360px/`；
   `npm run build` 与 `npm run server` 都先跑它，再启动 hexo。
