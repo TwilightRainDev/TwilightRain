@@ -52,18 +52,14 @@ themes/ink/layout/
   卡片），内容超出时卡片内滚动（`overflow-y: auto`）。图卡高度随图片解码
   与窗口宽度变化，RO 自动跟随；`h > 0` 保护防止图片加载失败时目录卡高度
   归零。无 h2/h3 的文章不生成 TOC 卡，图卡自动全宽（`:not(:has(.post-toc))`
-  规则）。图卡图片与文章内图片同样绑定 fancybox 灯箱。TOC 头部「目录 [折叠]」
+  规则）。图卡图片与文章内图片同样绑定自研灯箱。TOC 头部「目录 [折叠]」
   整体左对齐。改动双卡结构时注意：TOC 由 ink.js 运行时生成并移入槽位，
   `figure.highlight` 等文章结构不受影响。
-- **图片灯箱**：文章内图片点击放大（fancybox 3）。资源由 post.ejs 按页引入
-  （cdnjs + integrity，CSP script-src/style-src 已含
-  cdnjs.cloudflare.com，改安全头前读 [SECURITY.md](SECURITY.md)）。
-  `ink.js` 在运行时给 article 内 img 加 `data-fancybox` 属性，fancybox 事件委托自动绑定。
-  **已知陷阱**：fancybox 3.5.7 对直接 `<img>` 触发（无 `<a>`
-  包裹）会把原图移动进灯箱，关闭时放回但残留 `style="display: none"`——文章页
-  头图关闭灯箱后"消失"。ink.js 监听 jQuery 的 `afterClose.fb` 事件恢复内联
-  display（文章页才有 jQuery；若未来文章正文加图同样适用）。改动灯箱绑定方式
-  （如改为 `<a>` 包裹走 image 类型克隆路径）前先验证此机制。
+- **图片灯箱**：文章内图片点击放大（自研，见 [ADR-0015](adr/0015-self-hosted-lightbox.md)）。
+  `ink.js` 在存在 `.post-imgcard` 的文章页把头图与 `article` 内 img 收进同一图组；
+  灯箱只拷贝 `src`，不移动原节点。键盘 Esc 关闭、左右键翻页；左上角「查看原图」
+  在灯箱内切换 360px / `data-ori`，中键或带修饰键点击则新标签打开原图。
+  不再引入 jQuery / fancybox，CSP 也不再放行 cdnjs（改安全头前读 [SECURITY.md](SECURITY.md)）。
 - **上一篇/下一篇**：`page.prev` / `page.next` 文本卡片导航，单边存在时占满整行。
 - **版权声明**：文章底部 CC BY-NC-SA 4.0 链接，零依赖。
 - **代码块复制**：复制按钮取 `.code pre` 文本（Hexo 8 highlight 输出结构为
@@ -135,14 +131,14 @@ themes/ink/layout/
   的反斜杠吞掉（`\(` 属于可转义标点），文章里写 `\(...\)` 会渲染成 `(a ne b)`
   这类字面文本——**写文章一律用 `$...$` / `$$...$$`**。检测与配置保留
   `\(` `\[` 分支是为兼容手动注入的 HTML。
-- **资源自托管**：`source/js/mathjax/`（tex-chtml.js 1.2M + `output/chtml/fonts/
+- **资源自托管**：`themes/ink/source/js/mathjax/`（tex-chtml.js 1.2M + `output/chtml/fonts/
   woff-v2/` 23 个字体 388K，合计约 1.5M，仅公式页按需下载，gzip 后约 250K）。
   与 CSP 全兼容（`script-src 'self'`、`font-src 'self'`、MathJax 3 运行时
   注入的 `<style>` 由 `style-src 'unsafe-inline'` 放行），**无需改 csp.js**。
   若换 CDN 版 MathJax，font-src 会拦 CHTML 字体导致符号渲染退化，勿改。
-- **更新 MathJax**：`cd E:\work_zone\Temp && npm pack mathjax@<版本>`，
+- **更新 MathJax**：`cd <临时目录> && npm pack mathjax@<版本>`，
   解压取 `es5/tex-chtml.js` 与 `es5/output/chtml/fonts/woff-v2/` 整目录覆盖
-  `source/js/mathjax/`（目录结构即字体相对路径，勿平铺）。
+  `themes/ink/source/js/mathjax/`（目录结构即字体相对路径，勿平铺）。
 - **mathjax-config.js 独立文件原因**：CSP `script-src` 无 `'unsafe-inline'`，
   配置不能内联 `<script>`；该文件必须位于 tex-chtml.js 之前（defer 按文档
   顺序执行，`window.MathJax` 要先注册）。改动配置时勿合并进 ink.js——
@@ -160,7 +156,7 @@ themes/ink/layout/
     子项与普通项一样，http(s) 开头视为外链新标签打开。
     对象可另加 `categories: true`：子项改由 `site.categories` 动态生成
     （名称 + 文章数，链接分类页），`children` 仍保留为附加项，见下「分类入口」。
-  - **RSS 入口**（2026-08-24）：置于「关于」二级菜单 `children.RSS: /atom.xml`；
+  - **RSS 入口**：置于「关于」二级菜单 `children.RSS: /atom.xml`；
     页脚不再重复；`<head>` 仍保留 atom/rss2 alternate 链接。
 - **渲染**：`partial/header.ejs` 对对象值输出
   `<span class="has-sub"><a class="sub-trigger">…</a><ul class="sub-menu">…</ul></span>`。
@@ -187,9 +183,9 @@ themes/ink/layout/
 
 ## 样式与脚本
 
-- 全部样式在 `source/css/style.min.css` 单文件中（原主题特色：可直接套用
+- 全部样式在 `themes/ink/source/css/style.min.css` 单文件中（原主题特色：可直接套用
   bearblog 系样式代码）。改动时保持单文件约定，避免新增散装 css 引入点。
-- `source/js/ink.js`：**defer 加载**，主题偏好（theme-preference / font-preference /
+- `themes/ink/source/js/ink.js`：**defer 加载**，主题偏好（theme-preference / font-preference /
   columns-preference）在 defer 阶段立即应用，兼容旧值（light/dark）。设置页选择
   会写入 localStorage。
   模块清单：图片说明、随机封面、主题/字体/列数偏好、返回顶部、阅读进度条、TOC、
@@ -371,10 +367,10 @@ themes/ink/layout/
 - 一个独立页：`/timeline/`，数据在 `source/timeline/index.md` front matter
   （`items` 数组，现为构建期解析 git 日志后的兜底），布局 timeline.ejs。
   `/timeline/` 经 helper `timeline_page_html` 调用共享渲染器（年份分组）。
-  原 `/projects/`、`/skills/` 两页已于 2026-09-25 并入关于页（见
-  [ADR-0012](adr/0012-nav-restructure.md)）。
+  `/projects/`、`/skills/` 已并入关于页，见
+  [ADR-0012](adr/0012-nav-restructure.md)。
 - 导航：主题 `_config.yml` `menu` 的「关于」子菜单含「时间线」；
-  原「展柜」二级菜单层级已取消（见 [ADR-0012](adr/0012-nav-restructure.md)）。
+  「展柜」二级菜单层级已取消（见 [ADR-0012](adr/0012-nav-restructure.md)）。
 - **陷阱**：front matter 数组内 `date: 2026-07-30` 会被 YAML
   解析为 Date 对象（裸日期是 YAML timestamp 类型），模板里 `.substring()`
   直接崩溃、页面输出 0 字节——**日期值必须加引号**（`date: "2026-07-30"`）。
@@ -391,7 +387,7 @@ themes/ink/layout/
 - 头像原图放 `source/img/ori/links/`，页面引用 `/img/360px/links/...`。
 - **波浪网格**：`.link-list` 桌面 24 列 nth-child 列宽交错
   （11/12/13 列波浪周期），移动端宽度交错（84/92/100%），纯 CSS 无结构改动。
-- `source/js/search.js`：前端搜索（检索 searchdb 生成的 search.xml）。
+- `themes/ink/source/js/search.js`：前端搜索（检索 searchdb 生成的 search.xml）。
   [WARN] 渲染结果必须转义，防 DOM XSS（见 [SECURITY.md](SECURITY.md#已知陷阱清单)）。
 
 ## 字体自托管
@@ -411,7 +407,7 @@ themes/ink/layout/
 - **加新封面图**：原图放入 `source/img/ori/covers/cover-NN.jpg` 连续编号，跑
   `npm run thumbs`（或直接 `npm run build`），并同步更新 `ink.js` 中 `coverPool`
   循环上界。页面 cover / 正文图一律引用 `/img/360px/...`。
-- **灯箱**：文章图与头图点开 fancybox 后，左上角「查看原图」新标签打开 ori。
+- **灯箱**：文章图与头图点开后，左上角「查看原图」在灯箱内切到 ori（中键仍新标签打开）。
 
 ## 图片双轨（ori / 360px）
 
@@ -427,9 +423,9 @@ themes/ink/layout/
 - `og:image` / JSON-LD 等社交预览使用 **ori**（质量优先）。
 - 生成：`scripts/gen-thumbs.js` 扫描 ori，居中裁 360×360，写入 `source/img/360px/`；
   `npm run build` 与 `npm run server` 都先跑它，再启动 hexo。
-  **不要改用 `hexo before_generate` 钩子**：hexo 在 `source.process()`（`hexo/index.js` 第 299 行）
-  就加载完了源目录，早于 `before_generate`（第 425 行），钩子写进去的图当次构建看不到；
-  全新树（无 `source/img/360px/`，即 Cloudflare Pages 每次构建的状态）会让 `public/img/360px` 归 0。
+  **不要改用 `hexo before_generate` 钩子**——钩子写进 `source/` 的文件当次构建看不到，
+  全新树会让 `public/img/360px` 归 0；原因、源码行号与实测见
+  [adr/0008](adr/0008-build-residue-cleanup.md)，此处不复制一份。
 - 例外不进双轨：`icon.svg`、主题光标等非内容栅格资源保持原路径。
 - 首页取色在 360px 图上取色，且 canvas 降采样后再统计，避免主线程扫满像素。
 
@@ -465,8 +461,8 @@ themes/ink/layout/
 - `scripts/commit-data.js` 构建期写
   `source/_data/commit.json`（优先 `CF_PAGES_COMMIT_SHA`，本地回退
   `git rev-parse HEAD`），footer.ejs 渲染 6 个色块（sha 每 6 位 hex 切块），
-  hover title 显示完整 hash。`npm run build` 已改为
-  `node scripts/commit-data.js && hexo generate`；
+  hover title 显示完整 hash。`npm run build` 为
+  `node scripts/commit-data.js && node scripts/gen-thumbs.js && hexo generate`；
   `source/_data/` 已 gitignore（构建产物不入库）。
 
 ## 中英文空格

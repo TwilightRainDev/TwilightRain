@@ -21,7 +21,7 @@ npm install        # 首次或依赖变更后
 | `npx hexo new "标题"` | 生成新文章草稿（scaffolds/） |
 
 **预览时的已知差异**：`hexo server` 不输出安全头（CSP），因为 hexo-server 3.x 的
-中间件注册时机早于 `scripts/` 加载（详见 [SECURITY.md → 开发模式限制](SECURITY.md#开发模式限制)）。
+中间件注册时机早于 `scripts/` 加载（详见 [SECURITY.md → 陷阱 1](SECURITY.md#已知陷阱清单)）。
 本地看到的效果与线上有差异是正常的，以线上为准。
 
 ## 写作规范与正文语法
@@ -33,7 +33,7 @@ npm install        # 首次或依赖变更后
 
 仓库在 Windows 本机、**无 gh CLI、无 SSH 密钥**，推送凭据走
 `E:\work_zone\ApiKey` 目录下的 GitHub PAT（Basic 认证 extraheader 注入）。
-具体命令形式以当时凭据注入方式为准（git 全局/仓库级 http.extraheader 或
+具体命令形式以实际凭据注入方式为准（git 全局/仓库级 http.extraheader 或
 `git -c http.extraheader=... push`）。
 
 - **提交身份**：仓库已配好 `TwilightRain` / `122437146+TwilightRainDev@users.noreply.github.com`
@@ -56,19 +56,19 @@ npm install        # 首次或依赖变更后
 页面会静默退回 7 条手写兜底快照并 exit 0**——不报错、不告警，页面看起来正常，同类「绿着出错」见
 [adr/0008](adr/0008-build-residue-cleanup.md)。
 
-- **构建命令**（Cloudflare Pages 与本机通用）：
+- **规则**：构建命令（Cloudflare Pages 与本机通用）必须是幂等的：
 
   ```bash
   if [ "$(git rev-parse --is-shallow-repository)" = "true" ]; then git fetch --unshallow; fi && npm run build
   ```
 
-  注意**不要**写成裸的 `git fetch --unshallow && npm run build`：该子命令在完整仓库上会以
-  `fatal: --unshallow on a complete repository does not make sense` 退出 128，`&&` 于是吃掉后面的构建
-  （本机是完整克隆，实测 exit 128）。上面带判据的写法才是幂等的：完整仓库上判据为 false、直接构建，
-  浅克隆上才补历史，且 `--unshallow` 真失败时不会继续构建（不会静默退回兜底）。
-- **判据**：构建日志里出现 `timeline: 从 git 日志取到 N 条事件`
-- **反例**：若 `/timeline/` 只显示 7 条手写条目，即为浅克隆退化，构建命令需修正
-- 现状：线上 Cloudflare Pages 当前**不是**浅克隆，时间线正常；但重建 Pages 项目或照本页重配构建命令时会踩这个坑
+  即：完整仓库上判据为 false、直接构建；浅克隆上才补历史，且 `--unshallow` 真失败时不会继续构建
+  （不会静默退回兜底）。
+- **判据**：构建日志里出现 `timeline: 从 git 日志取到 N 条事件`。
+- **反例**：
+  - 写成裸的 `git fetch --unshallow && npm run build`——`--unshallow` 在完整仓库上以
+    `fatal: --unshallow on a complete repository does not make sense` 退出 128，`&&` 于是吃掉后面的构建。
+  - `/timeline/` 只显示 7 条手写条目，即为浅克隆退化，构建命令需修正。
 
 1. 用上面的构建命令本地构建，确认无报错，并核对日志里的 `timeline:` 行。
 2. `git push origin main`（凭据见上）。

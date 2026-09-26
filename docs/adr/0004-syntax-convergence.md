@@ -2,7 +2,10 @@
 
 ## 状态
 
-已实施（2026-08-24，阶段七）
+已实施
+
+本决策的内联（`::inline`）与卡片 `::card{type="site|intro"}`、`:::card-group` 部分
+已被 [ADR-0006](0006-product-surface.md) 取代，末态见该文。
 
 ## 背景
 

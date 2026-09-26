@@ -2,57 +2,32 @@
 
 ## 状态
 
-已实施（2026-09-25）
+已实施
 
 ## 背景
 
 三处构建期残留：
 
-- `.deploy_git/`（18 MB，2026-08-08 废弃 hexo deploy 方案后遗留，`.gitignore` 已挡它入库但目录仍在盘上）
+- `.deploy_git/`（18 MB，废弃 hexo deploy 方案后遗留的旧构建快照；`.gitignore` 已挡它入库但目录仍在盘上）
 - `hexo-renderer-stylus` 依赖链（约 1.0 MB，全仓 `.styl` 文件数为 0，主题样式是入库的 `style.min.css`）
 - 缩略图流程双跑：`package.json` 的 `build` 脚本跑一遍 `scripts/gen-thumbs.js`，
   `scripts/img-thumbs.js` 又注册了一个 `before_generate` 钩子跑一遍
 
-第三处最初被当成纯冗余（认为第二遍靠 mtime 全部跳过，去掉即可）。实测后结论相反，详见下节。
-
 ## 关键事实：`before_generate` 钩子不能用于生成源目录文件
 
 `gen-thumbs.js` 的输出目录是 `source/img/360px/`（不是 `public/`），需要 hexo 在源目录处理阶段把它拷进
-`public/`。而 hexo 的执行顺序是**先处理源目录，再跑 `before_generate`**——见
-`node_modules/hexo/dist/hexo/index.js`：
+`public/`。而 hexo 的执行顺序是**先处理源目录，再跑 `before_generate`**
+（`node_modules/hexo/dist/hexo/index.js`：`source.process()` 在 `:299`，`before_generate` 在 `:425`）。
 
-```js
-load(callback) {
-    return load_database(this).then(() => {
-        this.log.info('Start processing');
-        return Promise.all([
-            this.source.process(),          // 第 299 行：源目录在此定型
-            this.theme.process()
-        ]);
-    }).then(() => {
-        return this._generate({ cache: false });   // 第 304 行
-    })
-}
+钩子此时才写进 `source/img/360px/` 的文件，当次构建的源目录扫描已经结束，hexo 看不到它们；db 里对应的
+旧记录又因文件「不存在」被判为已删除，于是 hexo 反过来删掉 `public/img/360px/` 下的旧副本。全过程
+**exit 0，无任何告警**。
 
-_generate(options = {}) {
-    // 第 425 行：before_generate 在此才执行
-    return this.execFilter('before_generate', null, { context: this })
-```
-
-`source.process()`（第 299 行）**早于** `before_generate`（第 425 行）。钩子此时才写进 `source/img/360px/`
-的文件，当次构建的源目录扫描已经结束，hexo 看不到它们；db 里对应的旧记录又因文件「不存在」被判为已删除，
-于是 hexo 反过来删掉 `public/img/360px/` 下的旧副本。全过程 **exit 0，无任何告警**。
-
-对照实验（全新树：无 `db.json`、无 `public/`、无 `source/img/360px/`，即 Cloudflare Pages 每次构建的状态）：
-
-| 流程 | `source/img/360px` | `public/img/360px` | 退出码 |
-|------|--------------------|--------------------|--------|
-| `gen-thumbs.js` 在 `hexo generate` 之前（CLI 前置） | 47 | **47** | 0 |
-| 仅靠 `before_generate` 钩子 | 47 | **0** | 0 |
-
-即：钩子并非「兜底」，它在一次性 `hexo generate` 下根本不生效。它唯一有效的场景是 `hexo server` 的热重载
-（那条路径有 `this.source.watch()` 会捕获新文件并触发重新生成，`index.js` 第 330 行），而该场景现在由
-`server` 脚本前置 `gen-thumbs` 在**启动时**覆盖。
+在全新树（无 `db.json`、无 `public/`、无 `source/img/360px/`，即 Cloudflare Pages 每次构建的状态）下，
+`gen-thumbs.js` 前置在 `hexo generate` 之前时 `public/img/360px` 得 47 个文件，仅靠钩子则为 0。即：
+钩子并非「兜底」，它在一次性 `hexo generate` 下根本不生效。它唯一有效的场景是 `hexo server` 的热重载
+（那条路径有 `this.source.watch()` 会捕获新文件并触发重新生成），而该场景现在由 `server` 脚本前置
+`gen-thumbs` 在**启动时**覆盖。
 
 **随之失去的能力**：`hexo server` **运行期**往 `source/img/ori/` 新增的图片，不再自动补出 360px 缩略图
 （旧钩子靠 `source.watch()` 能在热重载路径上做到）。修法是重启 `npm run server`，或先跑
@@ -79,13 +54,10 @@ _generate(options = {}) {
 
 - 缩略图生成入口收敛为 `scripts/gen-thumbs.js` 单点，由 `build` / `server` 两个脚本在 hexo 之前调用
 - 全新树构建恢复正确：`public/img/360px` 47 个文件，与 `source/img/ori` 的栅格文件数一致
-- 主题样式仍是入库的 `style.min.css`，没有样式源文件，本次改动不触及样式；
-  经 `hexo clean` 全量重建后该文件与改动前逐字节一致
-- 上述比对的具体数值是**历史快照**：本 ADR 落地时（commit `445ec39`）实测 85281 字节、
-  md5 `e6a176632f32fa0a6684821aff5b1298`。此后 ADR-0011 追加 `.timeline-subitems`、以及后续死 CSS 清理
-  都会改变该文件，**属于预期**，不要再把这里更新成「当前值」（追着更新必然再次过期）。
-  本条的论点只是「移除 stylus 时样式产物逐字节未变」，该结论只在那次改动的前后比对中成立
-- 锁文件 `package-lock.json` 净删 154 行、新增 0 行，全部为 stylus 依赖链，无其他包版本漂移
+- 主题样式仍是入库的 `style.min.css`，没有样式源文件，本次改动在 `hexo clean` 全量重建后逐字节未变。
+  该文件的字节数与 md5 随后续样式改动变化，**不要把「当前值」补写进本 ADR**
+  （追着更新必然再次过期）——本条的论点只是「移除 stylus 时样式产物逐字节未变」
+- 锁文件 `package-lock.json` 的删改全部为 stylus 依赖链，无其他包版本漂移
 - **不要再把 `before_generate` 钩子加回来**（用于生成源目录文件），理由见上节；`docs/THEME.md` 的缩略图一节已同步写明这条禁忌。
   该禁忌**仅针对「用钩子往 `source/` 写文件」**：用 `before_generate` 只做计算、把结果交给渲染期 helper 取用是可行的，
   仓库内已有两处合法用例——`scripts/timeline-page.js:48`（解析 git 日志后缓存进模块变量）与

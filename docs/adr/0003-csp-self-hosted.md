@@ -2,7 +2,7 @@
 
 ## 状态
 
-已实施（持续维护）
+已实施
 
 ## 背景
 
@@ -11,10 +11,10 @@
 ## 决策
 
 - CSP 由 `scripts/csp.js` 在 `after_generate` 写入 `public/_headers`，随代码入库
-- `script-src` 仅 `'self'`、`giscus.app`、`cdnjs.cloudflare.com`（fancybox/jquery）
+- `script-src` 仅 `'self'`、`giscus.app`（cdnjs 已随灯箱自研下线，见 [ADR-0015](0015-self-hosted-lightbox.md)）
 - 不放宽内联脚本；冗余内联组件一律删除而非加 nonce
 - Cloudflare Web Analytics 与 CSP 冲突时优先**关闭 Dashboard 注入**（TD-004），而非永久加域
-- 构建期外链 `rel="noopener noreferrer"`、外链图 `referrerpolicy="no-referrer"`（阶段三 M7/M8）
+- 构建期外链 `rel="noopener noreferrer"`、外链图 `referrerpolicy="no-referrer"`
 
 ## 后果
 

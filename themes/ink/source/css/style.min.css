@@ -2462,24 +2462,102 @@ a.card-link:hover {
     }
 }
 
-/* fancybox 灯箱：左上角「查看原图」（ink.js 注入 .fancybox-ori-link） */
-.fancybox-ori-link {
+/* 自研灯箱（ADR-0015）：高于阅读进度条 99999 */
+.ink-lb-src {
+    cursor: zoom-in;
+}
+.ink-lb {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.88);
+    user-select: none;
+}
+.ink-lb[hidden] {
+    display: none;
+}
+.ink-lb-stage {
+    position: relative;
+    max-width: 92vw;
+    max-height: 82vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ink-lb-stage img {
+    max-width: 92vw;
+    max-height: 82vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    cursor: default;
+}
+.ink-lb-ori,
+.ink-lb-close,
+.ink-lb-nav {
     position: absolute;
-    top: 16px;
-    left: 16px;
-    z-index: 99999;
+    z-index: 1;
     padding: 0.4rem 0.75rem;
+    border: none;
     border-radius: 4px;
     background: rgba(0, 0, 0, 0.65);
     color: #fff;
     font-size: 0.875rem;
-    text-decoration: none;
     line-height: 1.2;
+    text-decoration: none;
+    cursor: pointer;
 }
-.fancybox-ori-link:hover,
-.fancybox-ori-link:focus {
+.ink-lb-ori {
+    top: 16px;
+    left: 16px;
+}
+.ink-lb-close {
+    top: 16px;
+    right: 16px;
+}
+.ink-lb-prev {
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.ink-lb-next {
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.ink-lb-ori:hover,
+.ink-lb-ori:focus,
+.ink-lb-close:hover,
+.ink-lb-close:focus,
+.ink-lb-nav:hover,
+.ink-lb-nav:focus {
     background: rgba(0, 0, 0, 0.85);
     color: #fff;
+}
+.ink-lb-meta {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    color: #fff;
+    font-size: 0.875rem;
+    pointer-events: none;
+}
+.ink-lb-caption,
+.ink-lb-counter {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+@media (prefers-reduced-motion: reduce) {
+    .ink-lb,
+    .ink-lb-nav {
+        transition: none;
+    }
 }
 
 /* ======================== 文章分享（2026-08-18，Reimu 批三） ========================

@@ -2,21 +2,14 @@
 
 ## 状态
 
-已实施（2026-09-25）
+已实施
 
 ## 背景
 
 `[[双链]]` 是全站实装成本最高的写作扩展（`scripts/wikilinks.js` 71 行 +
 `scripts/lib/wikilinks.js` 117 行 + 单测 + `post.ejs` 文末整块 + CSS），
 但在 16 篇文章里零真实用量，只出现在样板文 `blog-writing-features.md`。
-
-2026-08-25 上一轮拍板「脚本成本低，不必再删」。本轮（2026-09-25）复核：文章数从 11 涨到 16，
-用量仍为 0。
-
-本轮评估过程中曾据「文章存在互引簇」支持保留，该判断**已被实测推翻**：
-`flash-cn-special-edition-fix.md` 与 `translation-patch-deck-bug.md` 对 `BiliCompact` 命中 0 次，
-与 BiliCompact 无关；Windows 工具实为两篇且互不提及；三篇博客建设类文章主题相邻但零互引。
-准确结论是「主题有相邻，无实际互引关系」。
+文章之间无实际互引关系（主题有相邻，但零互引）。
 
 ## 决策
 

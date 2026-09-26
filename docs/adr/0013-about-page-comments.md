@@ -2,7 +2,7 @@
 
 ## 状态
 
-已实施（2026-09-25）
+已实施
 
 ## 背景
 
@@ -10,8 +10,7 @@
 `page.comments !== false` 决定。关于页 `source/about/index.md` 没有写 `comments: false`，
 因此构建结果带 giscus 评论区；友链页则显式写 `comments: true`。
 
-这个「默认开」的设计容易被后来者当作 bug「修掉」——它看起来像是漏写了 `comments: false`。
-2026-08-25 的评估已把它记为「刻意设计，甚至可以进 ADR」。
+**这是刻意设计**：「默认开」容易被当成 bug「修掉」——它看起来像是漏写了 `comments: false`。
 
 ## 决策
 

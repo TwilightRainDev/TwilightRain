@@ -17,7 +17,7 @@
 │       （构建命令 npm run build，输出 public/）             │
 └────────────────────────────────────────────────────────────┘
         ▼
-  https://twilightrain.com（Cloudflare 边缘分发；pages.dev 已 301 到此）
+  https://twilightrain.com（Cloudflare 边缘分发）
 ```
 
 **要点**：构建发生在 Cloudflare 云端（监听 main 分支），不是本地 `hexo deploy`。
@@ -48,7 +48,8 @@ blog/
 ├── scripts/               # Hexo 钩子与 marked 扩展（见下表）
 ├── source/
 │   ├── _posts/            # 文章（Markdown，写作语法见 GRAMMAR.md）
-│   ├── about/ settings/ search/ tags/ categories/ links/ …
+│   ├── about/ settings/ search/ tags/ categories/ links/ timeline/ …
+│   ├── downloads/ mc-skin/ midi/  # 静态附件：补丁包 zip / MC 皮肤 3D 查看器 / MIDI
 │   ├── 404.md             # 自定义 404 页
 │   └── img/               # icon.svg；ori/ 原图入库，360px/ 构建生成（gitignore）
 ├── themes/ink/            # 定制主题（见 THEME.md）
@@ -84,7 +85,7 @@ blog/
 | 返回顶部 / 阅读进度 | 固定 FAB、顶栏进度条 |
 | 文章 TOC | 桌面双卡 + 移动端胶囊（滚动中 `.is-scrolling` 临时隐藏） |
 | 友链探测 | 主站 favicon 探测后切回 url |
-| 灯箱 fancybox | 文章图放大、查看原图 |
+| 灯箱 | 文章图放大、展示图/原图切换（自研，ADR-0015） |
 | GitHub 卡片 | `api.github.com` 动态 meta（唯一 connect-src 例外） |
 | 代码复制 / 超长折叠 | `.copy-btn`、40 行阈值折叠 |
 | 归档展开 | `#archives-toggle` |
@@ -117,4 +118,5 @@ blog/
 
 ## 决策档案
 
-重大取舍见 [adr/README.md](adr/README.md)。work_zone 侧历史决策与债务台账见 `E:\work_zone\Docs\Blog-docs\Blog-文档索引.md`。
+重大取舍见 [adr/README.md](adr/README.md)。work_zone 侧的历史决策与债务台账见
+`E:\work_zone\Docs\projects\Blog\Blog-遗留项与技术债.md`。

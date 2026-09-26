@@ -18,5 +18,6 @@
 | [0012](0012-nav-restructure.md) | 展柜三页收敛与导航重构 | 已实施 |
 | [0013](0013-about-page-comments.md) | 关于页默认开启评论 | 已实施 |
 | [0014](0014-egg-page-orphan.md) | `/egg/` 是隐藏彩蛋页，无入口是刻意的 | 已实施 |
+| [0015](0015-self-hosted-lightbox.md) | 自研灯箱，下线 fancybox + jQuery | 已实施 |
 
 新增决策：在本目录追加 `000N-简短标题.md`，并在本表登记一行。

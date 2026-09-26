@@ -3,9 +3,11 @@
 本页记录**真机/桌面浏览器**在验收页上的 Console 现象、分诊结论与修复状态。  
 改 `ink.js`、giscus、GitHub 卡片或站点卡回退逻辑前可先查此表。
 
-**关联文档**：[SECURITY.md](SECURITY.md)（CSP / loopback 误报）、[THEME.md](THEME.md#giscus)、移动端台账 `E:\work_zone\Docs\TwilightRain-移动端技术债务.md`（TD-014）。
+**关联文档**：[SECURITY.md](SECURITY.md)（CSP / loopback 误报）、
+[THEME.md](THEME.md#配置themesink_configyml)（giscus 配置）；
+移动端相关条目见 `E:\work_zone\Docs\projects\Blog\Blog-遗留项与技术债.md`（TD-014）。
 
-**末次复核**：2026-08-24 | 验收页：`/2026/08/17/blog-writing-features/` | 环境：真机 + PC Edge
+**验收页**：`/2026/08/17/blog-writing-features/` | 环境：真机 + PC Edge
 
 ---
 
@@ -33,34 +35,13 @@
 
 ---
 
-## 原始摘录（归档）
-
-```
-[Intervention] Images loaded lazily and replaced with placeholders...
-Access to image at 'https://github.com/favicon.ico' ... loopback address space
-Failed to execute 'postMessage' on 'DOMWindow': ... giscus.app ... twilightrain.com
-Access to fetch at 'https://api.github.com/repos/...' ... loopback address space
-GitHub card data unavailable for ... Failed to fetch
-bili-user-fingerprint: report is not found
-[Violation] Forced reflow / requestIdleCallback / non-passive listener ...
-stadium.js:1 Error
-```
-
----
-
 ## 分诊说明
-
-### loopback address space 不等于「部署在 localhost」
-
-Edge/Chrome 在私有网络访问策略、S302、DevTools 附加等环境下，对 `twilightrain.com` 发起的 `fetch`/`img` 也可能误报 loopback。站点已部署公网；以**无扩展的真机 Chrome/Safari** 为准（见 TD-014、[SECURITY.md → connect-src](SECURITY.md#安全头机制)）。
 
 ### GitHub API 失败
 
 `::card{type="github"}` 卡片保留静态 owner/repo、desc；stars/forks 等为渐进增强（`themes/ink/source/js/ink.js`），失败不应判「页面损坏」。
 
 ### giscus postMessage
-
-评论区 `data-loading="lazy"`，iframe 在 cross-origin 文档就绪前 `contentWindow` 仍为同源，提前 postMessage 会报错。
 
 **修复要点**（`themes/ink/layout/partial/comments.ejs` + `ink.js`）：
 
@@ -86,5 +67,5 @@ Edge/Chrome 在私有网络访问策略、S302、DevTools 附加等环境下，�
 ## 维护约定
 
 - 新 Console 现象：先分诊（本站缺陷 / 环境噪声 / 第三方），再更新上表；**已修**项须注明涉及文件。
-- 与移动端 TD 重复时，TD 台账记状态，本页记 Console 原文与修复细节。
+- 与移动端 TD 重复时，TD 台账记状态，本页记分诊结论与修复细节。
 - 勿将本页内容复制到 `work_zone/Docs` 第二份；以本文件为事实源。

@@ -2,7 +2,7 @@
 
 ## 状态
 
-已实施（2026-08-24，阶段四）
+已实施
 
 ## 背景
 
@@ -15,7 +15,7 @@ ink 主题累积了多套「文末推荐」「评论挂件」「Mermaid 双轨�
 - 相关文章（`related-posts.js`、post.ejs 文末区块）
 - latest-comments 挂件（`latest-comments.js`）
 - mermaid-static 构建期静态化（`mermaid-static.js`）
-- 旧折叠语法 `:::hide` / `:::fold` / `:::folding`（阶段四物理删除）
+- 旧折叠语法 `:::hide` / `:::fold` / `:::folding`
 
 保留：双链、系列文、prev/next、giscus、客户端 Mermaid、站点卡三件套。
 
