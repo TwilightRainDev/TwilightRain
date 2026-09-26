@@ -67,10 +67,10 @@ blog/
 |------|------|------|
 | 安全/路由 | `csp.js`、`redirects.js` | `_headers`、`_redirects` |
 | 构建辅助 | `commit-data.js`、`gen-thumbs.js` | 版本色块、360px 缩略图 |
-| 文章后处理 | `reading-time.js`、`wikilinks.js`、`heading-anchor.js`、`lazy-load.js`、`post-staleness.js`、`external-links.js`、`image-referrerpolicy.js` | 字数/双链/锚点/懒加载/时效/外链安全 |
+| 文章后处理 | `reading-time.js`、`heading-anchor.js`、`lazy-load.js`、`post-staleness.js`、`external-links.js`、`image-referrerpolicy.js` | 字数/锚点/懒加载/时效/外链安全 |
 | marked 扩展 | `marked-{admonitions,grid,fold,mermaid,card,bilibili,timeline,tabs}.js` | 正文扩展语法（fold/card 仅规范名） |
 | 系列 | `series.js` + `lib/series-*.js` | `::series` 与分组 |
-| 纯函数库 | `lib/{char-stats,breadcrumbs,wikilinks,av-bv-convert,external-links,image-referrerpolicy,timeline-renderer,git-events,heading-anchor}.js` | 被钩子或单测 require |
+| 纯函数库 | `lib/{char-stats,breadcrumbs,av-bv-convert,external-links,image-referrerpolicy,timeline-renderer,git-events,heading-anchor}.js` | 被钩子或单测 require |
 | 时间线 helper | `timeline-page.js` | 数据源为构建期解析的 git 日志（`lib/git-events.js`），浅克隆或无 git 时回退 front matter 兜底快照；渲染走 `lib/timeline-renderer.js` 的 page 变体 |
 
 ## themes/ink/source/js/ink.js 模块

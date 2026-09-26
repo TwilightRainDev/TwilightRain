@@ -2627,40 +2627,6 @@ a.card-link:hover {
     color: #ccc;
 }
 
-/* ======================== 双链相关（2026-08-21） ========================
-   scripts/wikilinks.js：出站「链接到」+ 入站「反向链接」；无链接时不渲染。 */
-.post-wikilinks {
-    margin-block: 1rem 0;
-    padding-top: 0.75rem;
-    border-top: 1px solid rgba(0, 0, 0, 0.08);
-    display: grid;
-    gap: 0.75rem;
-}
-[data-theme="dark"] .post-wikilinks {
-    border-top-color: rgba(255, 255, 255, 0.12);
-}
-.post-wikilinks-title {
-    margin: 0 0 0.35rem;
-    font-size: 0.9em;
-    font-weight: 600;
-    color: #666;
-}
-[data-theme="dark"] .post-wikilinks-title {
-    color: #aaa;
-}
-.post-wikilinks-list {
-    margin: 0;
-    padding-left: 1.15rem;
-    font-size: 0.9em;
-}
-.post-wikilinks-list a {
-    color: var(--color-primary, #1a8fe3);
-    text-decoration: none;
-}
-.post-wikilinks-list a:hover {
-    text-decoration: underline;
-}
-
 /* 时间线 */
 .timeline-year {
     margin: 24px 0 8px;

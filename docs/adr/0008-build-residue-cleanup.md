@@ -60,5 +60,5 @@
 - 锁文件 `package-lock.json` 的删改全部为 stylus 依赖链，无其他包版本漂移
 - **不要再把 `before_generate` 钩子加回来**（用于生成源目录文件），理由见上节；`docs/THEME.md` 的缩略图一节已同步写明这条禁忌。
   该禁忌**仅针对「用钩子往 `source/` 写文件」**：用 `before_generate` 只做计算、把结果交给渲染期 helper 取用是可行的，
-  仓库内已有两处合法用例——`scripts/timeline-page.js:48`（解析 git 日志后缓存进模块变量）与
-  `scripts/wikilinks.js:58`（构建全站双链图存进 `global`），两者都不写 `source/` 下的文件
+  仓库内已有合法用例：`scripts/timeline-page.js` 解析 git 日志后缓存进模块变量，不写 `source/` 下的文件。
+  双链那处 `before_generate` 用例已随 [ADR-0016](0016-wikilinks-removed.md) 删除。

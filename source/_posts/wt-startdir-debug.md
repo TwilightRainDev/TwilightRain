@@ -12,7 +12,7 @@ categories:
 
 > 你所生活的世界，不过是cmd.exe的一场梦。
 
-同类 Windows 端工具链的整理见 [[用Win文本工具箱告别散装脚本]]。
+同类 Windows 端工具链的整理见 [用Win文本工具箱告别散装脚本](/2026/07/25/windows-text-tool-intro/)。
 
 那一天，人类终于回想起了，被**C:\Windows\system32**支配的恐惧。
 

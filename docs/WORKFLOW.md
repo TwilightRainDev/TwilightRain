@@ -17,7 +17,7 @@ npm install        # 首次或依赖变更后
 | `npm run server` | 本地预览 http://localhost:4000（热重载） |
 | `npm run build` | 生成 `public/`（构建产物，不入库） |
 | `npm run clean` | 清空 `public/` 与 `db.json` 缓存 |
-| `npm run test` | 跑 `test/lib/*.test.js` 纯函数单测（双链/面包屑/系列/marked 扩展等） |
+| `npm run test` | 跑 `test/lib/*.test.js` 纯函数单测（面包屑/系列/marked 扩展等） |
 | `npx hexo new "标题"` | 生成新文章草稿（scaffolds/） |
 
 **预览时的已知差异**：`hexo server` 不输出安全头（CSP），因为 hexo-server 3.x 的
@@ -27,7 +27,7 @@ npm install        # 首次或依赖变更后
 ## 写作规范与正文语法
 
 见 [GRAMMAR.md](GRAMMAR.md)——front matter 模板、文件名与图片引用约定、
-全部 `::: / :: / [[]]` 扩展语法、公式写法与自动行为都以该文件为准。
+全部 `::: / ::` 扩展语法、公式写法与自动行为都以该文件为准。
 
 ## 提交与推送（重要）
 

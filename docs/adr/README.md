@@ -13,11 +13,12 @@
 | [0007](0007-admon-syntax.md) | 提示块语法收敛为 `:::admon[...]` | 已实施 |
 | [0008](0008-build-residue-cleanup.md) | 构建期残留清理 | 已实施 |
 | [0009](0009-indexnow-key-file.md) | IndexNow 密钥文件保留并登记归属 | 已实施 |
-| [0010](0010-wikilinks-retained.md) | 双链保留，并补两条真实用例作为验证条件 | 已实施 |
+| [0010](0010-wikilinks-retained.md) | 双链保留，并补两条真实用例作为验证条件 | 已被 0016 取代 |
 | [0011](0011-timeline-from-git.md) | 时间线改为构建期解析 git 日志 | 已实施 |
 | [0012](0012-nav-restructure.md) | 展柜三页收敛与导航重构 | 已实施 |
 | [0013](0013-about-page-comments.md) | 关于页默认开启评论 | 已实施 |
 | [0014](0014-egg-page-orphan.md) | `/egg/` 是隐藏彩蛋页，无入口是刻意的 | 已实施 |
 | [0015](0015-self-hosted-lightbox.md) | 自研灯箱，下线 fancybox + jQuery | 已实施 |
+| [0016](0016-wikilinks-removed.md) | 双链复核后删除整支 | 已实施 |
 
 新增决策：在本目录追加 `000N-简短标题.md`，并在本表登记一行。

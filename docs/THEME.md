@@ -2,7 +2,7 @@
 
 主题 fork 自 `hoytzhang/hexo-theme-ink`，已深度定制并整体入库（`themes/ink/` 内全部文件受 git 跟踪，无独立 git 仓库），修改直接进版本控制。
 
-> 正文扩展语法（`:::…`、`::…`、`[[…]]`、公式分隔符）的写法统一见
+> 正文扩展语法（`:::…`、`::…`、公式分隔符）的写法统一见
 > [GRAMMAR.md](GRAMMAR.md)；本文只记实现、样式与陷阱。
 
 ## 布局文件职责
@@ -79,8 +79,6 @@ themes/ink/layout/
   `ink-home-layout` 到 localStorage，列表模式下列数选项置灰。
 - **文章分享**：版权声明下输出三平台纯链接分享（微博 / QQ / X），
   无第三方脚本、CSP 零新增、rel noopener；URL/title 经 encodeURIComponent。
-- **双链相关文章**：文章底「链接到 / 反向链接」（无则隐藏）。
-
 ## 代码高亮（highlight.js）
 
 - 构建时渲染（`syntax_highlighter: highlight.js`，`hljs: true`），无客户端 JS、
@@ -327,14 +325,6 @@ themes/ink/layout/
 - `scripts/breadcrumbs.js` + `partial/breadcrumbs.ejs`。
   链为「首页 / 分类（支持 parent 根→叶）/ 当前标题」；当前项不链接。
   扁平单分类现状即「首页 / 分类名 / 标题」。纯函数见 `scripts/lib/breadcrumbs.js`。
-
-## 双链（wikilinks）
-
-- 自研 `scripts/wikilinks.js`（未引 npm 插件）。双链在 `before_post_render`
-  换成 Markdown 链接；图写入 `global`，由
-  `reading-time.js` 的 `after_post_render` 注入 `wikiOutbounds` / `wikiInbounds`
-  （独立 after_post_render 拿不到图，与字数同钩子才进得了模板）。
-  图键用 `post.source`（勿用 `_id`，generate 各阶段会变）。
 
 ## 段落锚点
 

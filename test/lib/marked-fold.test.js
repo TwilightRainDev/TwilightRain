@@ -31,3 +31,18 @@ test(':::fold 围栏正则', function () {
   var foldSample = ':::fold[text 悬停]\n秘密\n:::';
   assert.ok(fold.FOLD_RULE.exec(foldSample));
 });
+
+test('fold 体内的 Markdown 列表与链接会被正常渲染', function () {
+  var markedMod = require('marked');
+  var inst = new markedMod.Marked();
+  inst.use({ extensions: [fold.foldExtension] });
+  var html = inst.parse(
+    ':::fold[details 全部作品（2 项）]\n' +
+    '- [A](https://a.example)\n' +
+    '- [B](https://b.example)\n' +
+    ':::'
+  );
+  assert.match(html, /class="md-details"/);
+  assert.match(html, /<li>/);
+  assert.match(html, /<a href="https:\/\/a\.example"/);
+});

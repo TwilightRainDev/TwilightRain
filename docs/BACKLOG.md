@@ -10,14 +10,6 @@ EXCLUDED 是「不要做」，本文件是「要做，等下一轮」。
 - 要做：按 EXCLUDED.md 的原判定「走独立 CI」，在构建后或定时任务里向 IndexNow 端点提交新 URL
 - 已定：不在 Hexo 构建链路里加提交步骤
 
-## 双链复核（验证条件）
-
-- 来源：ADR-0010（2026-09-25 拍板保留双链并补两条用例）
-- 条件：下一轮功能扫描时，若双链仍只有 2026-09-25 补的这两条、且无新增用例，
-  则删除整支（`scripts/wikilinks.js` + `scripts/lib/wikilinks.js` + `test/lib/wikilinks.test.js`
-  + `themes/ink/layout/post.ejs` 文末区块 + `.post-wikilinks*` CSS），文末只留 prev/next
-- 已定：届时直接执行，不再单独拍板
-
 ## 移除时间线的 front matter 兜底快照
 
 - 来源：ADR-0011（时间线改读 git 日志）
