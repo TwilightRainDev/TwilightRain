@@ -10,8 +10,8 @@
 | 指令 | 白名单 | 说明 |
 |---|---|---|
 | `default-src` | `'self'` | 兜底 |
-| `script-src` | `'self'` `https://giscus.app` `https://cdnjs.cloudflare.com` | 评论脚本 + CDN 脚本 |
-| `style-src` | `'self'` `'unsafe-inline'` `https://giscus.app` `https://cdnjs.cloudflare.com` | 见下方 giscus 陷阱 |
+| `script-src` | `'self'` `https://giscus.app` | 评论脚本（灯箱已自研，不再放行 cdnjs） |
+| `style-src` | `'self'` `'unsafe-inline'` `https://giscus.app` | 见下方 giscus 陷阱 |
 | `img-src` | `'self'` `https:` `data:` | 外链图片与 data URI |
 | `font-src` | `'self'` | 字体全自托管，禁止外链字体 |
 | `frame-src` | `https://giscus.app` `https://player.bilibili.com` `https://www.bilibili.com` | 评论 iframe；B 站播放器（`::bilibili`）；移动端播放器内嵌跳转需 `www.bilibili.com` |
@@ -48,8 +48,10 @@ fetch 前先评估（默认收紧取向）；若卡片功能移除，此行一�
    GB2312 约 7200 字符子集）。直接引 Google Fonts 会被 CSP 拦。
 
 4. **重定向与 404**：
-   - `scripts/redirects.js` 维护 301 重定向（目前：旧 hello-world → `/about/`，
-     带/不带尾斜杠两条规则，`_redirects` 规则按顺序第一条命中）。
+   - `scripts/redirects.js` 的 `REDIRECTS` 数组是 301 规则的**唯一来源**（当前 10 条：
+     `/projects/`、`/projects` → `/about/`；旧 hello-world 带/不带尾斜杠 → `/about/`；
+     `/page/1/`、`/page/1` → `/`；两篇中文文件名文章各带明文与百分号编码一条）。
+     不要在此复制清单，免得两处各自漂移；`_redirects` 规则按顺序第一条命中。
    - `functions/_middleware.js` 整站 301：`twilightrain.pages.dev` → `https://twilightrain.com`
      （保留路径与查询串）。**不能用 `_redirects` 实现**——规则不区分来源域名，
      会把目标域名也一并重定向形成循环，故 hosts 判断放在 Pages Functions 中间件层。
@@ -60,7 +62,7 @@ fetch 前先评估（默认收紧取向）；若卡片功能移除，此行一�
 
 5. **搜索 XSS（已修复，勿回退）**：`themes/ink/source/js/search.js` 渲染搜索结果
    时必须走文本节点/DOM 转义，不能把用户输入拼进 `innerHTML`。改搜索代码时
-   保持这一约束（commit d6b5989 修复）。
+   保持这一约束。
 
 6. **依赖安全**：dependabot 每日检查 npm 依赖（`.github/dependabot.yml`），
    PR 上限 20。合并依赖升级 PR 前跑 `npm run build` 验证。`package.json` 的
@@ -91,18 +93,18 @@ fetch 前先评估（默认收紧取向）；若卡片功能移除，此行一�
    `'unsafe-inline'`），也不可取。
 
 10. **Cloudflare Web Analytics 与 CSP 冲突（TD-004，已关闭）**：Cloudflare
-    Dashboard 若开启 Web Analytics，会注入
-    `static.cloudflareinsights.com/beacon.min.js`，当前 `script-src` 未白名单
-    该域，控制台每页报 CSP 错误。**末态（2026-08-24）**：Dashboard 已关闭
-    Web Analytics 注入，CSP 不变。若日后重新开启，须二选一：关注入，或将
-    `https://static.cloudflareinsights.com` 加入 `script-src`。
+    Dashboard 的 Web Analytics 注入已关闭，CSP 不变
+    （台账见 `E:\work_zone\Docs\projects\Blog\Blog-遗留项与技术债.md`）。若日后重新开启，
+    须二选一：关注入，或将 `https://static.cloudflareinsights.com` 加入 `script-src`
+    ——该 Dashboard 会注入 `static.cloudflareinsights.com/beacon.min.js`，
+    未白名单则控制台每页报 CSP 错误。
 
 ## 内容与仓库安全
 
-- 评论走 giscus（GitHub Discussions 作后端，主题配置见 [THEME.md](THEME.md#配置themesink_configyaml)）。Console 分诊见 [CONSOLE-TRIAGE.md](CONSOLE-TRIAGE.md)。
+- 评论走 giscus（GitHub Discussions 作后端，主题配置见 [THEME.md](THEME.md#配置themesink_configyml)）。Console 分诊见 [CONSOLE-TRIAGE.md](CONSOLE-TRIAGE.md)。
 - 提交身份用 noreply 邮箱：完整地址为
   `122437146+TwilightRainDev@users.noreply.github.com`（本地两个仓库
-  user.email 均已改为此地址）；**历史提交仍含真实邮箱**——GitHub 账号
+  user.email 都是此地址）；**历史提交仍含真实邮箱**——GitHub 账号
   建议开启 "Keep my email address private"。推送凭据不落库（在
   `E:\work_zone\ApiKey`）。
 - `docs/BlogPrivate.txt` 是私人备忘，不入库（`.gitignore` 单独忽略）；

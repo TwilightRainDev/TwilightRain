@@ -1,6 +1,14 @@
 # ADR-0006：产品面再收敛（删 `::inline`、卡片收 github+link、残留清理）
 
-依据 `Docs/Blog-docs/Blog-feature-再收敛评估.md`（2026-08-25）与 `_posts` 用量检索。
+## 状态
+
+已实施
+
+本决策保留项中的 `/skills/` 独立页部分已被 [ADR-0012](0012-nav-restructure.md) 取代（该页已删除），末态见该文。
+
+## 决策
+
+依据 `source/_posts` 的用量检索与当轮功能扫描。
 
 残留清理：`.photo-grid` CSS / 取色排除 / 文档提及随 `_config.landscape.yml` 一并删除（`:::grid` 早已替代）；marked 的空 `<a class="headerlink">` 在 `lib/heading-anchor.js` 剥掉（`headerIds` 不能关，关掉标题丢 id），正文只留 `.heading-anchor`；details 样式选择器收敛为 `article details.md-details`，只服务 `:::fold[details]`。
 

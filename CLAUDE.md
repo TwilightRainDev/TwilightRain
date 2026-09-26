@@ -4,7 +4,7 @@ Hexo 8.1.2 博客源码。完整维护手册在 **docs/**（[入口](docs/README
 本文件只放会话级要点，细节一律查 docs。
 
 - **部署**：Cloudflare Pages 监听 GitHub `main` 分支构建（只认 main！）。
-  发布 = 推 main；历史 `hexo deploy`/gh-pages 方案已废弃移除（2026-08-08）。
+  发布 = 推 main；不要推 `gh-pages`、不要恢复 `hexo deploy`。
 - **构建**：`npm run build`（hexo generate）→ `public/`，本机不执行 hexo deploy。
 - **安全头/重定向**：`scripts/csp.js` → `public/_headers`，`scripts/redirects.js` → `public/_redirects`，
   均为 after_generate 钩子写入。开发模式（hexo server）无安全头是已知限制。

@@ -16,9 +16,9 @@ var fs = require('hexo-fs');
 // 统一的安全头策略
 var CSP_POLICY = [
   "default-src 'self'",
-  "script-src 'self' https://giscus.app https://cdnjs.cloudflare.com",
+  "script-src 'self' https://giscus.app",
   // giscus.app 的 default.css（注入的 <link> 样式表）必须白名单，否则 iframe 宽度回退到 300px
-  "style-src 'self' 'unsafe-inline' https://giscus.app https://cdnjs.cloudflare.com",
+  "style-src 'self' 'unsafe-inline' https://giscus.app",
   "img-src 'self' https: data:",
   "font-src 'self'",
   "frame-src https://giscus.app https://player.bilibili.com https://www.bilibili.com",
