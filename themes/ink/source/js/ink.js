@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // 首页无 cover：封面池使用 360px 展示图；data-ori 指向同名原图
     // 加新封面：原图放 source/img/ori/covers/cover-NN.jpg，构建生成 360px，并同步更新循环上界
     const coverPool = [];
-    for (let i = 1; i <= 26; i++) {
+    for (let i = 1; i <= 31; i++) {
         coverPool.push('/img/360px/covers/cover-' + (i < 10 ? '0' + i : i) + '.jpg');
     }
     document.querySelectorAll('img[data-random-cover]').forEach(img => {

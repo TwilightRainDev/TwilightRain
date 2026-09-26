@@ -389,7 +389,7 @@ themes/ink/layout/
 
 ## 封面图池（首页缩略图）
 
-- 原图位置：`source/img/ori/covers/`（cover-01.jpg … cover-26.jpg）。
+- 原图位置：`source/img/ori/covers/`（cover-01.jpg … cover-31.jpg）。
 - 展示图：构建生成 `source/img/360px/covers/`（360×360 居中裁切，**不入库**）。
 - 机制：`index.ejs` 对未设 `cover` 的文章输出 `<img data-random-cover>`（不带 src），
   由 `ink.js` 在 DOMContentLoaded 时从 `/img/360px/covers/` 池随机赋 src，并写
