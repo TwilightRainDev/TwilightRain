@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "thumbs": "node scripts/gen-thumbs.js",
-    "build": "node scripts/commit-data.js && node scripts/gen-thumbs.js && hexo generate",
+    "build": "node scripts/commit-data.js && node scripts/gen-thumbs.js && hexo generate && npm run verify",
+    "verify": "node scripts/verify-build.js",
     "indexnow": "node scripts/indexnow-submit.js",
     "clean": "hexo clean",
     "server": "node scripts/gen-thumbs.js && hexo server",

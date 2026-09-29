@@ -30,6 +30,9 @@ npm run server        # 本地预览 → http://localhost:4000
 npm run build         # 生成 public/（构建产物）
 ```
 
+- `npm run build` 末尾会自动跑 `npm run verify`（sitemap 时间戳自检，见
+  [WORKFLOW.md → 时间戳口径](WORKFLOW.md#时间戳口径sitemap--feed--articlemodified_time)）；
+  对不上就整条构建失败，不部署。`npm test` 跑单元测试。
 - 写新文章：`source/_posts/` 下建 `标题.md`，格式见 [GRAMMAR.md → 写作规范](GRAMMAR.md#写作规范)。
 - 发布：提交推送到 GitHub `main` 分支，Cloudflare Pages 自动构建部署（约 1–2 分钟），无需手动操作。
 - 预览时安全头不生效是**已知限制**（见 [SECURITY.md → 陷阱 1](SECURITY.md#已知陷阱清单)），不要试图修。

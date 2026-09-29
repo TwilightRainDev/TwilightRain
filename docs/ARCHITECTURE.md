@@ -68,6 +68,7 @@ blog/
 |------|------|------|
 | 安全/路由 | `csp.js`、`redirects.js` | `_headers`、`_redirects` |
 | 构建辅助 | `commit-data.js`、`gen-thumbs.js` | 版本色块、360px 缩略图 |
+| 构建校验 | `verify-build.js` | 构建后逐个 URL 对 sitemap 的 lastmod 与源文件 front matter；挂在 `npm run build` 尾巴上，对不上即 exit 1 挡住部署。背景见 [WORKFLOW.md → 时间戳口径](WORKFLOW.md#时间戳口径sitemap--feed--articlemodified_time) |
 | 独立 CI | `indexnow-submit.js` | 拉线上 sitemap 向 IndexNow 提交；不进 `npm run build`，见 ADR-0017 |
 | 文章后处理 | `reading-time.js`、`heading-anchor.js`、`lazy-load.js`、`post-staleness.js`、`external-links.js`、`image-referrerpolicy.js` | 字数/锚点/懒加载/时效/外链安全 |
 | marked 扩展 | `marked-{admonitions,grid,fold,mermaid,card,bilibili,timeline,tabs}.js` | 正文扩展语法（fold/card 仅规范名） |

@@ -75,35 +75,46 @@ npm install        # 首次或依赖变更后
 `_config.yml` 的 `updated_option` 取 `'date'`，**不要改回 `'mtime'`**。`'mtime'` 取文件系统时间，
 而 Cloudflare Pages 每次部署都是全新克隆，checkout 会把所有文件的时间刷成那一刻——于是所有文章
 同时宣称「刚刚更新」。受影响的通道是 sitemap 的 `<lastmod>`、atom 的 `<updated>`、页面
-`article:modified_time` 与 JSON-LD `dateModified`。**这三条都没有守卫**：文章页上看得见的
-「更新于」由 [post-staleness.js](../scripts/post-staleness.js) 的 `updatedSet` 把着，
-只认 front matter 显式写的 `updated`，所以页面看上去一切正常。
+`article:modified_time` 与 JSON-LD `dateModified`。
 
 `'date'` 下，不写 `updated` 的文章回落到 front matter 的 `date`，与克隆时刻无关。
-**前提是每篇文章都写显式 `date:`**：`date` 与 `updated` 都缺时 Hexo 取文件 birthtime
-（`node_modules/hexo/dist/plugins/processor/post.js` 的 `data.date = stats.birthtime` 分支），
-全新克隆下同样等于构建时刻。
+**前提是每篇文章、每个页面都写显式 `date:`**：两者都缺时 Hexo 取文件统计时间
+（文章走 `processor/post.js` 的 `data.date = stats.birthtime`，页面走 `processor/asset.js`
+的 `data.date = stats.ctime`），全新克隆下同样等于构建时刻。
 
-判据——**文章面**应全是发布日期，不出现构建当天（列表页会出现，见下）：
+**守卫**：[verify-build.js](../scripts/verify-build.js) 挂在 `npm run build` 尾巴上
+（`npm run verify`）——构建完立刻拿 `public/sitemap.xml` 逐个 URL 对源文件 front matter，
+对不上就 exit 1，Cloudflare 构建失败即不部署。文章面与静态页都覆盖；首页与标签/分类归档页
+按设计跳过（见下）。文章页上看得见的「更新于」另由
+[post-staleness.js](../scripts/post-staleness.js) 的 `updatedSet` 把着，只认 front matter
+显式写的 `updated`——页面看着一切正常，不代表 sitemap 正常。
+
+本机复核前先 `npx hexo clean`：`public/` 热的时候 hexo 不重写比源文件新的产物，
+`npm run verify` 会拿上一次的 sitemap 下结论（实测一次：手工改过 `public/sitemap.xml`
+后重新 generate，该文件不被覆盖）。Cloudflare 每次全新构建，不受这条影响。
+
+判据（人工复核；自动那份看 `npm run verify`）——文章与静态页应各按自己的日期，不出现构建当天
+（列表页会出现，见下）：
 
 ```bash
-# 文章 URL 的日期应各不相同、且不等于构建当天
-grep -o '<lastmod>[^<]*' public/sitemap.xml | sort -u
 # 去重后应约等于条目数；塌成 1 就是又回到「全站同一时刻」的老毛病
+grep -o '<lastmod>[^<]*' public/sitemap.xml | sort -u
 grep -o '<updated>[^<]*' public/atom.xml | sort -u | wc -l
 # 应等于该篇的 date，而非构建当天
 grep -o 'article:modified_time" content="[^"]*"' public/2026/07/22/bilicompact-source/index.html
 ```
 
-**已知残留**（2026-09-29 线上实测：80 个 URL 里 60 个仍标构建当天，**16 篇文章全对**，两个来源）：
+**已知残留**（2026-09-29 实测：79 个 URL 里 56 个仍标构建当天，来源只剩一个）：
+`hexo-generator-sitemap` 的模板对 `/`、`/tags/*`、`/categories/*` 写死了 `sNow`
+（1 + 51 + 4，插件设计，与本配置无关）。**已拍板不改**——要改得把插件模板复制进仓库
+长期跟上游；它只影响列表页的抓取调度，且不报错。文章与静态页（`/settings/`、`/timeline/`、
+`/links/`）已全部对得上源文件日期，`/404.html` 已用 `sitemap: false` 移出 sitemap。
+再给页面补 `date:` 时取**该文件首次提交的时间**，不要写当前时间——目的是让 lastmod 稳定，
+不是让它变新：
 
-| 来源 | URL | 条数 |
-| --- | --- | --- |
-| hexo-generator-sitemap 模板写死的 `sNow`（插件设计，与本配置无关） | `/`、`/tags/*`、`/categories/*` | 56 |
-| 页面源文件没写 `date:`，回落到 `stats.ctime`（`processor/asset.js` 的 `data.date = stats.ctime` 分支），全新克隆下即构建时刻 | `/settings/`、`/timeline/`、`/links/`、`/404.html` | 4 |
-
-两类都只影响列表页与静态页的抓取调度，且**都不报错**——只会让这些 URL 每次部署对爬虫宣称「变了」。
-第一类要改得把插件模板复制进仓库长期跟上游；第二类给那 4 个页面补 `date:` 即可。当前都不动。
+```bash
+git log --reverse --format='%ad' --date=format:'%Y-%m-%d %H:%M:%S' -- source/<页面>/index.md | head -1
+```
 
 1. 用上面的构建命令本地构建，确认无报错，并核对日志里的 `timeline:` 行。
 2. `git push origin main`（凭据见上）。
