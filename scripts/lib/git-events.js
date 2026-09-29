@@ -8,10 +8,11 @@
  */
 'use strict';
 
-var EXCLUDED_PREFIXES = ['docs', 'chore', 'style', 'test'];
+// 冻结：导出的是数组本身，且同时是 parseGitLog 的默认值，改动它会静默改变默认口径
+var EXCLUDED_PREFIXES = Object.freeze(['docs', 'chore', 'style', 'test']);
 
-// `feat:` / `feat(scope):` / `feat!:` 都剥成同一形状
-var PREFIX_RE = /^([a-z]+)(?:\([^)]*\))?!?:\s*/;
+// `feat:` / `feat(scope):` / `feat!:` 都剥成同一形状；`Feat:` / `Docs:` 等大写同形处理
+var PREFIX_RE = /^([A-Za-z]+)(?:\([^)]*\))?!?:\s*/;
 var DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 /**
@@ -34,7 +35,7 @@ function parseGitLog(stdout, opts) {
 
     var m = subject.match(PREFIX_RE);
     if (m) {
-      if (excluded.indexOf(m[1]) !== -1) continue;
+      if (excluded.indexOf(m[1].toLowerCase()) !== -1) continue;
       subject = subject.slice(m[0].length);
     }
     if (!subject) continue;

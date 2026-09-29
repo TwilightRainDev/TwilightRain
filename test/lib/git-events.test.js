@@ -38,6 +38,22 @@ test('parseGitLog 支持自定义排除集', () => {
   assert.strictEqual(events.length, 2);
 });
 
+test('大写类型前缀与小写同形剥离', () => {
+  const events = parseGitLog('2026-09-21\tFeat: 大写类型前缀也要剥掉');
+  assert.deepStrictEqual(events, [
+    { date: '2026-09-21', title: '大写类型前缀也要剥掉', desc: '' }
+  ]);
+});
+
+test('大写维护类前缀同样被排除', () => {
+  assert.deepStrictEqual(parseGitLog('2026-09-21\tDocs: 大写维护类提交'), []);
+});
+
+test('外部改动导出表不影响默认口径', () => {
+  assert.throws(() => { EXCLUDED_PREFIXES.push('feat'); }, TypeError);
+  assert.strictEqual(parseGitLog('2026-09-21\tfeat: 功能提交').length, 1);
+});
+
 test('EXCLUDED_PREFIXES 含 docs/chore/style/test', () => {
   assert.deepStrictEqual(EXCLUDED_PREFIXES, ['docs', 'chore', 'style', 'test']);
 });
