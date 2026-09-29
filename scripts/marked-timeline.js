@@ -1,6 +1,6 @@
 /**
  * 文内时间线（Butterfly 批一迁移）
- * 与站点页 /timeline/（.timeline-item 展柜）类名隔离，使用 .post-timeline。
+ * 与站点页 /timeline/（.timeline-item）类名隔离，使用 .post-timeline。
  * DOM 由 scripts/lib/timeline-renderer.js 生成。
  *
  * 语法：
