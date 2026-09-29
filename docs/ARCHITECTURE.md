@@ -54,7 +54,7 @@ blog/
 │   ├── 404.md             # 自定义 404 页
 │   └── img/               # icon.svg；ori/ 原图入库，360px/ 构建生成（gitignore）
 ├── themes/ink/            # 定制主题（见 THEME.md）
-├── test/lib/              # 纯函数单测（npm test）
+├── test/lib/              # 单测与源码契约测试（npm test）
 ├── public/                # 构建产物（gitignore）
 └── .gitattributes         # 行尾 LF
 ```
@@ -75,26 +75,28 @@ blog/
 | 纯函数库 | `lib/{char-stats,breadcrumbs,av-bv-convert,external-links,image-referrerpolicy,timeline-renderer,git-events,heading-anchor}.js` | 被钩子或单测 require |
 | 时间线 helper | `timeline-page.js` | 数据源为构建期解析的 git 日志（`lib/git-events.js`），浅克隆或无 git 时页面为「暂无记录。」；渲染走 `lib/timeline-renderer.js` 的 page 变体 |
 
-## themes/ink/source/js/ink.js 模块
+## themes/ink/source/js/ 客户端脚本
 
-按文件内分段注释划分（改交互时先定位段落）：
+入口 `ink.js` 是 ESM 模块，由 `partial/head.ejs` 以 `type="module"` 加载，自身只写 import；
+实现在 `ink/` 下的模块里，入口按下表的顺序 import。模块之间不共享作用域、
+不互相调用，只通过 DOM 与自定义事件（如 `prefs.js` 派发的 `theme-change`）通信。
 
-| 模块 | 职责 |
+**新增模块追加到 `ink.js` 末尾的 import 列表**：入口 import 与 `ink/` 下的文件必须一一对应，
+`test/lib/ink-modules.test.js` 会以最小 DOM 桩在严格模式下跑各模块顶层代码来守着这件事。
+
+| 文件 | 职责 |
 |------|------|
-| 封面池 / 取色 | 首页无 cover 随机图；文章头图主色 |
-| 偏好设置 | 主题/字体/首页列数（`theme-preference` 等 localStorage） |
-| `layout-pref.js` | 首页网格/列表布局（`ink-home-layout`），独立 defer 脚本 |
-| 返回顶部 / 阅读进度 | 固定 FAB、顶栏进度条 |
-| 文章 TOC | 桌面双卡 + 移动端胶囊（滚动中 `.is-scrolling` 临时隐藏） |
-| 友链探测 | 主站 favicon 探测后切回 url |
-| 灯箱 | 文章图放大、展示图/原图切换（自研，ADR-0015） |
-| GitHub 卡片 | `api.github.com` 动态 meta（唯一 connect-src 例外） |
-| 代码复制 / 超长折叠 | `.copy-btn`、40 行阈值折叠 |
-| 归档展开 | `#archives-toggle` |
-| 二级菜单 / 汉堡抽屉 | 触摸展开；`<768px` 抽屉导航 |
-| Mermaid | 按需加载 `mermaid.min.js`，`fitMermaid` 超宽横滚 |
-| B 站懒嵌入 | IntersectionObserver + sandbox iframe |
-| tabs / md-text | 标签页切换、剧透块点击揭示 |
+| `ink.js` | 入口：按序 import 下列模块 |
+| `ink/image-color.js` | 正文图取色；首页无 cover 随机图与首页缩略图主色 |
+| `ink/prefs.js` | 主题/字体/首页列数（`theme-preference` 等 localStorage）；同步 giscus 主题 |
+| `ink/chrome.js` | 返回顶部、阅读进度条、文章 TOC（桌面双卡 + 移动端胶囊）、悬停资料卡 |
+| `ink/friend-links.js` | 友链主站探测（favicon）、头像加载失败回退首字 |
+| `ink/lightbox.js` | 文章页灯箱：展示图/原图切换（自研，ADR-0015） |
+| `ink/cards-and-code.js` | GitHub 卡片动态 meta（`api.github.com`，唯一 connect-src 例外）；代码块复制 |
+| `ink/widgets.js` | 归档展开、二级菜单、汉堡抽屉、Mermaid、代码超长折叠、B 站懒嵌入、tabs、md-text |
+| `layout-pref.js` | 首页网格/列表布局（`ink-home-layout`），独立的 defer 脚本，不在入口的模块图里 |
+
+文档别处提到「ink.js」而未指具体文件时，指这个入口及其加载的模块组。
 
 ## 构建产物生成链
 
@@ -114,7 +116,7 @@ blog/
 - 站点：TwilightRain，zh-CN，Asia/Shanghai
 - URL：`https://twilightrain.com`（旧域名 `twilightrain.pages.dev` 已整站 301），永久链接格式 `:year/:month/:day/:title/`
 - 首页分页：10 篇/页
-- `updated_option: mtime`（文章更新时间取文件修改时间）
+- `updated_option: date`（不写 `updated` 的文章，修改时间回落到 `date`；取 `mtime` 会随全新克隆漂移，见 [WORKFLOW.md](WORKFLOW.md#时间戳口径sitemap--feed--articlemodified_time)）
 - 语法高亮：highlight.js（行号开）
 - 字体/主题偏好、giscus 评论的开关在**主题配置** `themes/ink/_config.yml`，不在主配置
 

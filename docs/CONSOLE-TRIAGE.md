@@ -39,7 +39,7 @@
 
 ### GitHub API 失败
 
-`::card{type="github"}` 卡片保留静态 owner/repo、desc；stars/forks 等为渐进增强（`themes/ink/source/js/ink.js`），失败不应判「页面损坏」。
+`::card{type="github"}` 卡片保留静态 owner/repo、desc；stars/forks 等为渐进增强（`themes/ink/source/js/ink/cards-and-code.js`），失败不应判「页面损坏」。
 
 ### giscus postMessage
 

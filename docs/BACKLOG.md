@@ -3,6 +3,8 @@
 本文件记录**已决定要做、但尚未排期**的事项。与 [EXCLUDED.md](EXCLUDED.md) 相反：
 EXCLUDED 是「不要做」，本文件是「要做，等下一轮」。
 
+**当前没有未排期的事项**，下面三条均已落地，留作决策来源的索引。
+
 ## IndexNow 提交
 
 - 来源：ADR-0009（2026-09-25 拍板保留密钥文件）
@@ -19,7 +21,7 @@ EXCLUDED 是「不要做」，本文件是「要做，等下一轮」。
 ## 大型 `ink.js` 拆分
 
 - 来源：[EXCLUDED.md](EXCLUDED.md)「计划范围外」条目（原写「单独 backlog」）
-- 现状：`themes/ink/source/js/ink.js` 单文件承载全部交互模块（模块清单见 ARCHITECTURE.md 的
-  ink.js 模块表）
-- 要做：按模块边界拆分，降低单文件维护面
-- 已定：**不为拆而拆**，不单独排期；仅在确有维护需要时进行
+- 现状：**已落地（2026-09-29）**。入口 `themes/ink/source/js/ink.js` 保留原名与单一加载点
+  （`type="module"`），实现拆进 `js/ink/` 下七个模块；清单、import 顺序约定与冒烟测试见
+  [ARCHITECTURE.md → themes/ink/source/js/](ARCHITECTURE.md#themesinksourcejs-客户端脚本)
+- 原定：**不为拆而拆**，不单独排期；仅在确有维护需要时进行

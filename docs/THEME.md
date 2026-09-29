@@ -183,13 +183,12 @@ themes/ink/layout/
 
 - 全部样式在 `themes/ink/source/css/style.min.css` 单文件中（原主题特色：可直接套用
   bearblog 系样式代码）。改动时保持单文件约定，避免新增散装 css 引入点。
-- `themes/ink/source/js/ink.js`：**defer 加载**，主题偏好（theme-preference / font-preference /
-  columns-preference）在 defer 阶段立即应用，兼容旧值（light/dark）。设置页选择
-  会写入 localStorage。
-  模块清单：图片说明、随机封面、主题/字体/列数偏好、返回顶部、阅读进度条、TOC、
-  悬停资料卡、图片灯箱绑定、代码块复制、代码块超长折叠、归档折叠、
-  友链主站探测、二级菜单触摸交互、Mermaid 图表按需渲染、B 站懒嵌入。
-  **主题变更通知**：偏好模块 `applyTheme` 末尾 dispatch `theme-change` 事件
+- `themes/ink/source/js/ink.js`：ESM 入口，`partial/head.ejs` 以 **`type="module"`** 加载
+  （模块脚本自带 defer 语义），自身只写 import；实现在 `js/ink/` 下的模块里，
+  文件与职责清单见 [ARCHITECTURE.md](ARCHITECTURE.md#themesinksourcejs-客户端脚本)。
+  主题偏好（theme-preference / font-preference / columns-preference）在装载阶段立即应用，
+  兼容旧值（light/dark）；设置页选择会写入 localStorage。
+  **主题变更通知**：`prefs.js` 的 `applyTheme` 末尾 dispatch `theme-change` 事件
   （detail.theme = 实际主题），依赖主题的组件监听它（当前仅 mermaid 重渲染）。
 
 ## 首页列数（设置页 → 全端统一）
@@ -396,8 +395,8 @@ themes/ink/layout/
   由 `ink.js` 在 DOMContentLoaded 时从 `/img/360px/covers/` 池随机赋 src，并写
   `data-ori` 指向 `/img/ori/covers/`——**每次页面加载都重新随机**。
 - **加新封面图**：原图放入 `source/img/ori/covers/cover-NN.jpg` 连续编号，跑
-  `npm run thumbs`（或直接 `npm run build`），并同步更新 `ink.js` 中 `coverPool`
-  循环上界。页面 cover / 正文图一律引用 `/img/360px/...`。
+  `npm run thumbs`（或直接 `npm run build`），并同步更新 `js/ink/image-color.js` 中
+  `coverPool` 的循环上界（上限 = 封面张数）。页面 cover / 正文图一律引用 `/img/360px/...`。
 - **灯箱**：文章图与头图点开后，左上角「查看原图」在灯箱内切到 ori（中键仍新标签打开）。
 
 ## 图片双轨（ori / 360px）
@@ -407,10 +406,11 @@ themes/ink/layout/
 - 同一逻辑资源共用相对路径 `<rel>`（例：`covers/cover-01.jpg`）。
 - 正文 / `cover` / `:::grid` 照片墙等**展示用**路径写 `/img/360px/...`。
 - 每个可放大的 `<img>` 带 `data-ori="/img/ori/..."`，供「查看原图」使用。写 `data-ori` 分两类：
-  **有 cover** 的首页缩略图与文章头图由模板写死（`index.ejs:21`、`post.ejs:19`）；
-  **无 cover** 的与正文图由 `ink.js` 运行时补——无 cover 时模板只输出 `<img data-random-cover>`
-  （`index.ejs:24`、`post.ejs:21`），由 `ink.js:101-105` 从封面池取图并写 `data-ori`；
-  正文图（含 `:::grid` 照片墙内的图）由 `ink.js:703-708` 按 `/img/360px/` 前缀补。
+  **有 cover** 的首页缩略图与文章头图由模板写死（`index.ejs` 首页缩略图、`post.ejs` 头图）；
+  **无 cover** 的与正文图由运行时的 `js/ink/image-color.js` 封面池循环与
+  `js/ink/lightbox.js` 的 `ensureOri` / `resolveOri` 补——无 cover 时模板只输出
+  `<img data-random-cover>`（同上两处模板），灯箱进页时按 `/img/360px/` 前缀兜底推导。
+- **别在文档里写死模板或脚本的行号**：增删一行就漂移，指函数名、元素名或文件名。
 - `og:image` / JSON-LD 等社交预览使用 **ori**（质量优先）。
 - 生成：`scripts/gen-thumbs.js` 扫描 ori，居中裁 360×360，写入 `source/img/360px/`；
   `npm run build` 与 `npm run server` 都先跑它，再启动 hexo。

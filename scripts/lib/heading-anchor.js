@@ -1,6 +1,6 @@
 'use strict';
 
-// 与 ink.js TOC 相同的 slug 规则（themes/ink/source/js/ink.js:313）
+// slug 规则与 js/ink/chrome.js 的 TOC 保持一致（同一套规则，深链 #hash 才命中）
 function slugify(text) {
   return String(text || '').trim().toLowerCase().replace(/[^a-z0-9一-鿿]+/g, '-').replace(/^-|-$/g, '');
 }
