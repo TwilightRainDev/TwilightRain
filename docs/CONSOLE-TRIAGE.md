@@ -5,7 +5,7 @@
 
 **关联文档**：[SECURITY.md](SECURITY.md)（CSP / loopback 误报）、
 [THEME.md](THEME.md#配置themesink_configyml)（giscus 配置）；
-移动端相关条目见 `E:\work_zone\Docs\projects\Blog\Blog-遗留项与技术债.md`（TD-014）。
+移动端相关条目见 `E:\WorkZone\Docs\projects\Blog\Blog-遗留项与技术债.md`（TD-014）。
 
 **验收页**：`/2026/08/17/blog-writing-features/` | 环境：真机 + PC Edge
 

@@ -94,7 +94,7 @@ fetch 前先评估（默认收紧取向）；若卡片功能移除，此行一�
 
 10. **Cloudflare Web Analytics 与 CSP 冲突（TD-004，已关闭）**：Cloudflare
     Dashboard 的 Web Analytics 注入已关闭，CSP 不变
-    （台账见 `E:\work_zone\Docs\projects\Blog\Blog-遗留项与技术债.md`）。若日后重新开启，
+    （台账见 `E:\WorkZone\Docs\projects\Blog\Blog-遗留项与技术债.md`）。若日后重新开启，
     须二选一：关注入，或将 `https://static.cloudflareinsights.com` 加入 `script-src`
     ——该 Dashboard 会注入 `static.cloudflareinsights.com/beacon.min.js`，
     未白名单则控制台每页报 CSP 错误。
@@ -106,7 +106,7 @@ fetch 前先评估（默认收紧取向）；若卡片功能移除，此行一�
   `122437146+TwilightRainDev@users.noreply.github.com`（本地两个仓库
   user.email 都是此地址）；**历史提交仍含真实邮箱**——GitHub 账号
   建议开启 "Keep my email address private"。推送凭据不落库（在
-  `E:\work_zone\ApiKey`）。
+  `E:\WorkZone\ApiKey`）。
 - `docs/BlogPrivate.txt` 是私人备忘，不入库（`.gitignore` 单独忽略）；
   docs/ 其余内容可放心提交。
 - 不要在 `source/`、`themes/ink/` 中放任何密钥、Cookie、token 文本。

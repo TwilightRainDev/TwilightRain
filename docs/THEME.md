@@ -354,15 +354,16 @@ themes/ink/layout/
 
 ## 时间线页（timeline.ejs）
 
-- 一个独立页：`/timeline/`，数据在 `source/timeline/index.md` front matter
-  （`items` 数组，现为构建期解析 git 日志后的兜底），布局 timeline.ejs。
+- 一个独立页：`/timeline/`，数据由构建期解析 git 日志生成，布局 timeline.ejs。
+  `source/timeline/index.md` 只保留 title/layout/comments，**没有** `items` 兜底。
   `/timeline/` 经 helper `timeline_page_html` 调用共享渲染器（年份分组）。
+  浅克隆或 git 失败时页面为「暂无记录。」（见 [ADR-0011](adr/0011-timeline-from-git.md)）。
   `/projects/`、`/skills/` 已并入关于页，见
   [ADR-0012](adr/0012-nav-restructure.md)。
 - 导航：主题 `_config.yml` `menu` 的「关于」子菜单含「时间线」；
   「展柜」二级菜单层级已取消（见 [ADR-0012](adr/0012-nav-restructure.md)）。
-- **陷阱**：front matter 数组内 `date: 2026-07-30` 会被 YAML
-  解析为 Date 对象（裸日期是 YAML timestamp 类型），模板里 `.substring()`
+- **陷阱**：若再往时间线 front matter 写 `items` 数组，其中 `date: 2026-07-30`
+  会被 YAML 解析为 Date 对象（裸日期是 YAML timestamp 类型），模板里 `.substring()`
   直接崩溃、页面输出 0 字节——**日期值必须加引号**（`date: "2026-07-30"`）。
 
 ## 友链页（links.ejs）

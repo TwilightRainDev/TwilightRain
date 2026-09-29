@@ -4,7 +4,7 @@
 
 ```
 ┌────────────────────────────────────────────────────────────┐
-│ 本地（Windows，E:\work_zone\Blog）                         │
+│ 本地（Windows，E:\WorkZone\Blog）                         │
 │  Hexo 8.1.2 + Node 20  →  hexo generate → public/         │
 │  scripts/csp.js       → public/_headers   （安全头）       │
 │  scripts/redirects.js → public/_redirects（重定向）        │
@@ -15,6 +15,7 @@
 │ GitHub：TwilightRainDev/TwilightRain（main = 源码）        │
 │    └─ Cloudflare Pages 监听 main，自动拉取构建             │
 │       （构建命令 npm run build，输出 public/）             │
+│    └─ GitHub Actions IndexNow：提交线上 sitemap（非构建）  │
 └────────────────────────────────────────────────────────────┘
         ▼
   https://twilightrain.com（Cloudflare 边缘分发）
@@ -41,7 +42,7 @@ RSS/首页/搜索/站点地图/标签）、`hexo-renderer-{ejs,marked}`（模板
 ```
 blog/
 ├── _config.yml            # Hexo 主配置（站点信息/URL/生成器/部署）
-├── package.json           # 依赖与 npm scripts（build/clean/server/test）
+├── package.json           # 依赖与 npm scripts（build/clean/server/test/indexnow）
 ├── CLAUDE.md              # Claude Code 会话提示（精简版，细节指向 docs/）
 ├── docs/                  # 维护手册（入库）
 │   └── adr/               # 架构决策记录
@@ -67,11 +68,12 @@ blog/
 |------|------|------|
 | 安全/路由 | `csp.js`、`redirects.js` | `_headers`、`_redirects` |
 | 构建辅助 | `commit-data.js`、`gen-thumbs.js` | 版本色块、360px 缩略图 |
+| 独立 CI | `indexnow-submit.js` | 拉线上 sitemap 向 IndexNow 提交；不进 `npm run build`，见 ADR-0017 |
 | 文章后处理 | `reading-time.js`、`heading-anchor.js`、`lazy-load.js`、`post-staleness.js`、`external-links.js`、`image-referrerpolicy.js` | 字数/锚点/懒加载/时效/外链安全 |
 | marked 扩展 | `marked-{admonitions,grid,fold,mermaid,card,bilibili,timeline,tabs}.js` | 正文扩展语法（fold/card 仅规范名） |
 | 系列 | `series.js` + `lib/series-*.js` | `::series` 与分组 |
 | 纯函数库 | `lib/{char-stats,breadcrumbs,av-bv-convert,external-links,image-referrerpolicy,timeline-renderer,git-events,heading-anchor}.js` | 被钩子或单测 require |
-| 时间线 helper | `timeline-page.js` | 数据源为构建期解析的 git 日志（`lib/git-events.js`），浅克隆或无 git 时回退 front matter 兜底快照；渲染走 `lib/timeline-renderer.js` 的 page 变体 |
+| 时间线 helper | `timeline-page.js` | 数据源为构建期解析的 git 日志（`lib/git-events.js`），浅克隆或无 git 时页面为「暂无记录。」；渲染走 `lib/timeline-renderer.js` 的 page 变体 |
 
 ## themes/ink/source/js/ink.js 模块
 
@@ -119,4 +121,4 @@ blog/
 ## 决策档案
 
 重大取舍见 [adr/README.md](adr/README.md)。work_zone 侧的历史决策与债务台账见
-`E:\work_zone\Docs\projects\Blog\Blog-遗留项与技术债.md`。
+`E:\WorkZone\Docs\projects\Blog\Blog-遗留项与技术债.md`。

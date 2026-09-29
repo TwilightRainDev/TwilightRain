@@ -50,6 +50,12 @@ test('renderPostTimeline 无 headline 时不输出 headline 节点', function ()
 test('renderPageTimeline 无记录', function () {
   assert.equal(renderer.renderPageTimeline([]), '<p>暂无记录。</p>');
   assert.equal(renderer.renderPageTimeline(null), '<p>暂无记录。</p>');
+  assert.equal(renderer.renderPageTimeline(undefined), '<p>暂无记录。</p>');
+  assert.doesNotThrow(function () {
+    renderer.renderPageTimeline(undefined);
+    renderer.renderPageTimeline(null);
+    renderer.renderPageTimeline([]);
+  });
 });
 
 test('renderPageTimeline 按日期降序并按年分组', function () {

@@ -6,7 +6,7 @@
 - 依赖已提交 `package-lock.json`；改依赖后同步更新锁文件
 
 ```bash
-cd E:/work_zone/Blog
+cd E:/WorkZone/Blog
 npm install        # 首次或依赖变更后
 ```
 
@@ -32,7 +32,7 @@ npm install        # 首次或依赖变更后
 ## 提交与推送（重要）
 
 仓库在 Windows 本机、**无 gh CLI、无 SSH 密钥**，推送凭据走
-`E:\work_zone\ApiKey` 目录下的 GitHub PAT（Basic 认证 extraheader 注入）。
+`E:\WorkZone\ApiKey` 目录下的 GitHub PAT（Basic 认证 extraheader 注入）。
 具体命令形式以实际凭据注入方式为准（git 全局/仓库级 http.extraheader 或
 `git -c http.extraheader=... push`）。
 
@@ -53,8 +53,8 @@ npm install        # 首次或依赖变更后
 
 `/timeline/` 的事件在构建期解析 `git log` 生成（机制见
 [adr/0011-timeline-from-git.md](adr/0011-timeline-from-git.md)）。**浅克隆下 `git log` 只返回极短历史，
-页面会静默退回 7 条手写兜底快照并 exit 0**——不报错、不告警，页面看起来正常，同类「绿着出错」见
-[adr/0008](adr/0008-build-residue-cleanup.md)。
+页面渲染「暂无记录。」且构建仍 exit 0**——helper 会 `warn`，但 Cloudflare 仍当成功。
+同类「绿着出错」见 [adr/0008](adr/0008-build-residue-cleanup.md)。
 
 - **规则**：构建命令（Cloudflare Pages 与本机通用）必须是幂等的：
 
@@ -63,12 +63,12 @@ npm install        # 首次或依赖变更后
   ```
 
   即：完整仓库上判据为 false、直接构建；浅克隆上才补历史，且 `--unshallow` 真失败时不会继续构建
-  （不会静默退回兜底）。
+  （不会带着空时间线上线）。
 - **判据**：构建日志里出现 `timeline: 从 git 日志取到 N 条事件`。
 - **反例**：
   - 写成裸的 `git fetch --unshallow && npm run build`——`--unshallow` 在完整仓库上以
     `fatal: --unshallow on a complete repository does not make sense` 退出 128，`&&` 于是吃掉后面的构建。
-  - `/timeline/` 只显示 7 条手写条目，即为浅克隆退化，构建命令需修正。
+  - `/timeline/` 显示「暂无记录。」即为浅克隆退化，构建命令需修正。
 
 1. 用上面的构建命令本地构建，确认无报错，并核对日志里的 `timeline:` 行。
 2. `git push origin main`（凭据见上）。
@@ -79,6 +79,10 @@ npm install        # 首次或依赖变更后
    - [ ] 浏览器 Network 面板确认 `_headers` 生效（CSP 头存在）
    - [ ] 评论 iframe 宽度正常（非 300px 回退，说明 giscus 样式被 CSP 放行）
    - [ ] 不存在的路径返回 404 状态页
+
+IndexNow 提交与构建无关：推 `main` 后 GitHub Actions 会等 Pages 再提交线上 sitemap。
+本地要手动跑用 `npm run indexnow`（`--dry-run` 只打印）。机制见
+[adr/0017-indexnow-submit.md](adr/0017-indexnow-submit.md)。不要把这一步加进 Cloudflare 构建命令。
 
 ## 行尾与编码
 

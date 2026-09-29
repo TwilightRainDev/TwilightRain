@@ -1,10 +1,8 @@
 /**
  * 站点展柜 /timeline/：事件来自构建期解析的 git 日志。
  *
- * 数据源优先级：
- *   1. git 日志（构建环境有完整历史时）
- *   2. front matter 的 items（浅克隆、无 git、解析为空时兜底）
- *
+ * 浅克隆、无 git、或解析为空时页面渲染「暂无记录。」（已知代价，见 ADR-0011）。
+ * helper 仍接受 page.items，但时间线页已不再提供该字段。
  * 渲染仍走共享渲染器 lib/timeline-renderer.js（ADR-0005），类名不变。
  */
 'use strict';
@@ -23,8 +21,8 @@ function readGitEvents() {
     }).trim();
     if (shallow === 'true') {
       hexo.log.warn(
-        'timeline: 当前为浅克隆，git 日志不完整，改用 front matter 兜底列表。' +
-        '请在 Cloudflare Pages 构建命令前置 `git fetch --unshallow`。'
+        'timeline: 当前为浅克隆，git 日志不完整，页面将显示「暂无记录。」。' +
+        '完整历史要求见 docs/WORKFLOW.md 「构建前置」。'
       );
       return [];
     }
@@ -40,7 +38,7 @@ function readGitEvents() {
     );
     return parseGitLog(stdout);
   } catch (e) {
-    hexo.log.warn('timeline: 读取 git 日志失败，改用 front matter 兜底列表：' + e.message);
+    hexo.log.warn('timeline: 读取 git 日志失败，页面将显示「暂无记录。」：' + e.message);
     return [];
   }
 }

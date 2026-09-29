@@ -20,5 +20,6 @@
 | [0014](0014-egg-page-orphan.md) | `/egg/` 是隐藏彩蛋页，无入口是刻意的 | 已实施 |
 | [0015](0015-self-hosted-lightbox.md) | 自研灯箱，下线 fancybox + jQuery | 已实施 |
 | [0016](0016-wikilinks-removed.md) | 双链复核后删除整支 | 已实施 |
+| [0017](0017-indexnow-submit.md) | IndexNow 提交走独立 CI | 已实施 |
 
 新增决策：在本目录追加 `000N-简短标题.md`，并在本表登记一行。
