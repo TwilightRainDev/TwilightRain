@@ -2,6 +2,7 @@
 title: Hexo博客从GHP到CFP迁移记录
 excerpt: 动机与建项目，以及两次部署踩坑。
 date: 2026-07-21 14:45:00
+updated: 2026-09-28 18:00:00
 tags:
   - Hexo
   - Cloudflare
@@ -38,6 +39,10 @@ categories:
 | Framework preset | None（列表中没有 Hexo） |
 | Build command | `npm run build` |
 | Build directory | public |
+
+:::admon[note 后续注记]
+本站现在的 `npm run build` 已不是当时的裸 `hexo generate`，而是 `commit-data.js && gen-thumbs.js && hexo generate`。时间线还要求构建环境有完整 git 历史，命令写法见仓库 `docs/WORKFLOW.md` 的「构建前置」。那是本站特定前置，不是这篇通用迁移记录该写进步骤的内容。
+:::
 
 1. 点击 **Save and Deploy**
 
@@ -144,5 +149,9 @@ Cloudflare Pages 会自动检测到 push 事件，拉取代码、安装依赖、
 1. **GitHub Pages 推静态文件，Cloudflare Pages 推源代码**，这两种部署方式对仓库内容的要求完全不同，搞清楚区别才能避免踩坑。
 2. **Production branch 要匹配**，Cloudflare Pages 配置的部署分支必须和 GitHub 仓库的默认分支一致。
 3. **Cloudflare Pages 的构建命令记得用 `npm run build`**，而不是 `hexo generate`。确保 `package.json` 的 `scripts` 中有 `"build": "hexo generate"`。
+
+:::admon[note 后续注记]
+`"build": "hexo generate"` 已不是本站现状。当前 `build` 会先跑 commit-data 与缩略图，再 `hexo generate`。通用迁移仍然可以自己写更简单的 `build`；不要把本站这条链路抄回去当最低要求。
+:::
 
 希望这篇文章能帮到同样想迁移到 Cloudflare Pages 的朋友。如果你也遇到了类似的报错，对照上面的步骤检查一下，大概率能解决问题。

@@ -23,8 +23,31 @@ test('CSP 不再白名单 cdnjs', function () {
   assert.doesNotMatch(csp, /cdnjs/);
 });
 
-test('ink.js 自研灯箱，不再依赖 jQuery / fancybox', function () {
-  var js = read('themes/ink/source/js/ink.js');
+// 主题客户端脚本全集：入口 + js/ink/ 下的模块。
+// 跳过 vendored 的 mermaid.min.js 与 mathjax/（第三方产物，与灯箱无关）。
+function themeJs() {
+  var dir = path.join(root, 'themes', 'ink', 'source', 'js');
+  var files = [];
+  var all = fs.readdirSync(dir);
+  var i;
+  for (i = 0; i < all.length; i++) {
+    if (all[i].endsWith('.js') && all[i] !== 'mermaid.min.js') {
+      files.push(path.join(dir, all[i]));
+    }
+  }
+  var modDir = path.join(dir, 'ink');
+  if (fs.existsSync(modDir)) {
+    var mods = fs.readdirSync(modDir);
+    for (i = 0; i < mods.length; i++) {
+      if (mods[i].endsWith('.js')) files.push(path.join(modDir, mods[i]));
+    }
+  }
+  return files.map(function (f) { return fs.readFileSync(f, 'utf8'); }).join('\n');
+}
+
+test('主题脚本已无 jQuery / fancybox，自研灯箱在位', function () {
+  var js = themeJs();
+  assert.ok(js.length > 0, '没扫到主题脚本');
   assert.doesNotMatch(js, /jQuery|fancybox|afterClose\.fb|data-fancybox/);
   assert.match(js, /ink-lb/);
 });

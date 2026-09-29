@@ -13,7 +13,8 @@
 ```yaml
 ---
 title: 文章标题
-date: 2026-08-08 14:00:00     # 决定 URL 与排序（:year/:month/:day/:title/）
+date: 2026-08-08 14:00:00     # 必写：决定 URL 与排序（:year/:month/:day/:title/），
+                              #   同时是 sitemap/feed/og 修改时间的回落值
 excerpt: 一句话摘要           # 首页摘要：一律手写（见下方说明，不用 <!-- more -->）
 tags:
   - 标签1
@@ -22,9 +23,9 @@ categories:
 comments: true                 # 默认开评论；不需要则 false
 cover: /img/360px/covers/xxx.jpg  # 可选：封面（页面展示 360px；og:image 自动改写为 ori）
 pinned: true                   # 可选：置顶到首页最前（不写则按日期排序）
-updated: 2026-08-18 10:00:00   # 可选：更新日期（显式写才在文章页显示"更新于"；
-                               #   Hexo 默认 updated 是文件 mtime，git checkout
-                               #   会刷新，勿依赖隐式值，不写则不显示）
+updated: 2026-08-18 10:00:00   # 可选：更新日期。只有显式写才在文章页显示"更新于"；
+                               #   不写则 sitemap / atom / og 的修改时间回落到上面的 date
+                               #   （完整口径与判据见 WORKFLOW.md「时间戳口径」）
 math: true                     # 可选：强制加载 MathJax；false 强制不加载；缺省自动检测
 ---
 ```

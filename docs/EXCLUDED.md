@@ -11,7 +11,7 @@
 |------|----------|
 | PlantUML | 技术文可能用到，但接入成本高，暂不引入 |
 | Tab 代码块（code-group） | 过特化；现有 `:::tabs` 已能做代码对比 |
-| 图表 pan-zoom | 由自研全屏放大替代（未做） |
+| 图表 pan-zoom | 已由自研灯箱替代（[ADR-0015](adr/0015-self-hosted-lightbox.md)，仅全屏看图，无拖拽/捏合缩放） |
 | AI 参与度标注 | 与个人写作习惯不符 |
 | 写作统计挂件 | 不需要；字数 / 阅读时间已够 |
 
@@ -24,12 +24,12 @@
 | 相册加密 | 前端密码门等于提示有内容，不做 |
 | 热门文章页 | 文章量小，首页置顶已能突出 |
 
-## 第三批：视需求（6；IndexNow 已转 BACKLOG，其余整批不做）
+## 第三批：视需求（6；IndexNow 已落地，其余整批不做）
 
 | 功能 | 排除理由 |
 |------|----------|
 | 课表页 | 非技术博客刚需 |
-| IndexNow 提交 | 密钥文件已就位（站点根 `7facecda-*.txt`，见 ADR-0009），提交环节未做；**已转 [BACKLOG.md](BACKLOG.md) 待排期，不属「整批不做」** |
+| IndexNow 提交 | 密钥文件已就位（站点根 `7facecda-*.txt`，见 ADR-0009）；提交走独立 CI，见 [ADR-0017](adr/0017-indexnow-submit.md)，不属「整批不做」 |
 | GitHub Contributions 挂件 | 纯装饰，要 token 和构建期网络 |
 | 捐赠 / 赞助页 | 非刚需；真要做复制静态页即可 |
 | 分享海报 | UI 工作量大，非核心 |
@@ -42,7 +42,7 @@
 | 项 | 说明 |
 |----|------|
 | PIO / 论坛 / ACGN 页 / 密码文章 | 定位不符 |
-| 大型 `ink.js` 拆分 | 已转入 [BACKLOG.md](BACKLOG.md#大型-inkjs-拆分)，不为拆而拆 |
+| 大型 `ink.js` 拆分 | 不为拆而拆，2026-09-29 因实际维护需要已落地，见 [BACKLOG.md](BACKLOG.md#大型-inkjs-拆分) |
 | 已删文章的 301 | 旧 URL 允许 404，不补 301（如 `bilicompact-complete`、`bilicompact-source-v2`、`blog-writing-features-part2`） |
 
 ## 已删除的页面（勿重加）

@@ -1287,7 +1287,6 @@ pre:hover .copy-btn {
     display: flex;
     align-items: center;
     padding: 4px 0;
-}
     user-select: none;
 }
 
@@ -3228,7 +3227,7 @@ figure.highlight {
 }
 
 /* ======================== Butterfly 批一（2026-08-21） ========================
-   文内 timeline / btn / label；类名与站点 /timeline/ 展柜隔离。 */
+   文内 timeline / btn / label；类名与站点页 /timeline/ 隔离。 */
 
 /* :::text 剧透揭示（拍板 M2） */
 .md-text {

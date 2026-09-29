@@ -2,6 +2,7 @@
 title: blog 能用就行的历史遗留
 excerpt: 目录多套一层，文档里留着 A 盘路径，overrides 钉着当时的最新版，脚本是 CRLF。四个能用就行的决策，在同一天被翻出来。
 date: 2026-09-21 10:30:00
+updated: 2026-09-28 18:00:00
 tags:
   - 博客
   - Git
@@ -66,6 +67,10 @@ npm 在装依赖时报了 8 个漏洞，既然要动依赖就一并处理。
 ## 四、行尾判断错了两回
 
 扫描行尾时发现 `scripts/gen-thumbs.js`（115 行）和 `scripts/img-thumbs.js`（17 行）是 CRLF。仓库的约定是 LF，`.gitattributes` 里写着 `* text=auto eol=lf`，`CLAUDE.md` 也声明「行尾 LF 已统一」。
+
+:::admon[note 后续注记]
+`scripts/img-thumbs.js` 已删除。缩略图入口只剩 `scripts/gen-thumbs.js` 这一条 CLI。上面这句在发布时为真。
+:::
 
 第一次判断错了。我用 `grep -c $'\r'` 统计，报出 `docs/` 下三个文件全是 CRLF。那是 Git Bash 下的假阳性，换成字节级统计，`docs/` 是干净的 LF。
 

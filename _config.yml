@@ -83,7 +83,11 @@ meta_generator: true
 date_format: YYYY-MM-DD
 time_format: HH:mm:ss
 ## updated_option supports 'mtime', 'date', 'empty'
-updated_option: 'mtime'
+## 用 'date' 不用 'mtime'：'mtime' 取文件系统时间，Cloudflare Pages 每次全新克隆
+## 都会把它刷成 checkout 时刻，于是 sitemap / atom / article:modified_time 全站
+## 宣称"刚刚更新"。'date' 回落到 front matter 的 date，克隆无关；显式写了
+## updated 的文章不受影响。落地与判据见 docs/WORKFLOW.md。
+updated_option: 'date'
 
 # Pagination
 ## Set per_page to 0 to disable pagination

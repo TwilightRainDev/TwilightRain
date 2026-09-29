@@ -4,8 +4,6 @@
 
 已实施
 
-本决策保留项中的 `/skills/` 独立页部分已被 [ADR-0012](0012-nav-restructure.md) 取代（该页已删除），末态见该文。
-
 ## 决策
 
 依据 `source/_posts` 的用量检索与当轮功能扫描。
@@ -14,4 +12,4 @@
 
 产品面：`::inline`（btn/label）整支删除，仅样板文在用；按钮用 Markdown 链接或卡片，标签用提示块或加粗。`::card` 收敛为 `github` + `link`；site / intro / `:::card-group` 仅样板文在用且维护面最大（截图路径、占位图、favicon 回退、Playwright 可选链），连同 `screenshot-cards.js`、`lib/favicon-fallback.js`、`site-card-placeholder.svg` 一起删除。友链页继续用 `links.ejs`，不改用文内卡片。
 
-保留项（拍板不删，勿当缺口）：`:::tabs`、`::bilibili`、`::series`、文内 `:::timeline`、MathJax、`/skills/` 等独立页、关于页评论。
+保留项（拍板不删，勿当缺口）：`:::tabs`、`::bilibili`、`::series`、文内 `:::timeline`、MathJax、关于页评论。

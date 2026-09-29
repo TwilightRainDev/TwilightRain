@@ -71,7 +71,9 @@
     <% } %>
 
     <script src="/js/layout-pref.js" defer></script>
-    <script src="/js/ink.js" defer></script>
+    <%# ink.js 是模块入口（import js/ink/ 下的模块）。type="module" 自带 defer 语义，
+         与 layout-pref.js 同属「解析完成后按文档序执行」，故写不写 defer 都一样。 %>
+    <script src="/js/ink.js" type="module"></script>
     <link rel="shortcut icon" href="<%= url_for(theme.favicon) %>" type="image/x-icon" />
 
     <%# MathJax 按需加载：仅正文含公式标记的页注入。

@@ -22,4 +22,3 @@
 
 - 文章页不再请求 cdnjs；CSP 白名单少一个域。
 - 灯箱行为以 [规格](../specs/2026-09-26-lightbox-design.md) 为准，不再对齐 fancybox 的工具栏 / 缩放手势。
-- ADR-0003 里「cdnjs 放行 fancybox/jquery」一条由本决策取代。

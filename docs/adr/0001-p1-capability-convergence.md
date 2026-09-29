@@ -18,10 +18,9 @@ ink 主题累积了多套「文末推荐」「评论挂件」「Mermaid 双轨�
 - 旧折叠语法 `:::hide` / `:::fold` / `:::folding`
 
 保留：系列文、prev/next、giscus、客户端 Mermaid、站点卡三件套。
-  （双链后由 [ADR-0016](0016-wikilinks-removed.md) 删除，不在本条回写。）
 
 ## 后果
 
-- 文末「还有什么可读」主要靠双链 + 系列 + 上下篇
+- 文末「还有什么可读」主要靠系列 + 上下篇
 - Mermaid 仅客户端渲染，首屏略慢但 CSP 与构建更简单
 - `npm test` 移除 `related-posts.test.js`
