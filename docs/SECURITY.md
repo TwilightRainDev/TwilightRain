@@ -93,8 +93,7 @@ fetch 前先评估（默认收紧取向）；若卡片功能移除，此行一�
    `'unsafe-inline'`），也不可取。
 
 10. **Cloudflare Web Analytics 与 CSP 冲突（TD-004，已关闭）**：Cloudflare
-    Dashboard 的 Web Analytics 注入已关闭，CSP 不变
-    （台账见 `E:\WorkZone\Docs\projects\Blog\Blog-遗留项与技术债.md`）。若日后重新开启，
+    Dashboard 的 Web Analytics 注入已关闭，CSP 不变（理由见下）。若日后重新开启，
     须二选一：关注入，或将 `https://static.cloudflareinsights.com` 加入 `script-src`
     ——该 Dashboard 会注入 `static.cloudflareinsights.com/beacon.min.js`，
     未白名单则控制台每页报 CSP 错误。

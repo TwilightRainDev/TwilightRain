@@ -4,8 +4,7 @@
 改 `ink.js`、giscus、GitHub 卡片或站点卡回退逻辑前可先查此表。
 
 **关联文档**：[SECURITY.md](SECURITY.md)（CSP / loopback 误报）、
-[THEME.md](THEME.md#配置themesink_configyml)（giscus 配置）；
-移动端相关条目见 `E:\WorkZone\Docs\projects\Blog\Blog-遗留项与技术债.md`（TD-014）。
+[THEME.md](THEME.md#配置themesink_configyml)（giscus 配置）。
 
 **验收页**：`/2026/08/17/blog-writing-features/` | 环境：真机 + PC Edge
 
@@ -67,5 +66,6 @@
 ## 维护约定
 
 - 新 Console 现象：先分诊（本站缺陷 / 环境噪声 / 第三方），再更新上表；**已修**项须注明涉及文件。
-- 与移动端 TD 重复时，TD 台账记状态，本页记分诊结论与修复细节。
+- `TD-xxx` 是散在代码注释与本页的历史编号（如 TD-002 移动端汉堡导航、TD-004 CF Analytics、
+  TD-014/016 环境噪声），**仓库内没有集中台账**；查状态就直接搜这个编号，别去找别的清单。
 - 勿将本页内容复制到 `work_zone/Docs` 第二份；以本文件为事实源。
