@@ -93,6 +93,12 @@ npm install        # 首次或依赖变更后
 `npm run verify` 会拿上一次的 sitemap 下结论（实测一次：手工改过 `public/sitemap.xml`
 后重新 generate，该文件不被覆盖）。Cloudflare 每次全新构建，不受这条影响。
 
+**`public/sitemap.xml` 的条目顺序不可复现**：同一份源码连构建三次，三次字节都不同
+（长度都是 14975）——插件按 `updated` 排序又没有并列时的二次键，等 `lastmod` 的条目之间
+顺序随构建而变；三次的 URL 与 `lastmod` **配对完全一致**（79 对，线上产物同样）。所以别拿
+`sitemap.xml` 做逐字节或 md5 的镜像比对，会报假差异；要比就先按 `loc` 排序。
+`verify-build.js` 按 URL 建索引，对顺序不敏感。
+
 判据（人工复核；自动那份看 `npm run verify`）——文章与静态页应各按自己的日期，不出现构建当天
 （列表页会出现，见下）：
 
