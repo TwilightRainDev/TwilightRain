@@ -84,17 +84,26 @@ npm install        # 首次或依赖变更后
 （`node_modules/hexo/dist/plugins/processor/post.js` 的 `data.date = stats.birthtime` 分支），
 全新克隆下同样等于构建时刻。
 
-判据——冷构建后，值应全是发布日期，不出现构建当天：
+判据——**文章面**应全是发布日期，不出现构建当天（列表页会出现，见下）：
 
 ```bash
+# 文章 URL 的日期应各不相同、且不等于构建当天
 grep -o '<lastmod>[^<]*' public/sitemap.xml | sort -u
-grep -o '<updated>[^<]*' public/atom.xml | sort -u
-grep -o 'article:modified_time" content="[^"]*"' public/<某篇无 updated 的文章>/index.html
+# 去重后应约等于条目数；塌成 1 就是又回到「全站同一时刻」的老毛病
+grep -o '<updated>[^<]*' public/atom.xml | sort -u | wc -l
+# 应等于该篇的 date，而非构建当天
+grep -o 'article:modified_time" content="[^"]*"' public/2026/07/22/bilicompact-source/index.html
 ```
 
-**已知残留**：首页与标签页、分类页的 `<lastmod>` 是 hexo-generator-sitemap 模板里写死的
-`sNow`（`node_modules/hexo-generator-sitemap/sitemap.xml`），与本配置无关，是插件设计。
-修它要把该模板复制进仓库长期跟上游，收益只在这类低优先级列表页的抓取调度，故不动。
+**已知残留**（2026-09-29 线上实测：80 个 URL 里 60 个仍标构建当天，**16 篇文章全对**，两个来源）：
+
+| 来源 | URL | 条数 |
+| --- | --- | --- |
+| hexo-generator-sitemap 模板写死的 `sNow`（插件设计，与本配置无关） | `/`、`/tags/*`、`/categories/*` | 56 |
+| 页面源文件没写 `date:`，回落到 `stats.ctime`（`processor/asset.js` 的 `data.date = stats.ctime` 分支），全新克隆下即构建时刻 | `/settings/`、`/timeline/`、`/links/`、`/404.html` | 4 |
+
+两类都只影响列表页与静态页的抓取调度，且**都不报错**——只会让这些 URL 每次部署对爬虫宣称「变了」。
+第一类要改得把插件模板复制进仓库长期跟上游；第二类给那 4 个页面补 `date:` 即可。当前都不动。
 
 1. 用上面的构建命令本地构建，确认无报错，并核对日志里的 `timeline:` 行。
 2. `git push origin main`（凭据见上）。
