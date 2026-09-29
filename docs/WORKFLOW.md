@@ -70,6 +70,32 @@ npm install        # 首次或依赖变更后
     `fatal: --unshallow on a complete repository does not make sense` 退出 128，`&&` 于是吃掉后面的构建。
   - `/timeline/` 显示「暂无记录。」即为浅克隆退化，构建命令需修正。
 
+### 时间戳口径：sitemap / feed / article:modified_time
+
+`_config.yml` 的 `updated_option` 取 `'date'`，**不要改回 `'mtime'`**。`'mtime'` 取文件系统时间，
+而 Cloudflare Pages 每次部署都是全新克隆，checkout 会把所有文件的时间刷成那一刻——于是所有文章
+同时宣称「刚刚更新」。受影响的通道是 sitemap 的 `<lastmod>`、atom 的 `<updated>`、页面
+`article:modified_time` 与 JSON-LD `dateModified`。**这三条都没有守卫**：文章页上看得见的
+「更新于」由 [post-staleness.js](../scripts/post-staleness.js) 的 `updatedSet` 把着，
+只认 front matter 显式写的 `updated`，所以页面看上去一切正常。
+
+`'date'` 下，不写 `updated` 的文章回落到 front matter 的 `date`，与克隆时刻无关。
+**前提是每篇文章都写显式 `date:`**：`date` 与 `updated` 都缺时 Hexo 取文件 birthtime
+（`node_modules/hexo/dist/plugins/processor/post.js` 的 `data.date = stats.birthtime` 分支），
+全新克隆下同样等于构建时刻。
+
+判据——冷构建后，值应全是发布日期，不出现构建当天：
+
+```bash
+grep -o '<lastmod>[^<]*' public/sitemap.xml | sort -u
+grep -o '<updated>[^<]*' public/atom.xml | sort -u
+grep -o 'article:modified_time" content="[^"]*"' public/<某篇无 updated 的文章>/index.html
+```
+
+**已知残留**：首页与标签页、分类页的 `<lastmod>` 是 hexo-generator-sitemap 模板里写死的
+`sNow`（`node_modules/hexo-generator-sitemap/sitemap.xml`），与本配置无关，是插件设计。
+修它要把该模板复制进仓库长期跟上游，收益只在这类低优先级列表页的抓取调度，故不动。
+
 1. 用上面的构建命令本地构建，确认无报错，并核对日志里的 `timeline:` 行。
 2. `git push origin main`（凭据见上）。
 3. Cloudflare Pages 自动构建（约 1–2 分钟）。可在
