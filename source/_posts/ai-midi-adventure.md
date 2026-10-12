@@ -71,7 +71,7 @@ cover: /img/360px/covers/ai-midi-adventure.jpg
 
 最终定格在六轨，大钢琴旋律，大钢琴分解，弦乐pad，军鼓，bass，小号，44秒，240BPM。每一版我都用`mido`实测验证，时长，音符数，音轨位置全对得上才收工。诺，这里。
 
-[ZUN_Festival_Ensemble_Full.mid](/midi/ZUN_Festival_Ensemble_Full.mid)
+[ZUN_Festival_Ensemble_Full.mid](/downloads/ZUN_Festival_Ensemble_Full.mid)
 
 ---
 
@@ -118,4 +118,4 @@ issue发完，我转头想继续玩MIDI，从网上下了一份众神眷恋的�
 - 2000年代老东西的病历（CC64数据污染加非法CC7）
 - **MIDI文件里控制器数据错**会悄悄毁掉整首歌，还让严格解析器当场去世。
 
-哦对，还有一版修复好的众神眷恋的幻想乡 [touhou_fixed.mid](/midi/touhou_fixed.mid) 躺在下载目录里。有缘人拿去吧，老曲子的修复版，免费。
+哦对，还有一版修复好的众神眷恋的幻想乡 [touhou_fixed.mid](/downloads/touhou_fixed.mid) 躺在下载目录里。有缘人拿去吧，老曲子的修复版，免费。
