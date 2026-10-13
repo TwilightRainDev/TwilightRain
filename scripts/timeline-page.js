@@ -22,7 +22,7 @@ function readGitEvents() {
     if (shallow === 'true') {
       hexo.log.warn(
         'timeline: 当前为浅克隆，git 日志不完整，页面将显示「暂无记录。」。' +
-        '完整历史要求见 docs/WORKFLOW.md 「构建前置」。'
+        '完整历史要求见 Docs/Project/Blog/WORKFLOW.md 「构建前置」。'
       );
       return [];
     }

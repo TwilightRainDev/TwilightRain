@@ -11,8 +11,6 @@ tags:
 
 本文是 ink 写作能力的**验收样文**，并附带模板层能力（分享、系列目录等）。
 
-本站在写作系统上的取舍与历史遗留，见 [blog 能用就行的历史遗留](/2026/09/21/blog-repo-cleanup/)。
-
 ![](/img/360px/blog-writing-features.jpg)
 
 ## 一、提示块（admonitions）

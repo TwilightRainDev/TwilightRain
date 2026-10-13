@@ -5,7 +5,7 @@
  * 为什么不能只看源码：hexo-generator-sitemap 的模板对文章/页面取 post.updated，
  * 而 post.updated 的来源由 _config.yml 的 updated_option 决定。改成 'mtime' 或
  * 页面漏写 date:，lastmod 就会静默变成构建当天，源码里看不出任何异常。
- * 背景与已知残留见 docs/WORKFLOW.md「时间戳口径：sitemap / feed / article:modified_time」一节。
+ * 背景与已知残留见 Docs/Project/Blog/WORKFLOW.md「时间戳口径：sitemap / feed / article:modified_time」一节。
  */
 'use strict';
 

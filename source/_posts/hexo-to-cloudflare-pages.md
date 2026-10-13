@@ -41,7 +41,7 @@ categories:
 | Build directory | public |
 
 :::admon[note 后续注记]
-本站现在的 `npm run build` 已不是当时的裸 `hexo generate`，而是 `commit-data.js && gen-thumbs.js && hexo generate`。时间线还要求构建环境有完整 git 历史，命令写法见仓库 `docs/WORKFLOW.md` 的「构建前置」。那是本站特定前置，不是这篇通用迁移记录该写进步骤的内容。
+本站现在的 `npm run build` 已不是当时的裸 `hexo generate`，而是 `commit-data.js && gen-thumbs.js && hexo generate`。时间线还要求构建环境有完整 git 历史，命令写法见工作区 `Docs/Project/Blog/WORKFLOW.md` 的「构建前置」。那是本站特定前置，不是这篇通用迁移记录该写进步骤的内容。
 :::
 
 1. 点击 **Save and Deploy**

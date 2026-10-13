@@ -23,9 +23,9 @@ function urlset(rows) {
 
 var SOURCES = [
   {
-    source: 'source/_posts/blog-repo-cleanup.md',
+    source: 'source/_posts/hexo-to-cloudflare-pages.md',
     kind: 'post',
-    urlPath: '/2026/09/21/blog-repo-cleanup/',
+    urlPath: '/2026/07/21/hexo-to-cloudflare-pages/',
     dates: ['2026-09-28'],
     excluded: false
   },
@@ -100,7 +100,7 @@ test('首页与标签/分类归档页的 lastmod 由插件写死，跳过', func
   assert.equal(verify.isTimestampFreePath('/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/'), true);
   assert.equal(verify.isTimestampFreePath('/tags/index.html'), false);
   assert.equal(verify.isTimestampFreePath('/categories/index.html'), false);
-  assert.equal(verify.isTimestampFreePath('/2026/09/21/blog-repo-cleanup/'), false);
+  assert.equal(verify.isTimestampFreePath('/2026/07/21/hexo-to-cloudflare-pages/'), false);
   assert.equal(verify.isTimestampFreePath('/about/index.html'), false);
 });
 
@@ -108,7 +108,7 @@ test('checkSitemap 一致时不报问题', function () {
   var problems = problemsFor([
     [SITE + '/', '2026-09-29'],
     [SITE + '/tags/Git/', '2026-09-29'],
-    [SITE + '/2026/09/21/blog-repo-cleanup/', '2026-09-28'],
+    [SITE + '/2026/07/21/hexo-to-cloudflare-pages/', '2026-09-28'],
     [SITE + '/about/index.html', '2026-07-24']
   ]);
   assert.deepEqual(problems, []);
@@ -116,17 +116,17 @@ test('checkSitemap 一致时不报问题', function () {
 
 test('checkSitemap 报出 lastmod 落成构建当天', function () {
   var problems = problemsFor([
-    [SITE + '/2026/09/21/blog-repo-cleanup/', '2026-09-29'],
+    [SITE + '/2026/07/21/hexo-to-cloudflare-pages/', '2026-09-29'],
     [SITE + '/about/index.html', '2026-07-24']
   ]);
   assert.equal(problems.length, 1);
-  assert.match(problems[0], /blog-repo-cleanup/);
+  assert.match(problems[0], /hexo-to-cloudflare-pages/);
   assert.match(problems[0], /2026-09-29/);
 });
 
 test('checkSitemap 报出源文件不存在的 URL', function () {
   var problems = problemsFor([
-    [SITE + '/2026/09/21/blog-repo-cleanup/', '2026-09-28'],
+    [SITE + '/2026/07/21/hexo-to-cloudflare-pages/', '2026-09-28'],
     [SITE + '/about/index.html', '2026-07-24'],
     [SITE + '/ghost/index.html', '2026-01-01']
   ]);
@@ -139,7 +139,7 @@ test('checkSitemap 报出没进 sitemap 的文章', function () {
     [SITE + '/about/index.html', '2026-07-24']
   ]);
   assert.equal(problems.length, 1);
-  assert.match(problems[0], /blog-repo-cleanup/);
+  assert.match(problems[0], /hexo-to-cloudflare-pages/);
 });
 
 test('checkSitemap 报出标了 sitemap: false 却仍被收录', function () {
@@ -151,7 +151,7 @@ test('checkSitemap 报出标了 sitemap: false 却仍被收录', function () {
     excluded: true
   }]);
   var problems = problemsFor([
-    [SITE + '/2026/09/21/blog-repo-cleanup/', '2026-09-28'],
+    [SITE + '/2026/07/21/hexo-to-cloudflare-pages/', '2026-09-28'],
     [SITE + '/about/index.html', '2026-07-24'],
     [SITE + '/404.html', '2026-09-28']
   ], sources);
@@ -164,7 +164,7 @@ test('collectSources 从仓库源文件认出文章与页面', function () {
   verify.collectSources(path.join(root, 'source')).forEach(function (s) {
     byUrl[s.urlPath] = s;
   });
-  assert.equal(byUrl['/2026/09/21/blog-repo-cleanup/'].dates.indexOf('2026-09-28') !== -1, true);
+  assert.equal(byUrl['/2026/07/21/hexo-to-cloudflare-pages/'].dates.indexOf('2026-09-28') !== -1, true);
   assert.equal(byUrl['/about/index.html'].dates.indexOf('2026-07-24') !== -1, true);
 });
 

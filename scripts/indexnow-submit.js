@@ -1,6 +1,6 @@
 /**
  * 独立于 Hexo 构建：拉线上 sitemap，向 IndexNow 提交 URL。
- * 见 docs/adr/0017-indexnow-submit.md。不要从 after_generate 或 npm run build 调用。
+ * 见 Docs/Project/Blog/adr/0017-indexnow-submit.md。不要从 after_generate 或 npm run build 调用。
  */
 'use strict';
 
