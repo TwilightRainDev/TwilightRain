@@ -5,6 +5,9 @@ Hexo 8.1.2 博客源码。完整维护手册已移出本仓库，落在工作区
 
 - **部署**：Cloudflare Pages 监听 GitHub `main` 分支构建（只认 main！）。
   发布 = 推 main；不要推 `gh-pages`、不要恢复 `hexo deploy`。
+- **提交标题**：`/timeline/` 页面上的事件就是提交标题与提交日期（构建期读 `git log`）。写法、
+  日期口径与提交前自检见 [Docs/Project/Blog/HISTORY.md](Docs/Project/Blog/HISTORY.md)：可见的那条
+  不写类型前缀，整天只有内部活的提交带 `docs:` 前缀。
 - **构建**：`npm run build`（hexo generate）→ `public/`，本机不执行 hexo deploy。
 - **安全头/重定向**：`scripts/csp.js` → `public/_headers`，`scripts/redirects.js` → `public/_redirects`，
   均为 after_generate 钩子写入。开发模式（hexo server）无安全头是已知限制。
