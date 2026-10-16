@@ -47,6 +47,8 @@ cover: /img/360px/covers/bilicompact-source.jpg
 4. Ctrl+S 保存
 ```
 
+源码文件在这里，点开就能复制或另存：[user.main.js](/downloads/user.main.js)
+
 两种方式效果完全一致，推荐方式一，后续新版本会自动推送更新。
 ![](/img/360px/bilicompact-rainbow.jpg)
 
@@ -54,7 +56,7 @@ cover: /img/360px/covers/bilicompact-source.jpg
 项目地址：[GreasyFork - BiliCompact](https://greasyfork.org/scripts/585777)
 
 
-[user.main.js](/downloads/user.main.js)
+
 
 ---
 
