@@ -13,7 +13,7 @@ categories:
   - 技术笔记
 cover: /img/360px/covers/linux-dualboot-to-wsl.jpg
 series: 折腾实录
-series_index: 2
+series_index: 8
 ---
 
 > 十月八号下午，我丢过去一句，帮我把 L 盘做一个能在开机菜单里排在 Windows 后面、可以选着启动的 Linux 系统，你可以问我任意问题。

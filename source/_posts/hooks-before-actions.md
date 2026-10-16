@@ -11,7 +11,7 @@ categories:
   - 技术笔记
 cover: /img/360px/covers/hooks-before-actions.jpg
 series: 折腾实录
-series_index: 4
+series_index: 9
 ---
 
 > 我丢过去一句，帮我把这条危险记录做成硬性钩子，当 grep 结果超过 100 KB 就自动拦截。你看可行吗。
