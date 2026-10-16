@@ -821,6 +821,8 @@ series_index: 3
 
 确认新玩家可以直接启动汉化版，正常创建牌组。
 
+补丁包在这里，需要的自取：[DeadEndCity_fix.zip](/downloads/DeadEndCity_fix.zip)（2.4 MB）。用法、参数和已知限制都写在包内的 `README.md` 里。
+
 至此，朋友最初提出的问题终于解决了。
 
 现在回想起来，整件事情相当滑稽。
