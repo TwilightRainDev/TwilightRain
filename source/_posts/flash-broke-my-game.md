@@ -114,6 +114,10 @@ series_index: 2
 
 我的电脑里安装的是 Flash 34.0.0.282。
 
+```
+=M/M/34.0.0.282 2023-05-20+09-46-41.993=
+```
+
 这一串数字看着很复杂，其实可以简单理解成软件的版本编号。
 
 就像一本书会有第一版、第二版、第三版，软件更新之后也会换上新的编号。
@@ -625,6 +629,15 @@ Flash 会通过网络联系服务器。
 有些安装程序会把自己重新启动一次去申请更高权限。那次申请要是没人确认，它后面的步骤根本不会开始，可它照样会告诉你「本次服务已结束」。所以别信它自己的说法，去看文件到没到位、设置有没有写上。
 :::
 
+:::fold[details 安装包里那份工作清单的第一行]
+
+```bat
+@ECHO OFF&(PUSHD "%~DP0")&(REG QUERY "HKU\S-1-5-19">NUL 2>&1)||(
+powershell -Command "Start-Process '%~sdpnx0' -Verb RunAs"&&EXIT)
+```
+
+:::
+
 ## 七、终于，你可以安静一点了吗？
 
 既然已经找到原因，后面的事情就顺利多了。
@@ -690,6 +703,20 @@ Flash 会通过网络联系服务器。
 ……
 
 这到底算不算胜利啊？！
+
+:::fold[details 三件套最终装成了什么样]
+
+| 项目 | 状态 |
+|---|---|
+| ActiveX | Flash.ocx 32/64 + 注册表 32.0.0.465 |
+| NPAPI | NPSWF.dll 32/64 + FlashPlayerPlugin 注册表 |
+| PPAPI | pepflashplayer.dll 32/64 + 注册表 32.0.0.465 |
+| hosts | flash.cn 已屏蔽，原有条目全部保留 |
+| settings.sol | 0 字节（sys\ 与 #local\） |
+| mms.cfg | AutoUpdateDisable=1、DisableAnalytics=1 |
+| 备份 | A:\work_zone\Temp\FlashFix_backup_20260826 |
+
+:::
 
 ## 八、后来我才发现，最可怕的不是电脑报错
 
