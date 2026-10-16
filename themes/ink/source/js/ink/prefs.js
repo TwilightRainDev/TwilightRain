@@ -63,11 +63,10 @@
 
     function applyTheme(pref) {
         var actual = resolveTheme(pref);
-        if (actual === 'dark') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-        } else {
-            document.documentElement.removeAttribute('data-theme');
-        }
+        // light 也要显式写进 data-theme：style.min.css 的「系统深色兜底」媒体查询
+        // 按 :not([data-theme]) / :not([data-theme="light"]) 判定，只有写死 light
+        // 才能在系统深色的机器上真正压回浅色。
+        document.documentElement.setAttribute('data-theme', actual);
         giscusTheme(actual);
         // 通知依赖主题的组件（mermaid 图表按新主题重渲染）
         document.dispatchEvent(new CustomEvent('theme-change', { detail: { theme: actual } }));

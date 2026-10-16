@@ -40,8 +40,11 @@
     --font-stack: 'HYWenHei 85W', 'LXGW WenKai', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
+/* 深色主题兜底：只为 JS 执行前的首屏服务（prefs.js 随后总会在 <html> 写下
+   data-theme=light|dark 二者之一）。选择器必须带 :not([data-theme])，
+   否则用户在系统深色的机器上选「浅色」时这块变量照样命中，页面压不回浅色。 */
 @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not([data-theme]) {
         --color-dark: #fafafa;
         --color-light: #1a1a1a;
     }
@@ -341,6 +344,9 @@ button:active{
 }
 
 .blog-posts--list .article-info span {
+    /* --color-dark 是「文字色」（深色主题下自己翻成 #f0f0f0），随主题自动跟随。
+       别再写 [data-theme="dark"] 覆盖成 --color-light：那是背景色（深色下
+       #1a1a1a），列表标题会变成黑字贴在黑底上。 */
     color: var(--color-dark);
     -webkit-line-clamp: 3;
 }
@@ -354,8 +360,13 @@ button:active{
     background: rgba(255, 255, 255, 0.04);
 }
 
-[data-theme="dark"] .blog-posts--list .article-info span {
-    color: var(--color-light);
+/* 列表模式的固定灰字（时间 / 摘要）在深色底上提亮 */
+[data-theme="dark"] .blog-posts--list .article-info time {
+    color: #9a9a9a;
+}
+
+[data-theme="dark"] .blog-posts--list .article-excerpt {
+    color: #a3a3a3;
 }
 
 ul.blog-posts {
@@ -538,16 +549,18 @@ pre:hover .copy-btn {
     opacity: 1;
 }
 
-@media (prefers-color-scheme: dark) {
-    .copy-btn {
-        border-color: rgba(0,0,0,0.2);
-        background: rgba(0,0,0,0.15);
-        color: rgba(255,255,255,0.5);
-    }
-    .copy-btn:hover {
-        background: rgba(0,0,0,0.3);
-        color: rgba(255,255,255,0.85);
-    }
+/* 深色主题下代码块是反色「浅底」（--code-background-color 翻成 #f0f0f0），
+   按钮要深色描边 + 深色字才看得见。原实现写在 @media (prefers-color-scheme: dark)
+   里且用白字：系统浅色 + 站内深色时完全不生效，白字贴在浅色代码块上等于隐形。 */
+[data-theme="dark"] .copy-btn {
+    border-color: rgba(0,0,0,0.2);
+    background: rgba(0,0,0,0.08);
+    color: rgba(0,0,0,0.55);
+}
+
+[data-theme="dark"] .copy-btn:hover {
+    background: rgba(0,0,0,0.18);
+    color: rgba(0,0,0,0.85);
 }
 
 /* ======================== 文章目录 TOC ======================== */
@@ -640,24 +653,9 @@ pre:hover .copy-btn {
     display: none;
 }
 
-@media (prefers-color-scheme: dark) {
-    .post-toc {
-        background: #2a2a2a;
-        border-color: #333;
-    }
-    .toc-item a {
-        color: #ccc;
-    }
-    .toc-item a:hover {
-        background: #333;
-    }
-    .toc-item.active > a {
-        color: #66b8f0;
-    }
-    .toc-toggle {
-        color: #aaa;
-    }
-}
+/* TOC 的深色样式全在上方 [data-theme="dark"] .post-toc 段：原来这里还有一份
+   @media (prefers-color-scheme: dark) 副本（值完全相同，且 TOC 本就由 JS 生成），
+   已删；主题判定单一来源，不要再在媒体查询里养一份。 */
 
 /* ======================== 返回顶部 ======================== */
 #back-to-top {
@@ -2106,12 +2104,7 @@ figure.highlight td.code code br:last-child {
     }
 }
 
-@media (prefers-color-scheme: dark) {
-    .post-imgcard {
-        border-color: #333;
-    }
-}
-
+/* 图卡描边的深色样式只保留 [data-theme="dark"] 一份（原媒体查询副本已删） */
 [data-theme="dark"] .post-imgcard {
     border-color: #333;
 }
