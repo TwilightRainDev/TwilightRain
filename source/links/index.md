@@ -12,6 +12,10 @@ links:
         fallback: https://github.com/LCMCat
         img: /img/360px/links/lcmcat.png
         desc: 猫猫
+      - name: NDX
+        url: https://github.com/NDX100Git
+        img: /img/360px/links/ndx.jpg
+        desc: 豪
   - group: 个人常用工具箱
     desc: 写作与运维常用入口（书签导航）
     items:
