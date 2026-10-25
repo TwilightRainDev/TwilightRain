@@ -1549,6 +1549,7 @@ pre:hover .copy-btn {
     display: flex;
     align-items: center;
     gap: 10px;
+    height: 100%;
     padding: 10px 12px;
     border: 1px solid rgba(0, 0, 0, 0.12);
     border-radius: 8px;
@@ -1581,6 +1582,7 @@ pre:hover .copy-btn {
 
 .link-name {
     font-weight: 600;
+    white-space: nowrap;
 }
 
 .link-desc {
