@@ -10,8 +10,8 @@ tags:
 categories:
   - 技术笔记
 cover: /img/360px/covers/ai-painting-studio.jpg
-series: 折腾实录
-series_index: 6
+series: AI 发癫
+series_index: 4
 ---
 
 > 事情的起因非常简单。我想试试 AI 绘画。

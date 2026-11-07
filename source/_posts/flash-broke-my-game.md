@@ -11,7 +11,7 @@ tags:
 categories:
   - 技术笔记
 series: 折腾实录
-series_index: 2
+series_index: 1
 ---
 
 > 事情的起因非常简单。

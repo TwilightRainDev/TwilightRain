@@ -10,7 +10,7 @@ tags:
 categories:
   - 技术笔记
 cover: /img/360px/covers/my-local-ai-roommate.jpg
-series: 折腾实录
+series: AI 发力
 series_index: 5
 ---
 

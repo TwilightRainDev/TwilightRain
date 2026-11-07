@@ -8,6 +8,8 @@ tags:
   - Claude Code
 categories:
   - 技术笔记
+series: AI 发力
+series_index: 3
 cover: /img/360px/covers/with-her-eyes.jpg
 ---
 
@@ -90,3 +92,5 @@ npm install -g @me9rez/llm-vision-mcp
 ![](/img/360px/with-her-eyes-2.jpg)
 
 ![](/img/360px/with-her-eyes-3.jpg)
+
+::series

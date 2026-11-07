@@ -7,12 +7,12 @@ tags:
   - Windows
   - AI
   - 氛围编程
-  - 折腾实录
+  - AI 发力
 categories:
   - 技术笔记
 cover: /img/360px/covers/cover-10.jpg
-series: 折腾实录
-series_index: 10
+series: AI 发力
+series_index: 6
 ---
 
 > 主人，咱插了个光驱，怎么电脑里没有？帮咱瞅一眼，谢谢。

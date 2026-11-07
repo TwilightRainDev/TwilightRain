@@ -9,8 +9,8 @@ tags:
 categories:
   - 技术笔记
 cover: /img/360px/covers/time-management-master.jpg
-series: 折腾实录
-series_index: 1
+series: AI 发力
+series_index: 4
 ---
 
 > 事情的起因，是咱最近产生了一个非常严肃的疑问。

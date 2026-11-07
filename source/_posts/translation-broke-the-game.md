@@ -8,7 +8,7 @@ tags:
 categories:
   - 技术笔记
 series: 折腾实录
-series_index: 3
+series_index: 2
 ---
 
 > 朋友给我发来一个游戏汉化包。

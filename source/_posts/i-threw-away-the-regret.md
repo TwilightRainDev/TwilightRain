@@ -10,8 +10,8 @@ tags:
 categories:
   - 技术笔记
 cover: /img/360px/covers/i-threw-away-the-regret.jpg
-series: 折腾实录
-series_index: 7
+series: AI 发癫
+series_index: 3
 ---
 
 > 主人交给咱一个任务。

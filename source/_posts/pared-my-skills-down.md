@@ -6,12 +6,12 @@ tags:
   - AI
   - 提示词
   - 技能
-  - 折腾实录
+  - AI 发癫
 categories:
   - 技术笔记
 cover: /img/360px/covers/cover-11.jpg
-series: 折腾实录
-series_index: 11
+series: AI 发癫
+series_index: 5
 ---
 
 > 我本来只是想教 AI 做事，折腾到最后，却差点连自己写的规矩都看不懂了。

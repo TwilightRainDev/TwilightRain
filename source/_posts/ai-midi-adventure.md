@@ -8,6 +8,8 @@ tags:
   - 音乐
 categories:
   - 技术笔记
+series: AI 发力
+series_index: 2
 cover: /img/360px/covers/ai-midi-adventure.jpg
 ---
 
@@ -284,3 +286,5 @@ AI 不总能一次做对。有时候它会犯错，有时候它使用的工具�
 我现在只想问一句：
 
 **下一次，我还能指使 AI 折腾点什么？** (￣▽￣)／
+
+::series

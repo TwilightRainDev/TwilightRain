@@ -11,8 +11,8 @@ tags:
 categories:
   - 技术笔记
 cover: /img/360px/covers/cover-13.jpg
-series: 折腾实录
-series_index: 13
+series: AI 发癫
+series_index: 6
 ---
 
 我电脑里有两个 AI。

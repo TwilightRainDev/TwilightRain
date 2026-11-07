@@ -10,8 +10,8 @@ tags:
 categories:
   - 随笔
 cover: /img/360px/covers/dark-mode-we-were-fooled.jpg
-series: 折腾实录
-series_index: 4
+series: AI 发癫
+series_index: 1
 ---
 
 > 事情开始于一个非常普通的愿望。

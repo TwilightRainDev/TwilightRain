@@ -7,11 +7,11 @@ tags:
   - 氛围编程
   - 智能体
   - 工作流
-  - 折腾实录
+  - AI 发癫
 categories:
   - 技术笔记
-series: 折腾实录
-series_index: 19
+series: AI 发癫
+series_index: 9
 ---
 
 我只是想让智能体帮我做一期自媒体视频素材。

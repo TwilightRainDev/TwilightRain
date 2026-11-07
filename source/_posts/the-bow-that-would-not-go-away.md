@@ -11,8 +11,8 @@ tags:
 categories:
   - 技术笔记
 cover: /img/360px/covers/cover-12.jpg
-series: 折腾实录
-series_index: 12
+series: AI 发力
+series_index: 7
 ---
 
 我只是想擦掉一只蝴蝶结。

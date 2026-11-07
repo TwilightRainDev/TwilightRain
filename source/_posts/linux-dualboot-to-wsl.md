@@ -7,12 +7,12 @@ tags:
   - AI
   - 双启动
   - WSL
-  - 折腾实录
+  - AI 发癫
 categories:
   - 技术笔记
 cover: /img/360px/covers/linux-dualboot-to-wsl.jpg
-series: 折腾实录
-series_index: 8
+series: AI 发癫
+series_index: 2
 ---
 
 十月八号下午，我跟 AI 说，
