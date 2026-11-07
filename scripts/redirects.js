@@ -36,7 +36,13 @@ var REDIRECTS = [
   '/2026/10/15/five-wrong-readings/ /2026/10/15/my-local-ai-roommate/ 301',
   '/2026/10/15/five-wrong-readings /2026/10/15/my-local-ai-roommate/ 301',
   '/2026/10/16/two-entries-one-bug/ /2026/10/16/ai-painting-studio/ 301',
-  '/2026/10/16/two-entries-one-bug /2026/10/16/ai-painting-studio/ 301'
+  '/2026/10/16/two-entries-one-bug /2026/10/16/ai-painting-studio/ 301',
+  // 2026-11-08 撤下《别再提醒 AI 小心了，给它装道护栏》：没有替代文章，旧入口 301 到归档页
+  '/2026/10/12/hooks-before-actions/ /archives/ 301',
+  '/2026/10/12/hooks-before-actions /archives/ 301',
+  // 2026-11-08 撤下《我把《提问的智慧》改成了 2026 年的人话》：旧入口 301 到归档页
+  '/2026/08/13/how-to-ask-questions/ /archives/ 301',
+  '/2026/08/13/how-to-ask-questions /archives/ 301'
 ].join('\n');
 
 hexo.extend.filter.register('after_generate', function () {
