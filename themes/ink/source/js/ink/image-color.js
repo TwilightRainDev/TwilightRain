@@ -3,8 +3,7 @@
  *
  * 文章正文图按主色铺底；首页无封面文章从封面池随机取图，首页缩略图取主色。
  *
- * 由 js/ink.js 入口按 import 顺序加载。
- * 块之间不共享作用域、不互相调用，只通过 DOM 与自定义事件通信。
+ * 由 js/ink.js 按 import 顺序加载；模块之间只通过 DOM 与自定义事件通信。
  */
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -54,9 +53,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
             function revealImage() {
                 customElement.style.display = 'inline-block';
-                const canvas = document.createElement('canvas');
-                const rgbColor = getImageColor(canvas, img);
-                figcaption.style.backgroundColor = rgbColor;
+                // 亮底图（构建期判定，见 scripts/image-dim.js）的图注条不取图片平均色：
+                // 白底图上那是白字压白条，暗色主题下还多出一条亮带。改用深色半透明底。
+                if (img.classList.contains('img-dim')) {
+                    figcaption.style.backgroundColor = 'rgba(0, 0, 0, 0.45)';
+                } else {
+                    const canvas = document.createElement('canvas');
+                    figcaption.style.backgroundColor = getImageColor(canvas, img);
+                }
             }
 
             img.addEventListener('load', revealImage);

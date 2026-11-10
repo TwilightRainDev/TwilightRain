@@ -48,6 +48,10 @@
         --color-dark: #fafafa;
         --color-light: #1a1a1a;
     }
+
+    :root:not([data-theme]) img.img-dim {
+        filter: brightness(0.85);
+    }
 }
 
 body {
@@ -100,6 +104,14 @@ img {
     display: block;
     max-width: 100%;
     height: auto;
+}
+
+/* 暗色下压暗浅底图。.img-dim 由 scripts/image-dim.js 在构建期按图片平均亮度打上，
+   只命中亮底的图：白底截图在深色页面上是一整块比正文还亮的亮面，压 0.85 后
+   与正文文字（#f0f0f0）亮度相当。深色截图本来就贴着底色，不压，压了发灰。
+   灯箱自建 <img> 不带这个类，所以在灯箱里看到的始终是原亮度。 */
+[data-theme="dark"] img.img-dim {
+    filter: brightness(0.85);
 }
 
 h1, h2, h3, h4, h5 {
