@@ -1,11 +1,6 @@
 /**
- * 折叠围栏 :::fold（阶段七，非兼容）
- *
- *   :::fold[text 悬停或点击查看]
- *   :::fold[details 摘要标题]
- *   :::fold[mode=text 剧透]
- *
- * 无 mode 关键字时默认 text。HTML 类名仍为 .md-text / .md-details。
+ * 折叠围栏 :::fold[mode=text|details 标题]，无 mode 关键字时默认 text（同 fold 的兜底）。
+ * HTML 类名仍为 .md-text / .md-details：widgets.js 的展开/收起与 CSS 按它命中。
  */
 'use strict';
 

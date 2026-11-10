@@ -1,11 +1,8 @@
 /**
- * 系列文（Butterfly 批三迁移，对照 BF series.js 自写）
+ * 系列文：front matter 的 series（可选 series_index）+ 文内 ::series / ::series{name="…"}。
  *
- * front matter: series: 系列名  （可选 series_index: 1）
- * 文内: ::series  或  ::series{name="系列名"}
- *
- * 在 before_post_render 同步替换 ::series，避免 marked 扩展依赖模块级
- * renderCtx（Hexo 并行渲染多篇文章时会互相覆盖）。
+ * 在 before_post_render 同步替换 ::series，不依赖模块级 renderCtx
+ * （Hexo 并行渲染多篇文章时会互相覆盖）。
  */
 'use strict';
 

@@ -9,7 +9,7 @@
 var fs = require('hexo-fs');
 
 var REDIRECTS = [
-  // 2026-09-25 作品集独立页并入关于页：旧入口 301 过去，导航与外部链接不断
+  // 作品集独立页并入关于页：旧入口 301 过去，导航与外部链接不断
   '/projects/ /about/ 301',
   '/projects /about/ 301',
   // 旧 hello-world 文章 → 关于页（永久重定向，带/不带尾斜杠都覆盖）
@@ -18,13 +18,13 @@ var REDIRECTS = [
   // Hexo 分页从第 2 页开始（第 1 页即根路径 /），补 /page/1/ 的直觉 URL
   '/page/1/ / 301',
   '/page/1 / 301',
-  // 2026-08-16 文章统一英文 kebab-case 命名：中文文件名 -> 英文 slug
+  // 文章统一英文 kebab-case 命名：中文文件名 -> 英文 slug
   // （明文与百分号编码双份，覆盖 CF 对请求路径的不同匹配行为）
   '/2026/08/13/如果我想成为时间管理大师/ /2026/08/13/time-management-master/ 301',
   '/2026/08/13/%E5%A6%82%E6%9E%9C%E6%88%91%E6%83%B3%E6%88%90%E4%B8%BA%E6%97%B6%E9%97%B4%E7%AE%A1%E7%90%86%E5%A4%A7%E5%B8%88/ /2026/08/13/time-management-master/ 301',
   '/2026/08/13/带上她的眼睛。/ /2026/08/13/with-her-eyes/ 301',
   '/2026/08/13/%E5%B8%A6%E4%B8%8A%E5%A5%B9%E7%9A%84%E7%9C%BC%E7%9D%9B%E3%80%82/ /2026/08/13/with-her-eyes/ 301',
-  // 2026-10-16 折腾实录纳入 7 篇改写稿：旧 slug 不再指向任何文件，301 到新 slug
+  // 折腾实录纳入 7 篇改写稿：旧 slug 不再指向任何文件，301 到新 slug
   '/2026/08/26/flash-cn-special-edition-fix/ /2026/08/26/flash-broke-my-game/ 301',
   '/2026/08/26/flash-cn-special-edition-fix /2026/08/26/flash-broke-my-game/ 301',
   '/2026/09/20/translation-patch-deck-bug/ /2026/09/20/translation-broke-the-game/ 301',
@@ -37,10 +37,10 @@ var REDIRECTS = [
   '/2026/10/15/five-wrong-readings /2026/10/15/my-local-ai-roommate/ 301',
   '/2026/10/16/two-entries-one-bug/ /2026/10/16/ai-painting-studio/ 301',
   '/2026/10/16/two-entries-one-bug /2026/10/16/ai-painting-studio/ 301',
-  // 2026-11-08 撤下《别再提醒 AI 小心了，给它装道护栏》：没有替代文章，旧入口 301 到归档页
+  // 撤下《别再提醒 AI 小心了，给它装道护栏》：没有替代文章，旧入口 301 到归档页
   '/2026/10/12/hooks-before-actions/ /archives/ 301',
   '/2026/10/12/hooks-before-actions /archives/ 301',
-  // 2026-11-08 撤下《我把《提问的智慧》改成了 2026 年的人话》：旧入口 301 到归档页
+  // 撤下《我把《提问的智慧》改成了 2026 年的人话》：旧入口 301 到归档页
   '/2026/08/13/how-to-ask-questions/ /archives/ 301',
   '/2026/08/13/how-to-ask-questions /archives/ 301'
 ].join('\n');

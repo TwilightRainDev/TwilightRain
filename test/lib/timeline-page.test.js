@@ -50,10 +50,9 @@ test('source/timeline/index.md 不再含 items 兜底快照', function () {
   assert.doesNotMatch(md, /兜底快照/);
 });
 
-test('浅克隆与 git 失败告警指向 WORKFLOW 构建前置，不再提兜底列表', function () {
+test('浅克隆告警给出补齐历史的做法，不指向仓外文档', function () {
   var src = fs.readFileSync(path.join(root, 'scripts/timeline-page.js'), 'utf8');
-  assert.match(src, /WORKFLOW\.md/);
-  assert.match(src, /构建前置/);
+  assert.match(src, /--unshallow/);
+  assert.doesNotMatch(src, /WORKFLOW\.md/);
   assert.doesNotMatch(src, /front matter 兜底列表/);
-  assert.doesNotMatch(src, /git fetch --unshallow/);
 });

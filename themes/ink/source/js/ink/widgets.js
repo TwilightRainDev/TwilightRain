@@ -3,8 +3,7 @@
  *
  * 各组件互不依赖，均以选择器命中为前提，无对应 DOM 时零开销。
  *
- * 由 js/ink.js 入口按 import 顺序加载。
- * 块之间不共享作用域、不互相调用，只通过 DOM 与自定义事件通信。
+ * 由 js/ink.js 按 import 顺序加载；模块之间只通过 DOM 与自定义事件通信。
  */
 
 // ======================== 归档页：全部展开/收缩 ========================
@@ -40,7 +39,7 @@
     });
 })();
 
-// ======================== 移动端汉堡导航（TD-002） ========================
+// ======================== 移动端汉堡导航 ========================
 (function() {
     function initMobileNav() {
         var btn = document.getElementById('menu-btn');
@@ -186,7 +185,7 @@
         document.head.appendChild(script);
     }
 
-    // 超宽图表保持原始尺寸（2026-08-18 修复）：mermaid 输出 svg 带
+    // 超宽图表保持原始尺寸：mermaid 输出 svg 带
     // width="100%" + 内联 style="max-width: Npx"（N = 图表自然宽），容器窄于 N
     // 时浏览器按 min(容器, N) 渲染，整图等比缩小、节点文字无法辨认。
     // 检测自然宽 > 容器宽时改为原始尺寸，靠容器 overflow-x: auto 横向滚动；
@@ -211,7 +210,7 @@
             startOnLoad: false,
             theme: currentTheme(),
             themeVariables: { fontFamily: 'inherit', fontSize: '15px' },
-            // strict：不执行图表内的 HTML/click 指令，防注入（Twilight 用 loose，不迁移）
+            // strict：不执行图表内的 HTML/click 指令，防注入
             securityLevel: 'strict',
             logLevel: 'error'
         });
@@ -253,7 +252,7 @@
     });
 })();
 
-// ======================== 代码块超长折叠（2026-08-18，Reimu 批一；2026-08-23 布局修复） ========================
+// ======================== 代码块超长折叠 ========================
 // 行数 = .code pre 内 <br> 数量。超阈值时用 .code-fold-viewport 裁切整表（行号列
 // 与代码列同高），按钮与渐变贴在预览区底部，避免 gutter 撑满数万 px。
 document.addEventListener('DOMContentLoaded', function () {
@@ -285,7 +284,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// ======================== B 站懒嵌入（2026-08-23，Butterfly 批二迁移） ========================
+// ======================== B 站懒嵌入 ========================
 // marked-bilibili.js 输出 .bili-embed 占位；进入视口或点击后注入 sandbox iframe。
 (function () {
     function mountBiliEmbed(root) {
@@ -343,7 +342,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('DOMContentLoaded', initBiliEmbeds);
 })();
 
-// ======================== 标签页 tabs 切换（2026-08-18，Reimu 批二迁移） ========================
+// ======================== 标签页 tabs 切换 ========================
 // scripts/marked-tabs.js 渲染 .tabs（nav 按钮 + 面板），本模块事件委托切换
 // is-active / aria-selected。无框架依赖；页面无 .tabs 时零开销（事件委托挂 document）。
 document.addEventListener('click', function (e) {
@@ -362,7 +361,7 @@ document.addEventListener('click', function (e) {
     });
 });
 
-// ======================== 剧透块 md-text（拍板 M2） ========================
+// ======================== 剧透块 md-text ========================
 document.addEventListener('click', function (e) {
     var root = e.target && e.target.closest ? e.target.closest('.md-text') : null;
     if (!root) return;

@@ -1,9 +1,9 @@
 /**
  * 站点页 /timeline/：事件来自构建期解析的 git 日志。
  *
- * 浅克隆、无 git、或解析为空时页面渲染「暂无记录。」（已知代价，见 ADR-0011）。
+ * 浅克隆、无 git、或解析为空时页面渲染「暂无记录。」。
  * helper 仍接受 page.items，但时间线页已不再提供该字段。
- * 渲染仍走共享渲染器 lib/timeline-renderer.js（ADR-0005），类名不变。
+ * 渲染仍走共享渲染器 lib/timeline-renderer.js，类名不变。
  */
 'use strict';
 
@@ -22,7 +22,7 @@ function readGitEvents() {
     if (shallow === 'true') {
       hexo.log.warn(
         'timeline: 当前为浅克隆，git 日志不完整，页面将显示「暂无记录。」。' +
-        '完整历史要求见 Docs/Project/Blog/WORKFLOW.md 「构建前置」。'
+        '构建前要补齐历史：git fetch --unshallow，或用 depth: false 克隆。'
       );
       return [];
     }

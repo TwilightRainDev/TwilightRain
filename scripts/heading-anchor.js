@@ -1,20 +1,9 @@
 /**
- * 段落锚点（2026-08-18，Reimu 批一迁移）：
- * after_post_render 给文章正文 h2/h3 注入悬停锚点链接（# 号，点击直达本段落）。
- *
- * 机制：
- * - hexo-renderer-marked 已默认给标题生成 id（中文原文，如 id="做过什么"），
- *   直接复用，不重复生成；无 id 的标题（如部分手写 HTML）按 ink.js TOC 的
- *   slug 规则生成（小写、保留中文、空白/标点转 -）。两处规则一致时 TOC 链接
- *   与正文 id 相同。
- * - 深链 #hash：id 构建期已存在，页面加载即锚点定位成功（TOC 运行时生成的
- *   id 会错过浏览器初始定位；hexo 默认 id 则无此问题）。
- * - 已带 id 的标题跳过 id 生成、仍注入锚点链接；不注入链接的情况只有
- *   标题无文本可 slug 化。
- * - hexo-renderer-marked 在 headerIds 开启时会顺带插入空 <a class="headerlink">，
- *   与 heading-anchor 叠成双锚点；headerIds 不能关（关掉标题会丢 id），
- *   故在本过滤器里剥掉 headerlink，只留可见的 #。
- *
+ * 段落锚点：after_post_render 给正文 h2/h3 注入悬停锚点链接（# 号，点击直达）。
+ * id 优先复用 hexo-renderer-marked 生成的（中文原文）；无 id 的标题按 ink.js TOC 的
+ * slug 规则生成，两边必须一致，不一致 TOC 链接就跳不到正文。
+ * headerIds 不能关（关掉标题会连 id 一起丢），而它开着就会多插一个空 headerlink，
+ * 与本文的锚点叠成双 #，故在本过滤器里把它剥掉。
  * 纯函数实现见 lib/heading-anchor.js。
  */
 'use strict';

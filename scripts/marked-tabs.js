@@ -1,21 +1,10 @@
 /**
- * 标签页（tabs）：:::tabs 容器 + "--- 标题" 分隔子页
+ * 标签页：:::tabs 容器 + "--- 标题" 分隔的子页，渲染为 <div class="tabs">（首个子页默认激活）。
  *
- * 语法（Reimu 批二迁移，与提示块 ::: 体系统一，markdown-it-container 风格）：
- *   :::tabs
- *   --- 标题A
- *   内容 A（完整 Markdown）
- *   --- 标题B
- *   内容 B
- *   :::
- * 渲染为 <div class="tabs">：tabs-nav 按钮条 + 各 tabs-panel，
- * 默认激活第一个；ink.js 事件委托切换（无框架依赖）。
- *
- * 机制：marked:use 块级扩展（同 scripts/marked-admonitions.js），
- * 块内用 this.lexer.blockTokens 二次解析（列表/代码块/强调均支持）。
- * 容错：无 "--- 标题" 分隔的块输出 [WARN] 可见错误（写错时显眼暴露）；
- * "--- 标题" 后无内容允许（空面板）。注意：tabs 内容里的 "---" 水平线
- * 必须是顶格才与分隔符混淆；分隔符要求 "--- " 后跟标题文本。
+ * marked:use 块级扩展（同 scripts/marked-admonitions.js），块内用 this.lexer.blockTokens
+ * 二次解析，故面板内容支持完整 Markdown。
+ * 容错：找不到 "--- 标题" 时输出可见的 [WARN] 错误（写错时显眼暴露），标题后无内容允许；
+ * 分隔符要求顶格且 "--- " 后跟标题文本。
  */
 'use strict';
 

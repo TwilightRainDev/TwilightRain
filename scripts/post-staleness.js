@@ -1,5 +1,5 @@
 /**
- * 文章时效（2026-08-18，Reimu 批一迁移）：
+ * 文章时效：
  * after_post_render 计算两个标记供 post.ejs 使用——
  * - data.updatedSet：front matter 显式写了 updated 才置真（data.raw 是
  *   front matter 原文）。仅显式手写才显示"更新于"：Hexo 默认 updated 取

@@ -1,15 +1,8 @@
 /**
- * 文内时间线（Butterfly 批一迁移）
- * 与站点页 /timeline/（.timeline-item）类名隔离，使用 .post-timeline。
- * DOM 由 scripts/lib/timeline-renderer.js 生成。
+ * 文内时间线 :::timeline[可选总标题] + "--- 节点" 分节。
  *
- * 语法：
- *   :::timeline[可选总标题]
- *   --- 节点 A
- *   内容 A
- *   --- 节点 B
- *   内容 B
- *   :::
+ * 与站点页 /timeline/ 的类名隔离，用 .post-timeline；DOM 由
+ * scripts/lib/timeline-renderer.js 生成（两处共用渲染器，语法不合并）。
  */
 'use strict';
 

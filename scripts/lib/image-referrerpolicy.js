@@ -1,5 +1,5 @@
 /**
- * 外链图片 referrerpolicy（拍板 M8）。
+ * 外链图片 referrerpolicy。
  */
 'use strict';
 

@@ -1,4 +1,4 @@
-// 构建期注入 commit 信息（2026-08-18 移植自 SanYeCao-blog BuildHashBlocks 思路）
+// 构建期注入 commit 信息
 // 优先读 CF Pages 构建环境变量，本地构建回退 git rev-parse HEAD。
 // 输出到 source/_data/commit.json，footer.ejs 通过 site.data.commit 渲染。
 'use strict';

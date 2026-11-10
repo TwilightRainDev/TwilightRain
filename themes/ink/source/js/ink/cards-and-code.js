@@ -3,15 +3,14 @@
  *
  * 卡片用 GitHub API 补 stars/forks 等，限流时静默保留静态内容；复制按钮取 .code pre 文本。
  *
- * 由 js/ink.js 入口按 import 顺序加载。
- * 块之间不共享作用域、不互相调用，只通过 DOM 与自定义事件通信。
+ * 由 js/ink.js 按 import 顺序加载；模块之间只通过 DOM 与自定义事件通信。
  */
 
 // ======================== GitHub 仓库卡片数据 ========================
 // 卡片由 marked 扩展静态渲染（owner/repo/链接/可选 desc），本模块用
 // GitHub API 补充 stars/forks/language/license 与 description（无静态
 // desc 时）。CSP connect-src 已放行 api.github.com（唯一第三方 fetch
-// 例外，见 SECURITY.md）。无 token 限流 60 次/小时/IP：localStorage
+// 例外）。无 token 限流 60 次/小时/IP：localStorage
 // 缓存 1 小时；请求失败（限流/网络）静默保留静态内容，渐进增强。
 (function() {
     var CARDS = document.querySelectorAll('a.card-github[data-repo]');
@@ -31,7 +30,7 @@
             }
         } catch (e) { /* 缓存不可用则直接请求 */ }
         // 注意：不能整串 encodeURIComponent(repo)——"/" 变 %2F 后 GitHub API
-        // 不返回 CORS 头，预检被拒（2026-08-17 实测）；owner/repo 各段编码
+        // 不返回 CORS 头，预检被拒；owner/repo 各段编码
         // （GitHub 命名规则字母数字 . _ -，编码结果与原值一致）
         return fetch('https://api.github.com/repos/' + repo.split('/').map(encodeURIComponent).join('/'))
             .then(function (res) {
@@ -136,7 +135,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // 让 pre 成为相对定位容器
         pre.style.position = 'relative';
         pre.appendChild(btn);
     }

@@ -1,5 +1,5 @@
 /**
- * 外链图片 referrerpolicy 防盗链（拍板 M8）。
+ * 外链图片 referrerpolicy 防盗链。
  *
  * 站内相对路径与 /img/ 不加；data: 不加。
  */

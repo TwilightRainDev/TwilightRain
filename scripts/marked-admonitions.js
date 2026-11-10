@@ -1,24 +1,10 @@
 /**
- * 提示块（:::admon[类型 可选标题]；2026-08-25 收敛自 :::note 等五种容器头）
- *
- *   :::admon[warning]
- *   内容（支持 Markdown，可含代码块/列表）
- *   :::
- *
- *   :::admon[warning 自定义标题]
- *   内容
- *   :::
- *
- * 类型：note / tip / important / warning / caution（不区分大小写）。
- * 省略方括号时默认 note（与 CSS 兜底 --admonitions-color-note 一致）；
- * 方括号首词非类型时宽容处理——默认 note、全串作标题（同 fold 的
- * mode 兜底先例）。标题省略时默认显示类型名（Note / Tip / ...）。
+ * 提示块 :::admon[类型 可选标题] … :::（note/tip/important/warning/caution，不分大小写），
  * 渲染为 <blockquote class="admonition bdm-类型">，样式见 style.min.css。
- *
- * 机制：hexo-renderer-marked 每次渲染前执行 'marked:use' 过滤器
- * （renderer.js: execFilterSync('marked:use', marked.use)），在此注册
- * marked 块级扩展即可，无需切换渲染器、不影响既有 Markdown 解析。
+ * 省略方括号默认 note；方括号首词不是类型时宽容处理——默认 note、全串作标题。
  * 不闭合的 ::: 块按普通文本原样输出（写错时显眼暴露）。
+ * 用 'marked:use' 块级扩展接进去（hexo-renderer-marked 每次渲染前执行），不换渲染器，
+ * 故既有 Markdown 解析不受影响。
  */
 'use strict';
 

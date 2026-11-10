@@ -3,12 +3,10 @@
  *
  * 偏好存 localStorage，由 /settings/ 页控件与 header 切换按钮读写；同时把主题同步给 giscus。
  *
- * 由 js/ink.js 入口按 import 顺序加载。
- * 块之间不共享作用域、不互相调用，只通过 DOM 与自定义事件通信。
+ * 由 js/ink.js 按 import 顺序加载；模块之间只通过 DOM 与自定义事件通信。
  */
 
 // ======================== 偏好设置：主题 & 字体 ========================
-// 设置项存 localStorage，由 /settings/ 页控件修改。
 // 脚本为 defer，HTML 解析完成后立即应用偏好，尽可能减少闪烁。
 (function() {
     var GISCUS_ORIGIN = 'https://giscus.app';

@@ -1,5 +1,5 @@
 /**
- * 首页列表 / 网格布局偏好（拍板 M6）。
+ * 首页列表 / 网格布局偏好。
  * localStorage 键：ink-home-layout（grid | list）
  */
 (function() {

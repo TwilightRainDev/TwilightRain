@@ -1,10 +1,7 @@
 /*
  * 页面框架件：返回顶部、阅读进度、文章目录、悬停资料卡
  *
- * 返回顶部按钮与阅读进度条为固定件；文章目录含桌面双卡与移动端胶囊两种形态。
- *
- * 由 js/ink.js 入口按 import 顺序加载。
- * 块之间不共享作用域、不互相调用，只通过 DOM 与自定义事件通信。
+ * 由 js/ink.js 按 import 顺序加载；模块之间只通过 DOM 与自定义事件通信。
  */
 
 // ======================== 返回顶部 ========================
@@ -52,7 +49,6 @@
     var headings = article.querySelectorAll('h2, h3');
     if (headings.length < 2) return;
 
-    // 确保每个标题有 id
     headings.forEach(function(h) {
         if (!h.id) {
             h.id = h.textContent.trim().toLowerCase().replace(/[^a-z0-9一-鿿]+/g, '-').replace(/^-|-$/g, '');
@@ -121,7 +117,7 @@
     var tocMobileToggle = document.querySelector('.post-toc-mobile-toggle');
     var tocMobilePreview = tocMobileToggle ? tocMobileToggle.querySelector('[data-toc-preview]') : null;
 
-    // 移动端胶囊 TOC（2026-08-18 移植自 SanYeCao-blog）：
+    // 移动端胶囊 TOC：
     // <768px 时 toc 移入悬浮面板，桌面时移回 slot 双卡，resize 跨界自动迁移。
     var isMobileToc = function () { return window.matchMedia('(max-width: 767px)').matches; };
     var placeToc = function () {
@@ -205,7 +201,6 @@
         onTocScroll();
     }
 
-    // 折叠/展开
     toggleBtn.addEventListener('click', function() {
         list.classList.toggle('collapsed');
         toggleBtn.textContent = list.classList.contains('collapsed') ? '[展开]' : '[折叠]';
@@ -299,7 +294,6 @@
         content.appendChild(sig);
         card.appendChild(content);
 
-        // Card hover events
         card.addEventListener('mouseenter', function() {
             clearTimeout(hideTimer);
         });

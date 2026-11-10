@@ -31,16 +31,13 @@
                 mark.textContent = parts[i];
                 fragment.appendChild(mark);
             } else {
-                // 非匹配部分 → 纯文本节点
                 fragment.appendChild(document.createTextNode(parts[i]));
             }
         }
         return fragment;
     }
 
-    // 从 URL 提取 searchIndex URL
     function getSearchUrl() {
-        // 尝试从页面 meta 或固定路径获取
         return '/search.xml';
     }
 
@@ -108,7 +105,6 @@
 
             if (titleIndex === -1 && contentIndex === -1) return;
 
-            // 提取内容片段
             var snippet = '';
             if (contentIndex >= 0) {
                 var start = Math.max(0, contentIndex - 40);
@@ -124,7 +120,6 @@
             });
         });
 
-        // 按标题匹配优先排序
         results.sort(function(a, b) {
             if (a.titleMatch && !b.titleMatch) return -1;
             if (!a.titleMatch && b.titleMatch) return 1;
@@ -174,7 +169,6 @@
         resultDiv.appendChild(ul);
     }
 
-    // 输入防抖
     var debounceTimer = null;
     searchInput.addEventListener('input', function() {
         if (clearBtn) {
@@ -186,7 +180,6 @@
         }, 300);
     });
 
-    // 清除按钮
     if (clearBtn) {
         clearBtn.addEventListener('click', function() {
             searchInput.value = '';
@@ -197,7 +190,6 @@
         });
     }
 
-    // 回车直接搜索
     searchInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
             clearTimeout(debounceTimer);
@@ -205,6 +197,5 @@
         }
     });
 
-    // 加载索引
     loadIndex();
 })();

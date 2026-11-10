@@ -5,7 +5,6 @@
  * 为什么不能只看源码：hexo-generator-sitemap 的模板对文章/页面取 post.updated，
  * 而 post.updated 的来源由 _config.yml 的 updated_option 决定。改成 'mtime' 或
  * 页面漏写 date:，lastmod 就会静默变成构建当天，源码里看不出任何异常。
- * 背景与已知残留见 Docs/Project/Blog/WORKFLOW.md「时间戳口径：sitemap / feed / article:modified_time」一节。
  */
 'use strict';
 
@@ -35,16 +34,11 @@ function parseFrontMatter(text) {
 }
 
 /**
- * 源文件允许出现的 lastmod，升序。
- * 优先 updated，回落 date；两者都没有返回空数组（调用方据此报错）。
+ * 源文件允许出现的 lastmod，升序。优先 updated，回落 date；两者都没有返回空数组，调用方据此报错。
  *
- * 为什么可能有两个候选值：插件自带的 formatDate 是
- * `input => input.toISOString().substring(0, 10)`
- * （node_modules/hexo-generator-sitemap/lib/template.js），直接取该时刻的 UTC 日期；
- * 而 front matter 里不带时区的钟点被解析成 Date 时，用的是**构建机本地时区**——
- * 本机东八区、Cloudflare 是 UTC。于是 `date: 2026-07-25 03:00:00` 会在两种机器上
- * 落成 07-24 与 07-25。放行这两种读法，换来的是同一个脚本在本地与 Cloudflare 上
- * 都能当关卡；收紧到一种就得先固定两边的构建时区。
+ * 为什么可能有多个候选值：站点地图插件直接取该时刻的 UTC 日期，而 front matter 里不带时区
+ * 的钟点按构建机本地时区解析。本机东八区、Cloudflare 是 UTC，于是同一个时刻在两边会落成
+ * 不同的一天。放行这几种读法，本地与云端才能用同一个关卡；收紧到一种就得先固定两边的时区。
  */
 function expectedLastmod(fm) {
   var raw = fm && (fm.updated || fm.date);

@@ -91,8 +91,6 @@ test('renderPageTimeline 同日多条合并为一个时间线条目', function (
   assert.strictEqual((html.match(/class="timeline-item"/g) || []).length, 2);
   assert.match(html, /class="timeline-subitems"/);
   // 同日 2 条时，首条渲染 .timeline-title，只有「其余」进子列表，故 <li> 为 1。
-  // （任务 brief 的步骤 5 此处写 2，与同 brief 步骤 6 的实现及其契约「首条渲染
-  //  .timeline-title，其余渲染为 .timeline-subitems 里的 <li>」冲突，按契约更正。）
   assert.strictEqual((html.match(/<li>/g) || []).length, 1);
   assert.match(html, /<span class="timeline-title">P1 能力收敛<\/span>/);
   assert.match(html, /<li>修复移动端标题断词<\/li>/);

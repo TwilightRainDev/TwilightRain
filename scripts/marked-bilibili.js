@@ -1,12 +1,8 @@
 /**
- * B 站视频懒嵌入（Butterfly 批二迁移，自写；不调用第三方元数据 API）
+ * B 站视频懒嵌入 ::bilibili{id="BV…" | "av…" | 视频 URL"}（不调用第三方元数据 API）。
  *
- *   ::bilibili{id="BV1xx411c7mD"}
- *   ::bilibili{id="av170001"}
- *   ::bilibili{id="https://www.bilibili.com/video/BV1xx411c7mD/"}
- *
- * av 号经 scripts/lib/av-bv-convert.js 规范为 BV 后嵌入；构建期输出占位卡片，
- * ink.js 在进入视口或点击后注入 sandbox iframe。
+ * av 号经 scripts/lib/av-bv-convert.js 规范为 BV 后嵌入。
+ * 构建期只输出占位卡片，ink.js 在进入视口或点击后注入 sandbox iframe。
  */
 'use strict';
 

@@ -1,5 +1,5 @@
 /**
- * 统一卡片 ::card（阶段七，非兼容；2026-08-25 再收敛为 github + link 两种）
+ * 统一卡片 ::card
  *
  *   ::card{type="github" repo="owner/repo" desc="..."}
  *   ::card{type="link" url="https://..." title="..." desc="..."}
