@@ -9,6 +9,10 @@ description: 'TwilightRain 的个人博客，记录技术探索与日常思考'
 keywords: 技术博客,个人博客,前端,开发
 author: TwilightRain
 language: zh-CN
+# 站点时区只影响模板里的日期格式，不影响文章 permalink：
+# hexo 生成 permalink 时按构建机的系统时区取日期，而 Cloudflare 的构建机是 UTC。
+# 于是写成凌晨 00:00-07:59 的文章在云端会被排到前一天，permalink 与 front matter 的日期对不上，
+# 构建末尾的 verify 会拦住整次部署。构建脚本里已固定 TZ=Asia/Shanghai（见 package.json 的 build）。
 timezone: Asia/Shanghai
 
 # URL
