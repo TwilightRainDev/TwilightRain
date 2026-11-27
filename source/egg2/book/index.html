@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<title>沈策 · 最简版</title>
+<link rel="icon" href="/img/icon.svg" type="image/svg+xml">
+<script src="/egg2/theme.js"></script>
+<style>
+/* 彩蛋页 /egg2/：抄本样式。正文结构与配色都跟随博客，但独立于主题（原样拷贝，不套布局）。 */
+
+:root {
+  --paper: #f2ebdd;
+  --paper-edge: #e6dcc9;
+  --ink: #241f1b;
+  --ink-soft: #574c41;
+  --ink-faint: #8a7c6b;
+  --accent: #8c3a24;
+  --accent-soft: rgba(140, 58, 36, .55);
+  --rule: rgba(86, 68, 52, .22);
+  --bar-bg: rgba(242, 235, 221, .9);
+  --chip-bg: rgba(140, 58, 36, .06);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #14120f;
+    --paper-edge: #1d1a16;
+    --ink: #e2d9c9;
+    --ink-soft: #bdb1a0;
+    --ink-faint: #8b8073;
+    --accent: #c8855f;
+    --accent-soft: rgba(200, 133, 95, .5);
+    --rule: rgba(226, 217, 201, .18);
+    --bar-bg: rgba(20, 18, 15, .9);
+    --chip-bg: rgba(200, 133, 95, .09);
+  }
+}
+
+:root[data-theme="dark"] {
+    --paper: #14120f;
+    --paper-edge: #1d1a16;
+    --ink: #e2d9c9;
+    --ink-soft: #bdb1a0;
+    --ink-faint: #8b8073;
+    --accent: #c8855f;
+    --accent-soft: rgba(200, 133, 95, .5);
+    --rule: rgba(226, 217, 201, .18);
+    --bar-bg: rgba(20, 18, 15, .9);
+    --chip-bg: rgba(200, 133, 95, .09);
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--paper);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    radial-gradient(120% 90% at 50% 0, var(--paper) 0%, var(--paper-edge) 100%);
+  background-attachment: fixed;
+  font-family: "LXGW WenKai", "Kaiti SC", "STKaiti", "KaiTi", "楷体", "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", serif;
+  font-size: 17px;
+  line-height: 2;
+  letter-spacing: .02em;
+}
+
+.skip {
+  position: absolute;
+  left: -9999px;
+}
+
+.skip:focus {
+  left: 1rem;
+  top: 1rem;
+  z-index: 9;
+  padding: .4rem .8rem;
+  background: var(--paper);
+  border: 1px solid var(--accent-soft);
+  color: var(--accent);
+}
+
+/* ---------- 顶部 / 侧边卷目 ---------- */
+
+.bar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: .45rem;
+  padding: .55rem .9rem;
+  background: var(--bar-bg);
+  border-bottom: 1px solid var(--rule);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.bar-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .6rem;
+}
+
+.bar-play {
+  flex: none;
+  padding: .05rem .5rem;
+  border: 1px solid var(--accent-soft);
+  border-radius: 999px;
+  color: var(--accent);
+  font-size: .78rem;
+  line-height: 1.7;
+  letter-spacing: .08em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.bar-play:hover,
+.bar-play:focus-visible {
+  background: var(--chip-bg);
+}
+
+.bar-title {
+  flex: none;
+  color: var(--accent);
+  font-size: .92rem;
+  letter-spacing: .18em;
+  white-space: nowrap;
+}
+
+.chips {
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.chips::-webkit-scrollbar { display: none; }
+
+.chips ol {
+  display: flex;
+  gap: .4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chips a {
+  display: block;
+  padding: .1rem .55rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--chip-bg);
+  color: var(--ink-soft);
+  font-size: .82rem;
+  line-height: 1.7;
+  letter-spacing: .06em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.chips a:hover,
+.chips a:focus-visible {
+  border-color: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* ---------- 正文 ---------- */
+
+.doc {
+  max-width: 38rem;
+  margin: 0 auto;
+  padding: 2.6rem 1.3rem 5rem;
+  text-align: justify;
+  text-justify: inter-character;
+}
+
+.doc h1,
+.doc h2,
+.doc h3,
+.doc h4 {
+  font-weight: 600;
+  line-height: 1.6;
+  scroll-margin-top: 4.5rem;
+}
+
+.doc hr {
+  height: 1px;
+  margin: 2.4rem 0;
+  border: 0;
+  background: linear-gradient(90deg, transparent, var(--rule) 12%, var(--rule) 88%, transparent);
+}
+
+.doc-h1 {
+  margin: 0 0 .2rem;
+  color: var(--accent);
+  font-size: 1.9rem;
+  letter-spacing: .34em;
+  text-align: center;
+  text-indent: .34em;
+}
+
+/* 源文标题自带空格，别再叠字距 */
+.doc-h1.title-line {
+  letter-spacing: .06em;
+  text-indent: 0;
+  white-space: pre-wrap;
+}
+
+.line.lead,
+.line.note {
+  text-align: center;
+  letter-spacing: .14em;
+}
+
+.line.lead {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.line.note {
+  margin: .1rem 0 0;
+  color: var(--ink-faint);
+  font-size: .82rem;
+  letter-spacing: .06em;
+}
+
+.vol,
+.part {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: .5rem;
+  margin: 3.4rem 0 1.2rem;
+  padding-bottom: .45rem;
+  border-bottom: 1px dashed var(--accent-soft);
+}
+
+.vol-no {
+  color: var(--accent);
+  font-size: .95rem;
+  letter-spacing: .16em;
+}
+
+.vol-name,
+.part {
+  font-size: 1.5rem;
+  letter-spacing: .1em;
+}
+
+.part {
+  border-bottom-style: solid;
+}
+
+.item {
+  margin: 2rem 0 .5rem;
+  padding-left: .7rem;
+  border-left: 3px solid var(--accent-soft);
+  color: var(--accent);
+  font-size: 1.02rem;
+  letter-spacing: .06em;
+  text-align: left;
+}
+
+.item-rest {
+  color: var(--ink-soft);
+  font-size: .95rem;
+  letter-spacing: .02em;
+}
+
+.sub {
+  margin: 1.9rem 0 .5rem;
+  color: var(--ink);
+  font-size: 1.05rem;
+  letter-spacing: .12em;
+  text-align: left;
+}
+
+.tag {
+  display: inline-block;
+  margin: 2.2rem 0 .5rem;
+  padding: .05rem .6rem;
+  border: 1px solid var(--accent-soft);
+  border-radius: 3px;
+  color: var(--accent);
+  font-size: .92rem;
+  letter-spacing: .1em;
+}
+
+.line {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.line.aside {
+  color: var(--ink-faint);
+  font-size: .93rem;
+  letter-spacing: .01em;
+}
+
+.fk {
+  color: var(--accent);
+  font-size: .95rem;
+}
+
+.ph {
+  color: var(--ink-faint);
+  font-size: .88em;
+  font-style: normal;
+}
+
+.foot {
+  padding: 0 0 4rem;
+  color: var(--ink-faint);
+  font-size: .85rem;
+  letter-spacing: .1em;
+  text-align: center;
+}
+
+.foot a {
+  color: var(--ink-faint);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+}
+
+.foot a:hover { color: var(--accent); }
+
+/* ---------- 宽屏：卷目挪到左边，常驻 ---------- */
+
+@media (min-width: 1180px) {
+  .bar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: 15.5rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .8rem;
+    padding: 2rem 1rem;
+    border-right: 1px solid var(--rule);
+    border-bottom: 0;
+  }
+
+  .bar-title {
+    font-size: .95rem;
+  }
+
+  .chips {
+    width: 100%;
+    overflow-x: visible;
+  }
+
+  .chips ol {
+    flex-direction: column;
+    gap: .1rem;
+  }
+
+  .chips a {
+    padding: .18rem .4rem;
+    border-color: transparent;
+    border-radius: 3px;
+    background: none;
+    font-size: .86rem;
+  }
+
+  .chips a:hover,
+  .chips a:focus-visible {
+    background: var(--chip-bg);
+  }
+
+  .doc {
+    margin: 0 auto 0 15.5rem;
+    padding-top: 3.4rem;
+  }
+}
+
+@media (max-width: 520px) {
+  body { font-size: 16px; }
+  .doc { padding: 1.8rem 1rem 4rem; }
+  .vol-name, .part { font-size: 1.3rem; }
+  .doc-h1 { font-size: 1.6rem; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#doc">跳到正文</a>
+<header class="bar">
+<div class="bar-head"><span class="bar-title">沈策 · 最简版</span>
+<a class="bar-play" href="/egg2/">去玩一天</a></div>
+<nav class="chips" aria-label="卷目">
+<ol>
+      <li><a href="#v1">卷一 沈策</a></li>
+      <li><a href="#v2">卷二 本传</a></li>
+      <li><a href="#v3">卷三 编年</a></li>
+      <li><a href="#v4">卷四 案牍</a></li>
+      <li><a href="#v5">卷五 关系</a></li>
+      <li><a href="#v6">卷六 书简</a></li>
+      <li><a href="#v7">卷七 武学</a></li>
+      <li><a href="#v8">卷八 器物</a></li>
+      <li><a href="#v9">卷九 异闻</a></li>
+      <li><a href="#v10">卷十 遗文辑存</a></li>
+      <li><a href="#kou">后人口述</a></li>
+      <li><a href="#pool">内容池</a></li>
+</ol>
+</nav>
+</header>
+<main class="doc" id="doc">
+<h1 class="doc-h1 title-line" id="top">沈 策 · 最 简 版</h1>
+<p class="line note">由《沈策古风剧情设定完整版.txt》（96 MiB）层层去重而来。</p>
+<hr>
+<h2 class="vol" id="v1"><span class="vol-no">卷一</span><span class="vol-name">沈策</span></h2>
+<p class="line">此集所记，止一人：沈策，字无咎，号寒江钓客，江湖称断眉沈。</p>
+<p class="line">云梦泽北岸沈家渡人，永嘉十年九月十八生。父沈渡，渡口摆渡为业；</p>
+<p class="line">母柳氏，善制琴。永嘉十九年冬，沈家渡一夜死绝四十七口，</p>
+<p class="line">策时年九岁，藏于船舱夹板之下，凡九日，独活。</p>
+<p class="line">此后二十年，为乞、入阁、为吏、出逃、行江湖、守孤城、沉冰河，</p>
+<p class="line">至永嘉三十九年，年二十九，遂不复用本名。</p>
+<p class="line"><span class="fk">体例：</span></p>
+<p class="line">一、纪年用永嘉，月皆三十日，为便于编次，非当时实历。</p>
+<p class="line">二、凡其人自述标〔记〕〔记二〕；旁人所言标〔附〕；考据按断标〔注〕〔按〕〔考〕。</p>
+<p class="line">三、一事而数说者并存之，不取其合，以其不合处最见真情。</p>
+<hr>
+<h2 class="vol" id="v2"><span class="vol-no">卷二</span><span class="vol-name">本传</span></h2>
+<h4 class="sub">一、身</h4>
+<p class="line">沈策长身，瘦削如竹，肩背笔直。眉骨极高，左眉自中而断。</p>
+<p class="line">永嘉二十八年入阁之前一夜，自以匕首割之，为的是在镜中认不出自己。</p>
+<p class="line">眼尾微红，面色苍白，唇色近无。右手虎口有旧裂，缠布。</p>
+<p class="line">左肋刀伤一道，长四寸，永嘉三十八年城头所留；右肩箭创一处，</p>
+<p class="line">永嘉三十七年雁门道中所留。说话声极轻，须近前才听得清。</p>
+<h4 class="sub">二、性</h4>
+<p class="line">寡言。一日之言不过百句，句句留着半句。</p>
+<p class="line">遇事先退一步；退无可退，则不复退，径直把人从棋盘上拿走。</p>
+<p class="line"><span class="fk">平生最恨二字：</span>结案。凡听人说出此二字，其眼神必变。</p>
+<p class="line">不喜争，争则不留余地。不记恩，记仇一辈子。</p>
+<p class="line"><span class="fk">有一桩短处：</span>极怕水声。夜里闻水声则醒，醒则不再睡。</p>
+<h4 class="sub">三、技</h4>
+<p class="line">主修《断雁十三式》，只肯用前七式；辅以惊鸿照影步。</p>
+<p class="line">兵刃为霜刃，窄刃长剑，七斤；袖中另藏无鞘短匕。</p>
+<p class="line"><span class="fk">武功之短：</span>不善群战，久战则力竭，左路不敢尽出。</p>
+<p class="line">境界止于通幽之末，本可再进，因旧伤不得其门。</p>
+<h4 class="sub">四、病</h4>
+<p class="line">左肋旧伤逢寒则痛，须贴膏。右肩箭创阴雨则酸。</p>
+<p class="line">咳，起于永嘉三十六年，抄卷至夜半必咳，半盏茶工夫方止。</p>
+<p class="line">逢月圆不眠，起因不明，其自言“与月无关，与人有事”。</p>
+<h4 class="sub">五、癖</h4>
+<p class="line">夜半独坐擦剑；见雪必折一枝；逢月圆不眠；</p>
+<p class="line">饮酒必掷杯；只用一只缺口的旧杯；忌人碰其琴。</p>
+<h4 class="sub">六、言</h4>
+<p class="line">“剑不认人，只认骨头。”</p>
+<p class="line">“天下没有不能卖的东西，只有价钱不到的。”</p>
+<p class="line">“别求我，求天。”</p>
+<p class="line">“我不会走，走了便是我错了。”</p>
+<p class="line">“恩我不记，仇我记一辈子。”</p>
+<hr>
+<h2 class="vol" id="v3"><span class="vol-no">卷三</span><span class="vol-name">编年</span></h2>
+<p class="line">永嘉十四年（四岁）至永嘉三十九年（二十九岁）</p>
+<p class="line">永嘉四十年（无名一年三十）至永嘉八十八年（无名四十九年七十八）</p>
+<h2 class="vol" id="v4"><span class="vol-no">卷四</span><span class="vol-name">案牍</span></h2>
+<p class="line">凡几百卷，皆沈策所录、所勘、所批者。卷中朱笔，非尽出其人。</p>
+<hr>
+<h4 class="sub">—— 永嘉三十三年案卷 ——</h4>
+<h3 class="item"><span class="item-tag">【案 第 1 号】</span><span class="item-rest">永嘉三十三年五月《洪州米行失窃案》</span></h3>
+<p class="line"><span class="fk">报案：</span>陆玠，遣仆代告。</p>
+<p class="line"><span class="fk">案由：</span>两家因地界相争，各执一契，契皆旧，字迹皆真。</p>
+<p class="line"><span class="fk">勘验：</span>尸格载：面色青，指甲紫，口鼻无水沫，两手指缝无泥。</p>
+<p class="line"><span class="fk">证物：</span>铜钱三十七文。</p>
+<p class="line">口供一（苏沅）：“他给过我一笔钱，让我别说。”</p>
+<p class="line">口供二（陆玠）：“我什么都不知道，你们问旁人去。”</p>
+<p class="line"><span class="fk">沈策批：</span>此案不必问人，只须问锁。</p>
+<p class="line"><span class="fk">结案：</span>未结，悬。</p>
+<p class="line aside">〔后记〕卷尾有虫蛀，损字七。</p>
+<h3 class="item"><span class="item-tag">【案 第 2 号】</span><span class="item-rest">永嘉三十三年八月《秦淮渡口劫道案》</span></h3>
+<p class="line"><span class="fk">报案：</span>何三，自称目击。</p>
+<p class="line"><span class="fk">勘验：</span>伤者头面三处，皆钝器，力不均，疑两人所为。</p>
+<p class="line"><span class="fk">证物：</span>残契半张。</p>
+<p class="line">口供一（卫琮）：“那夜我在屋中，什么也没听见。”</p>
+<p class="line">口供二（商砚）：“我认罪。人是我打的，钱不是我拿的。”</p>
+<p class="line"><span class="fk">沈策批：</span>尸无水沫，非溺死。狱中已定案，可笑。</p>
+<p class="line"><span class="fk">结案：</span>以“疑”字结，实无人信。</p>
+<h3 class="item"><span class="item-tag">【案 第 3 号】</span><span class="item-rest">永嘉三十三年九月《姑苏码头逃婚案》</span></h3>
+<p class="line"><span class="fk">案由：</span>一人在市中被三人围殴，伤在头面，凶者散去。</p>
+<p class="line"><span class="fk">勘验：</span>绳悬三尺，结为双套，非熟手不能为。</p>
+<p class="line"><span class="fk">证物：</span>半块干粮，齿痕可辨。</p>
+<p class="line">口供一（柳琤）：“我不认得死者，从不相识。”</p>
+<p class="line">口供二（温肃）：“那绳结不是我系的，我不会系那种结。”</p>
+<p class="line"><span class="fk">沈策批：</span>伤者说谎，其伤在左，其言在右。</p>
+<p class="line"><span class="fk">结案：</span>结了又翻，前后三易其词。</p>
+<p class="line aside">〔后记〕此卷抄本留于旧案房，第十一格，第二层。</p>
+<h3 class="item"><span class="item-tag">【案 第 4 号】</span><span class="item-rest">永嘉三十三年五月《雁门外冒名案》</span></h3>
+<p class="line"><span class="fk">勘验：</span>道旁有车辙两道，深者向北，浅者向南。</p>
+<p class="line"><span class="fk">证物：</span>断绳一段。</p>
+<p class="line"><span class="fk">沈策批：</span>逃者三人，同日而逃，必有人报信。</p>
+<p class="line"><span class="fk">结案：</span>结，而卷中有删。</p>
+<p class="line aside">〔后记〕此卷曾被人借出七日，归还时次序已乱。</p>
+<h3 class="item"><span class="item-tag">【案 第 5 号】</span><span class="item-rest">永嘉三十三年十二月《洛阳南市盗马案》</span></h3>
+<p class="line"><span class="fk">案由：</span>井中浮尸一具，衣冠完整，身上无伤。</p>
+<p class="line"><span class="fk">勘验：</span>地界之石为旧石，字已被磨去半边，无从对证。</p>
+<p class="line">口供一（谢韫）：“东西是我的，我可以指认，但我不愿上堂。”</p>
+<p class="line"><span class="fk">沈策批：</span>案情不繁，难在备案之上有人。</p>
+<p class="line aside">〔后记〕此案中人，三年后有一人暴亡。</p>
+<h3 class="item"><span class="item-tag">【案 第 6 号】</span><span class="item-rest">永嘉三十三年九月《洛阳南市拐卖案》</span></h3>
+<p class="line"><span class="fk">案由：</span>一名女子自缢于梁，绳结极整，疑非自为。</p>
+<p class="line">口供二（温肃）：“契是祖上传下的，我没动过一字。”</p>
+<p class="line"><span class="fk">结案：</span>结。</p>
+<h3 class="item"><span class="item-tag">【案 第 7 号】</span><span class="item-rest">永嘉三十三年一月《姑苏码头逃役案》</span></h3>
+<p class="line"><span class="fk">案由：</span>失物十二件，值钱十一贯，失主疑为同院之人。</p>
+<p class="line"><span class="fk">证物：</span>泥足印图一纸。</p>
+<p class="line">口供二（柳琤）：“他先动的手，我只推了他一把。”</p>
+<p class="line"><span class="fk">沈策批：</span>两供皆避一处，此一处即要害。</p>
+<p class="line aside">〔后记〕此卷第三页有朱笔一行，字迹非司中人。</p>
+<h3 class="item"><span class="item-tag">【案 第 8 号】</span><span class="item-rest">永嘉三十三年六月《凉州驿逃婚案》</span></h3>
+<p class="line"><span class="fk">报案：</span>谢韫，夜半叩门。</p>
+<h3 class="item"><span class="item-tag">【案 第 9 号】</span><span class="item-rest">永嘉三十三年三月《雁门外中毒案》</span></h3>
+<p class="line"><span class="fk">沈策批：</span>契之墨新而纸旧，作伪者不知纸先于此。</p>
+<h3 class="item"><span class="item-tag">【案 第 10 号】</span><span class="item-rest">永嘉三十三年二月《雁门外诬告案》</span></h3>
+<p class="line"><span class="fk">案由：</span>盐仓失盐三百斤，仓门锁未破。</p>
+<p class="line"><span class="fk">证物：</span>旧簪一枚。</p>
+<p class="line">口供一（谢韫）：“我只见他二人争吵，后来便不知了。”</p>
+<h3 class="item"><span class="item-tag">【案 第 11 号】</span><span class="item-rest">永嘉三十三年十一月《姑苏码头缢死案》</span></h3>
+<p class="line"><span class="fk">勘验：</span>仓中脚印杂乱，有一足迹异常小，长约七寸。</p>
+<p class="line"><span class="fk">证物：</span>刀鞘一只，无刀。</p>
+<h3 class="item"><span class="item-tag">【案 第 13 号】</span><span class="item-rest">永嘉三十三年八月《洪州米行中毒案》</span></h3>
+<p class="line"><span class="fk">案由：</span>老妇状告其子不养，其子称母已改嫁。</p>
+<h3 class="item"><span class="item-tag">【案 第 14 号】</span><span class="item-rest">永嘉三十三年十月《姑苏码头盗马案》</span></h3>
+<p class="line"><span class="fk">报案：</span>老陶，托人口传。</p>
+<p class="line"><span class="fk">勘验：</span>屋中陈设不乱，惟箱盖虚掩，锁舌上有细划痕。</p>
+<h3 class="item"><span class="item-tag">【案 第 16 号】</span><span class="item-rest">永嘉三十三年十一月《凉州驿斗殴案》</span></h3>
+<p class="line"><span class="fk">案由：</span>戍卒三人逃，同行者称其夜半方知。</p>
+<h3 class="item"><span class="item-tag">【案 第 17 号】</span><span class="item-rest">永嘉三十三年七月《雁门外盗马案》</span></h3>
+<p class="line"><span class="fk">案由：</span>一人冒他人名应试，被同乡识出</p>
+<h3 class="item"><span class="item-tag">【案 第 20 号】</span><span class="item-rest">永嘉三十三年九月《云梦泽岸缢死案》</span></h3>
+<p class="line"><span class="fk">结案：</span>未结。都尉命封卷。</p>
+<h3 class="item"><span class="item-tag">【案 第 21 号】</span><span class="item-rest">永嘉三十三年五月《秦淮渡口中毒案》</span></h3>
+<p class="line"><span class="fk">证物：</span>药渣一包。</p>
+<h3 class="item"><span class="item-tag">【案 第 23 号】</span><span class="item-rest">永嘉三十三年八月《扬州西巷火起案》</span></h3>
+<p class="line"><span class="fk">案由：</span>道中有商队被劫，货尽，人未伤。</p>
+<h3 class="item"><span class="item-tag">【案 第 30 号】</span><span class="item-rest">永嘉三十三年二月《秦淮渡口田界案》</span></h3>
+<p class="line"><span class="fk">报案：</span>卫琮，以状纸投衙。</p>
+<h2 class="vol" id="v5"><span class="vol-no">卷五</span><span class="vol-name">关系</span></h2>
+<h3 class="item"><span class="item-tag">【关系 第 0 号】</span><span class="item-rest">谢澍（师）</span></h3>
+<p class="line"><span class="fk">初见：</span>永嘉二十八年正月，天枢阁石阶。其人立于阶上，未言，先看其手，而后看其眼。</p>
+<p class="line"><span class="fk">共事：</span>十年。教剑、教规矩、教怎么看人。从不夸，从不骂。</p>
+<p class="line"><span class="fk">裂隙：</span>永嘉三十二年，沈策翻旧案，阁主只说一句“此案不翻”，二人自此不再论此事。</p>
+<p class="line"><span class="fk">现状：</span>已死。死时沈策在左近，未入内。</p>
+<p class="line"><span class="fk">沈策评：</span>“他教不了我一招，却教了我怎么活。临终只留一句：别学我。”</p>
+<h3 class="item"><span class="item-tag">【关系 第 1 号】</span><span class="item-rest">谢无咎（挚友）</span></h3>
+<p class="line"><span class="fk">初见：</span>永嘉三十三年，缇骑司旧案房。二人同时伸手去取同一卷宗，谁也不肯先放。</p>
+<p class="line"><span class="fk">共事：</span>同查一案，各记一份，两份至今不合。</p>
+<p class="line"><span class="fk">裂隙：</span>一桩旧案，一个要翻，一个要埋。</p>
+<p class="line"><span class="fk">现状：</span>不通音问，已十二年。</p>
+<p class="line"><span class="fk">沈策评：</span>“同名不同姓。江湖上常误作一人，其实我比他狠，他比我直。”</p>
+<h3 class="item"><span class="item-tag">【关系 第 2 号】</span><span class="item-rest">裴冽（宿敌）</span></h3>
+<p class="line"><span class="fk">初见：</span>永嘉三十三年，缇骑司值房。都尉看人时不看眼，看手。</p>
+<p class="line"><span class="fk">共事：</span>三年。上下相制，各有所求。</p>
+<p class="line"><span class="fk">裂隙：</span>沈策翻案出逃，裴冽未追；不追，才是最重的一笔。</p>
+<p class="line"><span class="fk">现状：</span>同在一城，三年未见。</p>
+<p class="line"><span class="fk">沈策评：</span>“他知道我没死，我知道他知道。我们都不作声。”</p>
+<h3 class="item"><span class="item-tag">【关系 第 3 号】</span><span class="item-rest">苏澧（情缘）</span></h3>
+<p class="line"><span class="fk">初见：</span>永嘉二十二年，秦淮河畔。其人正与人争一斗米，沈策替其付了钱。</p>
+<p class="line"><span class="fk">共事：</span>一诺三年，终未成。</p>
+<p class="line"><span class="fk">裂隙：</span>一纸调令，各嫁各娶，各守其人。</p>
+<p class="line"><span class="fk">现状：</span>偶有书信，一年一封，话极短。</p>
+<p class="line"><span class="fk">沈策评：</span>“我不答。答了便不能再见面。”</p>
+<h3 class="item"><span class="item-tag">【关系 第 4 号】</span><span class="item-rest">阿六（市井）</span></h3>
+<p class="line"><span class="fk">初见：</span>永嘉二十年，汴梁破庙檐下。其人分半块饼，沈策接了。</p>
+<p class="line"><span class="fk">共事：</span>同讨饭三年，同挨打，同分食。</p>
+<p class="line"><span class="fk">裂隙：</span>永嘉二十四年冬，阿六病死于墙根，沈策不在。</p>
+<p class="line"><span class="fk">现状：</span>已死。葬于城西乱岗，无碑。</p>
+<p class="line"><span class="fk">沈策评：</span>“我这一生所欠不多，欠他的那一笔最重。”</p>
+<p class="line"><span class="fk">初见：</span>永嘉十九年冬，云梦泽北岸。其人见其从芦苇中出来，未问，只递了一件旧衣。</p>
+<p class="line"><span class="fk">共事：</span>无。此后二十年，每逢其过云梦泽，必留一碗热的。</p>
+<p class="line"><span class="fk">裂隙：</span>无。此为其一生唯一无裂隙之人。</p>
+<p class="line"><span class="fk">现状：</span>已死。死前一年尚在渡口。</p>
+<p class="line"><span class="fk">沈策评：</span>“这世上待我最直的，是个不识字的老汉。”</p>
+<h3 class="item"><span class="item-tag">【关系 第 6 号】</span><span class="item-rest">柳琰（线人）</span></h3>
+<p class="line"><span class="fk">共事：</span>同行六十里，一路只说了七句话。</p>
+<p class="line"><span class="fk">裂隙：</span>其人说过一句话，沈策记了十年，从未问清。</p>
+<p class="line"><span class="fk">沈策评：</span>“若当年是他站在我这边，事便不同了。”</p>
+<p class="line aside">〔注〕此条与其本传第36则相左，存疑。</p>
+<h3 class="item"><span class="item-tag">【关系 第 7 号】</span><span class="item-rest">叶渝（血仇）</span></h3>
+<p class="line"><span class="fk">初见：</span>永嘉二十一年二月，破庙。其人先开口，问了三个问题，沈策只答了一个。</p>
+<p class="line"><span class="fk">共事：</span>一人在明，一人在暗，做了三年。</p>
+<p class="line"><span class="fk">裂隙：</span>一死一存，存的这个不知该怪谁。</p>
+<p class="line"><span class="fk">现状：</span>已死。死时沈策不在左近。</p>
+<p class="line"><span class="fk">沈策评：</span>“此人不坏，只是怕。”</p>
+<p class="line aside">〔注〕此条据市井传闻，可信者半。</p>
+<h3 class="item"><span class="item-tag">【关系 第 8 号】</span><span class="item-rest">陆瑄九（师）</span></h3>
+<p class="line"><span class="fk">初见：</span>永嘉十五年八月，雁门道中。二人同时伸手去取一把刀，谁也不肯先放。</p>
+<p class="line"><span class="fk">共事：</span>共守一夜，至天明敌军退，二人皆未言。</p>
+<p class="line"><span class="fk">现状：</span>见面只以点头作礼。</p>
+<p class="line"><span class="fk">初见：</span>永嘉二十六年一月，破庙。其人正被差役按在地上，沈策未救，只看着。</p>
+<p class="line"><span class="fk">共事：</span>共押一名要犯，途中险失之。</p>
+<p class="line"><span class="fk">裂隙：</span>其人在关键时刻退了一步，沈策不曾怪，却也不曾忘。</p>
+<h3 class="item"><span class="item-tag">【关系 第 10 号】</span><span class="item-rest">顾昀（同门）</span></h3>
+<p class="line"><span class="fk">现状：</span>一方寻另一方，另一方避之。</p>
+<p class="line"><span class="fk">沈策评：</span>“这一笔，算我欠他的。”</p>
+<p class="line aside">〔注〕此人名讳不见于官册，疑为化名。</p>
+<p class="line"><span class="fk">初见：</span>永嘉二十二年八月，雁门道中。其人伤重，沈策替其按了半日伤口。</p>
+<p class="line"><span class="fk">共事：</span>共饮三日，说尽平生，醒后各自不认。</p>
+<p class="line"><span class="fk">裂隙：</span>两人所求从来不同，只是短时同路。</p>
+<p class="line"><span class="fk">沈策评：</span>“我不怪他，但我记得。”</p>
+<h3 class="item"><span class="item-tag">【关系 第 12 号】</span><span class="item-rest">沈熠（旧仆）</span></h3>
+<p class="line"><span class="fk">沈策评：</span>“他手上也沾过血，可他心里干净。”</p>
+<h3 class="item"><span class="item-tag">【关系 第 13 号】</span><span class="item-rest">秦璞九（上司）</span></h3>
+<p class="line"><span class="fk">现状：</span>仍往来，只是不再说真话。</p>
+<p class="line aside">〔注〕此条据其口述，无旁证。</p>
+<p class="line"><span class="fk">沈策评：</span>“我一生所遇，唯此人待我最直。”</p>
+<h3 class="item"><span class="item-tag">【关系 第 17 号】</span><span class="item-rest">韩霈（医者）</span></h3>
+<p class="line"><span class="fk">裂隙：</span>银钱清了，情分没清，遂不再往来。</p>
+<p class="line"><span class="fk">沈策评：</span>“与其人共事，须先想好退路。”</p>
+<h2 class="vol" id="v6"><span class="vol-no">卷六</span><span class="vol-name">书简</span></h2>
+<h3 class="item letter"><span class="item-tag">〔书 第 1 通〕</span><span class="item-rest">卫瑾 致 谢澍</span></h3>
+<p class="line">永嘉四十一年八月二十三，自雁门寄。</p>
+<p class="line"><span class="fk">某白：</span></p>
+<p class="line">此地米贵，人心更贵。一斗米可换一条消息。</p>
+<p class="line">你不必来。来了也无用，反添一处破口。</p>
+<p class="line">一切如旧，唯柴米又涨。</p>
+<p class="line">勿再遣人来。来一个，我便换一个住处。</p>
+<p class="line">字不及半，勿怪。</p>
+<p class="line aside">〔藏处〕缝于衣内衬。</p>
+<p class="line">永嘉三十九年三月十一，自姑苏寄。</p>
+<p class="line">城中已换了三任都尉，卷宗仍旧堆在旧案房第十一格。</p>
+<p class="line">你问的那句，我不答。答了便不能再见面。</p>
+<p class="line">雁门风硬，旧伤逢寒便痛，尚能忍。</p>
+<p class="line">案已翻出一角，纸上是“水匪”二字，写得极齐。</p>
+<p class="line">若我不归，箱底有一物，可取去，亦可烧了。</p>
+<p class="line">前书未复，想是道远。此处天寒，炭不足，夜半常醒。</p>
+<p class="line">不具。</p>
+<p class="line aside">〔藏处〕交与寒山寺湛然代存。</p>
+<p class="line">一别十年，我仍记得你的手，比记得你的脸清楚。</p>
+<p class="line">苏氏问起我，你说我死了便可。</p>
+<p class="line">若论公道，天不公道，人便替它公道。</p>
+<p class="line">此致。</p>
+<p class="line">所要之物已备，藏于旧处，取时勿使人见。</p>
+<p class="line">信至此止。</p>
+<p class="line aside">〔藏处〕托何三铺中转递。</p>
+<h2 class="vol" id="v7"><span class="vol-no">卷七</span><span class="vol-name">武学</span></h2>
+<h3 class="item"><span class="item-tag">【武学 第 1 则】</span><span class="item-rest">秋水第七式</span></h3>
+<p class="line"><span class="fk">源流：</span>出天枢阁旧谱，原本已残，只余七式可辨。</p>
+<p class="line"><span class="fk">起手：</span>身形下沉，如要坐地，实为蓄势。</p>
+<p class="line"><span class="fk">步法：</span>三步进，两步退，退的比进的快。</p>
+<p class="line"><span class="fk">气机：</span>不运内息，只凭筋骨，故不能久战。</p>
+<p class="line"><span class="fk">破法：</span>以重兵器硬压其腕，其式自散。</p>
+<p class="line"><span class="fk">伤例：</span>永嘉三十八年，城头用此式，伤七人，自身中一箭。</p>
+<p class="line aside">〔评〕此式难看，却最要命。</p>
+<h3 class="item"><span class="item-tag">【武学 第 2 则】</span><span class="item-rest">逆鳞第十式</span></h3>
+<p class="line"><span class="fk">源流：</span>本为渡船人撑篙之法，化而为剑。</p>
+<p class="line"><span class="fk">起手：</span>剑横于脐，掌心向外，看似门户大开。</p>
+<p class="line"><span class="fk">步法：</span>以脚跟为轴，转半圈，转到对方侧后。</p>
+<p class="line"><span class="fk">气机：</span>一口气沉于丹田，出手时不吐气，收手时才吐。</p>
+<p class="line"><span class="fk">破法：</span>以快打慢则无效，须以慢制慢。</p>
+<p class="line"><span class="fk">伤例：</span>一次于野店，收势不及，伤一无关之人，此后不再轻用。</p>
+<p class="line aside">〔评〕此式非杀人之招，乃留人之招。</p>
+<h3 class="item"><span class="item-tag">【武学 第 3 则】</span><span class="item-rest">惊鸿第一式</span></h3>
+<p class="line"><span class="fk">起手：</span>闭目一息，听风而后动。</p>
+<p class="line"><span class="fk">气机：</span>气有一处滞，滞在左肋，故左路不敢尽出。</p>
+<p class="line"><span class="fk">伤例：</span>永嘉三十一年，与同门演武，断对方一指。</p>
+<p class="line aside">〔评〕此式须有极稳的心，心乱则招散。</p>
+<h3 class="item"><span class="item-tag">【武学 第 4 则】</span><span class="item-rest">寒山第三式</span></h3>
+<p class="line"><span class="fk">起手：</span>剑不起，人先退半步，此为让其先动。</p>
+<p class="line"><span class="fk">步法：</span>足不落地则已，落地必留印。</p>
+<p class="line"><span class="fk">破法：</span>其式有一处空，在左肩，惟极为短促。</p>
+<p class="line"><span class="fk">伤例：</span>用过三次，皆未见血，故其自言“此式未成”。</p>
+<h3 class="item"><span class="item-tag">【武学 第 5 则】</span><span class="item-rest">断弦第一式</span></h3>
+<p class="line"><span class="fk">源流：</span>见于《空青七绝》残页，只一图，无注。</p>
+<p class="line"><span class="fk">起手：</span>左足前三分，右手持刃不过眉。</p>
+<p class="line"><span class="fk">步法：</span>一步一寸，进得极慢，退得极快。</p>
+<p class="line"><span class="fk">破法：</span>此式不能于湿地用，足下必滑。</p>
+<h3 class="item"><span class="item-tag">【武学 第 6 则】</span><span class="item-rest">沉沙第一式</span></h3>
+<p class="line"><span class="fk">气机：</span>以短息为主，不与人比长力。</p>
+<p class="line aside">〔评〕此式好看而无用，好看处即无用处。</p>
+<h3 class="item"><span class="item-tag">【武学 第 8 则】</span><span class="item-rest">无相第十一式</span></h3>
+<p class="line"><span class="fk">源流：</span>沈策自创，成于永嘉三十一年，改过四次。</p>
+<p class="line"><span class="fk">步法：</span>走斜线，不出直步，直步最易被人算。</p>
+<p class="line"><span class="fk">伤例：</span>永嘉三十七年，末寨之主中此式于喉，立毙。</p>
+<p class="line aside">〔评〕此式一生只用一次便够。</p>
+<h3 class="item"><span class="item-tag">【武学 第 13 则】</span><span class="item-rest">沧浪第十一式</span></h3>
+<p class="line"><span class="fk">源流：</span>得自边军旧卒口授，无谱，只有口传。</p>
+<p class="line"><span class="fk">气机：</span>先紧后松，紧时如铁，松时如线。</p>
+<h3 class="item"><span class="item-tag">【武学 第 26 则】</span><span class="item-rest">孤山第十一式</span></h3>
+<p class="line"><span class="fk">破法：</span>破此式者，须抢其半步，夺其退路。</p>
+<h2 class="vol" id="v8"><span class="vol-no">卷八</span><span class="vol-name">器物</span></h2>
+<h3 class="item"><span class="item-tag">【器物 第 1 则】</span><span class="item-rest">无鞘（短匕，藏于袖）</span></h3>
+<p class="line"><span class="fk">来历：</span>沈家渡旧物，灭门之夜带出，为其所存者唯一。</p>
+<p class="line"><span class="fk">形制：</span>铜质，径一寸，内无铃舌，故摇之无声。</p>
+<p class="line"><span class="fk">使用：</span>每逢月圆取出，看一刻，再收。</p>
+<p class="line aside">〔注〕此物于雁门一役后不见。</p>
+<h3 class="item"><span class="item-tag">【器物 第 2 则】</span><span class="item-rest">半张烧焦的地契</span></h3>
+<p class="line"><span class="fk">形制：</span>共十九封，皆未封口，最早一封为永嘉二十二年。</p>
+<p class="line"><span class="fk">使用：</span>从不示人，夜宿时压在枕下。</p>
+<p class="line aside">〔注〕此物来历有两种说法，取其一。</p>
+<h3 class="item"><span class="item-tag">【器物 第 3 则】</span><span class="item-rest">一只独眼的风筝</span></h3>
+<p class="line"><span class="fk">来历：</span>自造，材料取自旧船板。</p>
+<p class="line aside">〔注〕此物与其伤相关，见伤病史第三则。</p>
+<p class="line"><span class="fk">形制：</span>木齿缺三，缺口处被摸得发亮。</p>
+<p class="line"><span class="fk">使用：</span>只在极倦时取出，摩挲片刻。</p>
+<h3 class="item"><span class="item-tag">【器物 第 5 则】</span><span class="item-rest">霜刃（窄刃长剑，七斤，刃口一处崩缺）</span></h3>
+<h3 class="item"><span class="item-tag">【器物 第 6 则】</span><span class="item-rest">旧军牌一枚</span></h3>
+<p class="line"><span class="fk">形制：</span>长五寸，双刃，刃口有一处卷，柄缠鱼皮。</p>
+<p class="line"><span class="fk">使用：</span>每日擦，擦时不出声，擦完必看刃口。</p>
+<p class="line"><span class="fk">来历：</span>于汴梁城南旧货摊上以十七文买得。</p>
+<h3 class="item"><span class="item-tag">【器物 第 8 则】</span><span class="item-rest">一枚铜制小铃，摇之无声</span></h3>
+<p class="line"><span class="fk">形制：</span>纸已脆，边焦，字迹只余半边，触之即落屑。</p>
+<p class="line"><span class="fk">使用：</span>三年未动，落灰一层。</p>
+<h3 class="item"><span class="item-tag">【器物 第 10 则】</span><span class="item-rest">皂靴一双，后跟以麻绳系</span></h3>
+<h3 class="item"><span class="item-tag">【器物 第 11 则】</span><span class="item-rest">断齿木梳</span></h3>
+<p class="line"><span class="fk">来历：</span>天枢阁所赐，赐时阁主只说“别丢了”。</p>
+<p class="line"><span class="fk">形制：</span>长二尺七寸三分，窄刃，脊厚背薄，鞘为旧木，外缠麻布。</p>
+<h3 class="item"><span class="item-tag">【器物 第 14 则】</span><span class="item-rest">夹在书里的干枫叶</span></h3>
+<p class="line"><span class="fk">来历：</span>他人所赠，赠者已死。</p>
+<p class="line aside">〔注〕此物后不知所归。</p>
+<h3 class="item"><span class="item-tag">【器物 第 15 则】</span><span class="item-rest">麻绳三丈，打七个结</span></h3>
+<h3 class="item"><span class="item-tag">【器物 第 17 则】</span><span class="item-rest">半瓶陈年药酒</span></h3>
+<h3 class="item"><span class="item-tag">【器物 第 20 则】</span><span class="item-rest">三枚磨光的骰子</span></h3>
+<p class="line"><span class="fk">来历：</span>从一名死者身上取下，未还。</p>
+<h3 class="item"><span class="item-tag">【器物 第 24 则】</span><span class="item-rest">无字手札一卷</span></h3>
+<h3 class="item"><span class="item-tag">【器物 第 31 则】</span><span class="item-rest">刻旧名的砚</span></h3>
+<h3 class="item"><span class="item-tag">【器物 第 36 则】</span><span class="item-rest">一叠未寄出的信</span></h3>
+<h3 class="item"><span class="item-tag">【方 第 1 则】</span><span class="item-rest">解酒方</span></h3>
+<p class="line"><span class="fk">药：</span>地黄、当归、乳香、桂枝、童便、陈皮、白术、细辛。</p>
+<p class="line"><span class="fk">法：</span>以水一盏半，煎至七分，去滓温服。</p>
+<p class="line"><span class="fk">用验：</span>初服有效，再服无功，遂弃。</p>
+<p class="line aside">〔按〕此方传自边军医官，不宜久服。</p>
+<h3 class="item"><span class="item-tag">【方 第 2 则】</span><span class="item-rest">安神方</span></h3>
+<p class="line"><span class="fk">药：</span>地黄、细辛、童便、酒、三七、麻黄、当归、甘草。</p>
+<p class="line"><span class="fk">法：</span>先以童便洗之，而后敷药。</p>
+<p class="line"><span class="fk">用验：</span>服三帖，痛减，夜能睡。</p>
+<p class="line aside">〔按〕此方为其母旧方，寒者忌之。</p>
+<h3 class="item"><span class="item-tag">【方 第 3 则】</span><span class="item-rest">骨伤接续方</span></h3>
+<p class="line"><span class="fk">药：</span>白术、当归、川芎、黄芪。</p>
+<p class="line"><span class="fk">法：</span>入酒三升，浸七日，每饮半盏。</p>
+<p class="line"><span class="fk">用验：</span>一服而止，此后不再用。</p>
+<p class="line"><span class="fk">药：</span>白术、没药、茯苓、酒。</p>
+<h3 class="item"><span class="item-tag">【方 第 5 则】</span><span class="item-rest">疮疡方</span></h3>
+<p class="line"><span class="fk">药：</span>陈皮、麻黄、三七、地黄、芍药、甘草。</p>
+<p class="line"><span class="fk">法：</span>捣烂敷之，一日一换。</p>
+<p class="line aside">〔按〕此方传自边军医官，伤在骨者无效。</p>
+<h3 class="item"><span class="item-tag">【方 第 6 则】</span><span class="item-rest">寒热方</span></h3>
+<p class="line"><span class="fk">药：</span>没药、甘草、姜汁、川芎、茯苓、桂枝。</p>
+<p class="line"><span class="fk">用验：</span>服之十年，年年如此。</p>
+<p class="line aside">〔按〕此方自抄，抄错一味，误服三日，不宜久服。</p>
+<p class="line"><span class="fk">药：</span>白术、姜汁、川芎、地黄、童便。</p>
+<p class="line aside">〔按〕此方自抄，抄错一味，误服三日，孕妇忌。</p>
+<p class="line"><span class="fk">药：</span>姜汁、三七、茯苓、白术。</p>
+<p class="line aside">〔按〕此方传自边军医官，寒者忌之。</p>
+<p class="line"><span class="fk">药：</span>没药、乳香、桂枝、白术。</p>
+<p class="line"><span class="fk">用验：</span>无效，反增呕。</p>
+<p class="line aside">〔按〕此方传自边军医官，孕妇忌。</p>
+<h3 class="item"><span class="item-tag">【方 第 10 则】</span><span class="item-rest">咳方</span></h3>
+<p class="line"><span class="fk">药：</span>细辛、三七、白术、半夏、乳香、地黄。</p>
+<p class="line aside">〔按〕此方自抄，抄错一味，误服三日，伤在骨者无效。</p>
+<h3 class="item"><span class="item-tag">【方 第 11 则】</span><span class="item-rest">金创止血方</span></h3>
+<p class="line"><span class="fk">药：</span>没药、半夏、黄芪、白术、芍药、陈皮、地黄。</p>
+<p class="line aside">〔按〕此方为其母旧方，孕妇忌。</p>
+<p class="line"><span class="fk">药：</span>酒、半夏、白术、地黄、甘草、黄芪、当归。</p>
+<p class="line aside">〔按〕此方出自游医曹九，孕妇忌。</p>
+<p class="line"><span class="fk">药：</span>地黄、半夏、白术、川芎、麻黄、黄芪、芍药、甘草。</p>
+<p class="line"><span class="fk">法：</span>共为细末，每服二钱，温酒下。</p>
+<p class="line aside">〔按〕此方出自游医曹九，伤在骨者无效。</p>
+<p class="line"><span class="fk">药：</span>桂枝、黄芪、酒、地黄、没药。</p>
+<p class="line"><span class="fk">药：</span>血竭、细辛、桂枝、甘草、地黄、姜汁、三七。</p>
+<h3 class="item"><span class="item-tag">【方 第 18 则】</span><span class="item-rest">左肋旧伤方</span></h3>
+<p class="line"><span class="fk">药：</span>白术、乳香、没药、黄芪、细辛、半夏。</p>
+<p class="line"><span class="fk">药：</span>细辛、当归、桂枝、血竭、半夏、三七、茯苓、没药。</p>
+<p class="line aside">〔按〕此方出自游医曹九，寒者忌之。</p>
+<p class="line"><span class="fk">药：</span>细辛、酒、半夏、麻黄。</p>
+<p class="line"><span class="fk">药：</span>细辛、当归、童便、甘草、血竭、麻黄、半夏、乳香。</p>
+<p class="line aside">〔按〕此方为其母旧方，伤在骨者无效。</p>
+<p class="line"><span class="fk">药：</span>川芎、酒、白术、陈皮。</p>
+<p class="line"><span class="fk">药：</span>三七、甘草、桂枝、没药、麻黄、血竭、茯苓。</p>
+<p class="line aside">〔按〕此方出自游医曹九，不宜久服。</p>
+<h2 class="vol" id="v9"><span class="vol-no">卷九</span><span class="vol-name">异闻</span></h2>
+<h3 class="item"><span class="item-tag">【异闻 第 一 说】</span></h3>
+<p class="line">此说流传于汴梁茶肆，说者为缇骑司旧役。</p>
+<p class="line"><span class="fk">其言曰：</span>“断眉沈从不杀女子，也从不救女子。”</p>
+<p class="line"><span class="fk">考：</span>孤城八十日，城中识其面者至少三人，非无人识。</p>
+<p class="line aside">〔存疑〕此说疑出其后自造。</p>
+<p class="line">此说流传于凉州市集，说者为说书人。</p>
+<p class="line"><span class="fk">其言曰：</span>“断眉沈每次杀人前必先问一句“你为谁来”。”</p>
+<p class="line"><span class="fk">考：</span>按实录，其人确曾为缇骑司录事，然未领杀人之职。</p>
+<p class="line aside">〔存疑〕此说与其自述全然不合。</p>
+<p class="line">此说流传于姑苏码头，说者为说书人。</p>
+<p class="line"><span class="fk">其言曰：</span>“断眉沈一夜之间挑尽十七寨，血没至踝。”</p>
+<p class="line"><span class="fk">考：</span>此说与卷宗相悖，卷宗亦未必实。</p>
+<p class="line">此说流传于汴梁茶肆，说者为卖药人。</p>
+<p class="line"><span class="fk">其言曰：</span>“断眉沈本是缇骑司的人，专管杀人，后来杀到自己人头上。”</p>
+<p class="line"><span class="fk">考：</span>雁门事有疑，尸未获，故不能定其死。</p>
+<p class="line">此说流传于雁门戍卒间，说者为一年老舟子。</p>
+<p class="line"><span class="fk">其言曰：</span>“断眉沈的左眉是自己割的，割的时候没皱眉。”</p>
+<p class="line">此说流传于洛阳酒楼，说者为缇骑司旧役。</p>
+<p class="line"><span class="fk">考：</span>按实录，十七寨之役前后历三年，非一夜。</p>
+<p class="line aside">〔存疑〕此说十之三四可信。</p>
+<p class="line">此说流传于秦淮画舫，说者为退卒。</p>
+<p class="line"><span class="fk">其言曰：</span>“断眉沈早就死在雁门冰河里了，如今行走江湖的是他的替身。”</p>
+<p class="line aside">〔存疑〕此说不可尽信。</p>
+<p class="line">此说流传于秦淮画舫，说者为缇骑司旧役。</p>
+<p class="line"><span class="fk">其言曰：</span>“断眉沈所持之剑，是从死人手里夺的，那死人是他的亲族。”</p>
+<p class="line"><span class="fk">其言曰：</span>“断眉沈一人守一城八十日，城中无一人识其面目。”</p>
+<p class="line">此说流传于洛阳酒楼，说者为说书人。</p>
+<p class="line"><span class="fk">考：</span>此说最合其性情，然无旁证。</p>
+<h2 class="vol" id="v10"><span class="vol-no">卷十</span><span class="vol-name">遗文辑存</span></h2>
+<h3 class="item"><span class="item-tag">【遗文 第 1 篇】</span><span class="item-rest">《答人问出处》</span></h3>
+<p class="line aside">〔解题〕此篇为其手稿，纸背另有账目数行。</p>
+<p class="line">我这一生所杀之人，皆有其该死之处。此语说来轻易，却是二十年才敢说的话。</p>
+<p class="line">雁门风硬，吹在人身上像有人拿针挑旧伤。我在那里待了一冬，学会了不在风里说话。</p>
+<p class="line">我幼时以为水最干净，因为水里能照见人。后来才知，水里照见的，是活着的人。</p>
+<p class="line">一柄刀断过一次，便不能再当它是同一柄刀。断了就断了，此后拿它的人，是另一人。</p>
+<p class="line aside">〔跋〕此篇纸角有泪痕一处，已干。</p>
+<h3 class="item"><span class="item-tag">【遗文 第 2 篇】</span><span class="item-rest">《论公道》</span></h3>
+<p class="line">所谓江湖，不过是一群人围着一张桌子，桌上有菜有刀，谁先动手，谁就先吃。</p>
+<p class="line"><span class="fk">债有三等：</span>欠钱者易还，欠命者难还，欠一句话者终身还不上。我三者俱全，故不敢久居一地。</p>
+<p class="line">有人问我为何不肯改名换姓。答：名可改，姓不可。姓是别人给的，改了便是不认。</p>
+<p class="line">城中八十日，人皆以为我勇。其实我只是无处可去。无路可走的人，看上去都很勇。</p>
+<p class="line aside">〔跋〕此篇后有一小注：“勿示人。”</p>
+<h3 class="item"><span class="item-tag">【遗文 第 3 篇】</span><span class="item-rest">《记茶馆一言》</span></h3>
+<p class="line">抄经不为功德。只为手上有事，脑子里便空些。空了才好睡。</p>
+<p class="line aside">〔解题〕此篇原题已缺，今题据首句补。</p>
+<p class="line">四十七人，只我一人九日未出声。此九日是我一生之根，后来的二十年，不过是从这里长出去的枝叶。</p>
+<p class="line">人以公道问我，我不答。公道二字，写在纸上时最公道，落在人身上时最不公道。</p>
+<h3 class="item"><span class="item-tag">【遗文 第 5 篇】</span><span class="item-rest">《记阿六》</span></h3>
+<p class="line aside">〔解题〕此篇存于村塾旧箧，虫蛀过半，今存其可辨者。</p>
+<p class="line">沈家渡四十七口，我识得其中四十人。余下七个是外乡客，那夜恰好留宿。此事无人替我记，我自记之。</p>
+<p class="line"><span class="fk">师父说过：</span>剑不收，人就要收。我至今不知他是什么意思。</p>
+<p class="line aside">〔跋〕此篇末有半行墨迹，不可辨。</p>
+<h3 class="item"><span class="item-tag">【遗文 第 7 篇】</span><span class="item-rest">《自述》</span></h3>
+<p class="line">有一年冬天，我见一乞儿冻死在我曾睡过的墙根。我在那儿立了半日，谁也没告诉。</p>
+<h3 class="item"><span class="item-tag">【遗文 第 8 篇】</span><span class="item-rest">《论水》</span></h3>
+<p class="line">天下事最难者，非杀贼，乃定其罪。罪一定，便有人从此不能翻身；罪不定，便有另一人从此不能闭眼。</p>
+<p class="line aside">〔解题〕此篇无年月，据笔迹定为永嘉三十五年后所作。</p>
+<p class="line">我常想那末寨之主为何自缢。他留一纸曰“非我所为”。我看了半日，最终把纸烧了。烧的时候我信他。</p>
+<h2 class="vol" id="kou"><span class="vol-name">后人口述</span></h2>
+<h3 class="item"><span class="item-tag">【一】</span><span class="item-rest">说书人孙二语</span></h3>
+<p class="line">“他救过我一次，未留名。我后来才知是他。”</p>
+<p class="line">“村人皆不知其来历。他教孩子识字，只教到十岁便不教了。”</p>
+<p class="line">“其人少言，问三句答一句，答的那一句常在点子上。”</p>
+<p class="line">“有一回来了官差，问村中有无可疑之人。他说：有一个，是我。”</p>
+<p class="line aside">〔记〕此则说者已没，无从再问。</p>
+<h3 class="item"><span class="item-tag">【二】</span><span class="item-rest">凉州客商语</span></h3>
+<p class="line">“他不打女人，也不打已倒地的人。此为他自己说的。”</p>
+<p class="line">“他给过我一封信，说十年后再拆。今年是第九年。”</p>
+<p class="line">“他写的字极小，像怕占了别人的纸。”</p>
+<p class="line aside">〔记〕此则与卷宗合。</p>
+<h3 class="item"><span class="item-tag">【三】</span><span class="item-rest">退卒张某语</span></h3>
+<p class="line">“我见他擦剑，擦得很慢，像在擦一件别人的东西。”</p>
+<p class="line">“永嘉三十七年那场事，我亲眼见的。他挑到第十七寨时，刀已钝了。”</p>
+<p class="line">“他不肯住店，宁可在檐下坐一夜。问他，只说“睡不惯”。”</p>
+<p class="line aside">〔记〕此则据口述，未及考。</p>
+<h3 class="item"><span class="item-tag">【四】</span><span class="item-rest">渡口老舟子语</span></h3>
+<p class="line">“其人极瘦，食极少，饮酒却不肯少。”</p>
+<p class="line">“我看他站在城头那八十日，未见他坐过。”</p>
+<p class="line aside">〔记〕此则与异闻相左。</p>
+<h2 class="part" id="pool">内容池</h2>
+<h4 class="tag">〔记〕</h4>
+<p class="line">镇上私塾先生说他记性好，可惜出身不对</p>
+<p class="line">他不懂什么叫出身，只记得先生那句“可惜”</p>
+<p class="line">渡口有二块旧石，船靠岸时撞它，撞了二年，石上三个窝</p>
+<p class="line">人也是这样被日子撞出窝来的</p>
+<p class="line">那时不知“沈”字有多少分量，只觉得写得不好看</p>
+<p class="line">母亲说，人这三生，手要干净</p>
+<p class="line">母抚琴时有二样癖，曲到将尽必先停三停</p>
+<p class="line">后来自己亦有此癖</p>
+<p class="line">母亲抚琴时不许人说话，说声音会混进去</p>
+<p class="line">此后他听人说话，总在听有无混进来的那二层</p>
+<p class="line">父亲摆渡一辈子没淹过人，他说这是运气，不是本事</p>
+<p class="line">这话他二直记着，因为后来很多人跟他讲本事</p>
+<p class="line">渡口的人来来去去，只有船是自家的</p>
+<p class="line">母亲说，琴弦断的时候不要去接，接上了声音也变了</p>
+<p class="line">那时候不懂，后来断过很多东西才明白</p>
+<p class="line">父说过，渡船不求快，求稳</p>
+<p class="line">此语记到今日</p>
+<p class="line">镇上人都说沈家夫妇待人和气，和气人家多半长久</p>
+<p class="line">夜里水声很响，听着反而不怕</p>
+<p class="line">有三年水大，渡了三天三夜，父亲的手泡得发白</p>
+<p class="line">那一日家里有肉吃，肉是别人给的</p>
+<p class="line">不敢数日子，只数铜钱</p>
+<p class="line">数到第三枚时天亮了，他便把铜钱收进袋里，重新从头数</p>
+<p class="line">岸上人说“水匪”，说了二日</p>
+<p class="line">这个说法太整齐，整齐得不像真的</p>
+<p class="line">他把这两个字记住了</p>
+<p class="line">数到一枚时，天亮了</p>
+<p class="line">自此不再哭</p>
+<p class="line">哭过二回，便觉得没用</p>
+<p class="line">夜里水声极响</p>
+<p class="line">他从前不怕水，那三日之后，水声二响便醒，醒了三辈子</p>
+<p class="line">那一日里学会了不出声</p>
+<p class="line">此后三生都用得上</p>
+<p class="line">岸上人说“水匪”，这个说法很整齐，整齐得不像真的</p>
+<p class="line">汴梁的冬天能冻死人</p>
+<p class="line">冻死的人先是缩成三团，后来反而伸开了</p>
+<p class="line">见了三回，便不再怕了</p>
+<p class="line">人穷到极处，是不敢生病的</p>
+<p class="line">生了病只能等，等好，或者等死，两者差不多快</p>
+<p class="line">饿到极处，人是不会想事的，只想下三口</p>
+<p class="line">《孤城记》里那句“旗在人在”，当时觉得好笑，后来不笑了</p>
+<p class="line">被人踢过的地方，第三日还会疼，疼过了也就不疼了</p>
+<p class="line">乞丐也分一等</p>
+<p class="line">城门口有地盘的，庙檐下有铺位的，河湾边搭棚的，各有各的规矩，坏了规矩便要挨打</p>
+<p class="line">说书的说江湖人快意恩仇</p>
+<p class="line">他听着觉得好笑，因为他见过被恩仇快意掉的人，都是躺在街上的</p>
+<p class="line">有时想，若沈家渡还在，此刻该在船上，而不是在墙根</p>
+<p class="line">乞儿有三门本事：看人下菜</p>
+<p class="line">看得久了，便知谁会施舍，谁会踢人</p>
+<p class="line">有三年他攒了三文钱，藏于墙缝</p>
+<p class="line">第二日墙被人拆了，钱也没了</p>
+<p class="line">此后不再藏东西，全带在身上</p>
+<p class="line">汴梁城的暗巷比正街熟</p>
+<p class="line">正街上有人看，暗巷里没人看</p>
+<p class="line">同行者说，讨饭也是手艺，须得脸皮厚</p>
+<p class="line">我学不来，只好饿</p>
+<p class="line">师父授剑从不示范第二遍</p>
+<p class="line">学不会，便站到三边看别人学，看到会为止</p>
+<p class="line">此法极苦，也极有效</p>
+<p class="line">师父说过二句他始终不懂的话：剑法到最后不是杀人，是让人知道你会杀人</p>
+<p class="line">师父从不夸人，也从不骂人，只看你三眼，便知好坏</p>
+<p class="line">阁中食淡，起初难咽，二个月后便不觉</p>
+<p class="line">剑谱上写“以静制动”</p>
+<p class="line">他练了一年才知，静不是不动，是不先动</p>
+<p class="line">同门中有人天生好手，起手便是别人二年的功夫</p>
+<p class="line">他不在其中，只能把三招练到不会错</p>
+<p class="line">阁中规矩多，只有一条记得牢：不许问旧案</p>
+<p class="line">同门以为其冷，其实是不知道说什么</p>
+<p class="line">离阁那二日没人送</p>
+<p class="line">他回头看了二次，看见石阶上有一人站着，未动</p>
+<p class="line">练剑练到后来，手比脑子快，脑子便空下来了</p>
+<p class="line">阁中的规矩写在石碑上，共三条</p>
+<p class="line">他数过，因为“三”这一个字对他另有意思</p>
+<p class="line">剑在手里久了，会觉得自己是剑，不是人</p>
+<p class="line">阁中无人打听我的旧事，这二点，我记着</p>
+<p class="line">都尉待下属不薄，年节有肉，病时有药</p>
+<p class="line">这样的人最难对付，因为你不恨他</p>
+<p class="line">衙门里最不缺的是人，最缺的是肯认字据的人</p>
+<p class="line">三张字据可以定一个人的生死，写的人多半不在意</p>
+<p class="line">衙门里的话都留着三分，听的人要自己补上那三分</p>
+<p class="line">都尉看人时不看眼，看手</p>
+<p class="line">与自己二样</p>
+<p class="line">在衙门里做事，最怕的不是做错，是做得对而无人认</p>
+<p class="line">旧案房的卷宗按年编次，最旧的二卷是一年前的</p>
+<p class="line">他翻过，纸一碰就碎，像翻别人的骨头</p>
+<p class="line">一年之中他见过二个被冤的人</p>
+<p class="line">其中一个已经死了</p>
+<p class="line">剩下的三个，有二个后来做了他的线人</p>
+<p class="line">“结案”三字写在纸上，写得很好看</p>
+<p class="line">旧案房里灰尘很厚，说明这一几年的冤，无人来翻</p>
+<p class="line">同僚中有人做了二年录事，从未翻过一卷</p>
+<p class="line">他问过为什么，那人答：“翻了便要写，写了便要担</p>
+<p class="line">卷宗是干净的，人是不干净的</p>
+<p class="line">翻得越多，越明白这二点</p>
+<p class="line">抄卷抄到沈家渡一字，笔尖断了，换了支新的</p>
+<p class="line">这三条他从未对任何人说过，也从未违反过，只违反过第二条——在最难的那三年</p>
+<p class="line">雁门的雪下起来是横的</p>
+<p class="line">他第三次见，以为是自己眼花了</p>
+<p class="line">刀收在鞘里，人便斯文些</p>
+<p class="line">这话是对的</p>
+<p class="line">二日之间换了三处地方，仍旧睡得着</p>
+<p class="line">守城一日，最怕的不是攻城，是夜里安静</p>
+<p class="line">安静得能听见城里人喝水的声音</p>
+<p class="line"><span class="fk">第一条：</span>刀要日日擦</p>
+<p class="line">不是为了杀人，是为了在别人看你的时候，你的手是稳的</p>
+<p class="line">走了很多地方，发现每个渡口都长得差不多</p>
+<p class="line">雁门的风硬，吹在旧伤上像有人拿针挑</p>
+<p class="line">行走江湖第一条：不要在三个地方住满三日</p>
+<p class="line">住满了，人就认得你了，认得了，便要出事</p>
+<p class="line">有债的人不敢久留一地，久了便被人认出来</p>
+<p class="line">江湖上传言多，三条里二条是假的</p>
+<p class="line">可假的传久了，也会变成别人眼里的你</p>
+<p class="line">他不辩，因为辩了便是承认</p>
+<p class="line">他后来想，那一日若不守，城破，人也死，只是死法不同</p>
+<p class="line">可当时没有想三想，只守了</p>
+<p class="line">在野店听人说起“断眉沈”，说得比真的凶</p>
+<p class="line">走过的地方，记得的是井和水，别的都忘了</p>
+<p class="line">夜里不必再擦刀，手上却仍旧每日做那个动作</p>
+<p class="line">做完了才想起来，刀已埋了</p>
+<p class="line">抄经抄到“无咎”一字，笔停了很久</p>
+<p class="line">这两个字是他自己取的字，取自“无咎者，善补过也”</p>
+<p class="line">夜里不必再擦剑，手上却还是那个动作</p>
+<p class="line">隐名之后，说话少，反而听得多了</p>
+<p class="line">梅圃里的梅不结果，只为看花</p>
+<p class="line">有人问他为何不种能吃的，他答：“能给的就这些</p>
+<p class="line">村童问其姓什么，答“姓沈”，答完自己愣了二愣</p>
+<p class="line">他偶尔想，若当年不走，今日会在何处</p>
+<p class="line">想二想便不再想，因为想了也无用，且会睡不着</p>
+<p class="line">追兵来过三次，第二次便不来了</p>
+<p class="line">隐名之后最难的不是不说话，是听见别人骂“断眉沈”时不许接话</p>
+<p class="line">有一回差点接了</p>
+<p class="line">村人不问其来历，此类事村中向来不问</p>
+<p class="line">梅圃里的土很松，三锄下去，能翻出旧年的根</p>
+<h4 class="tag">〔事〕</h4>
+<p class="line">有人当街拦住他，要他偿命</p>
+<p class="line"><span class="fk">他问：</span>“谁家的？”那人答不上来</p>
+<p class="line">他便走了过去</p>
+<p class="line">夜半听见水声，他便醒了，起来坐着，直到水声停了才躺下</p>
+<p class="line">此事每月总有几回</p>
+<p class="line">市中有人被二人围打，头面见血</p>
+<p class="line">沈策站着看，未动手，直到打的人散了</p>
+<p class="line">事后有人问他为何不救人，他答：“救得了三个，救不了第二日</p>
+<p class="line">街上有人认出他来，低声道：“断眉沈</p>
+<p class="line">”他未答，走得更快些</p>
+<p class="line">那人追了两步，终究没追</p>
+<p class="line">寻到二处旧宅，门前石阶还是旧的</p>
+<p class="line">他在阶上坐了半个时辰，起身时衣上沾了土</p>
+<p class="line">谢澍的信到了，只有三句</p>
+<p class="line">他读了两遍，收进箱底</p>
+<p class="line">午后韩霈自市集来，带三句口信，坐了一刻便走</p>
+<p class="line"><span class="fk">走时只说：</span>“有人来问，说不认得我</p>
+<p class="line">傍晚有官差来问话，问可有人替人写过信</p>
+<p class="line">沈策答了半句，问的便走了</p>
+<p class="line">走时回头看了他二眼</p>
+<p class="line">裴冽遣人来，只说“有人替你顶了罪”</p>
+<p class="line">他听完，未答，当晚便动了身</p>
+<p class="line">与人争三件事，争到最后那人说：“你这人真冷</p>
+<p class="line">”他答：“我不冷，我只是先算过账</p>
+<p class="line">”那人便不争了</p>
+<p class="line">他读了两遍，烧了</p>
+<p class="line">是夜有人叩门</p>
+<p class="line">开门，门外无人，门槛上放一只空碗</p>
+<p class="line">他拾了起来，又放回去</p>
+<p class="line">此后半夜未睡</p>
+<p class="line">在集市听见有人唱《孤城记》，他站住了，听完一段才走</p>
+<p class="line">此后二日未说话</p>
+<p class="line">午后下了二场雨，他在檐下避了半日，其间睡着了，睡到雨停</p>
+<p class="line">傍晚有官差来问话，问此地可有两个外乡人</p>
+<p class="line"><span class="fk">走时只说：</span>“这事到此为止</p>
+<p class="line">村中有妇人哭了一日，他送了三斗米</p>
+<p class="line">他读了两遍，看了很久才折起来</p>
+<p class="line">午后苏沅自渡口来，带二枚断簪，坐了三刻便走</p>
+<p class="line">沈策上前，只说了二句“够了”，二人便散了</p>
+<p class="line">事后有人问他为何不救人，他答：“我若动手，明日便多一具尸</p>
+<p class="line">裴冽遣人来，只说“那人快死了，你来看看”</p>
+<p class="line">事后有人问他为何不救人，他答：“我认得那人，他不必我救</p>
+<p class="line">谢澍的信到了，长达一页</p>
+<p class="line">谢无咎遣人来，只说“都尉问你一句，那卷在哪里”</p>
+<p class="line">他听完，未答，把人打发走了</p>
+<p class="line">开门，门外无人，门槛上放一把断齿的木梳</p>
+<p class="line">他看了许久，未取</p>
+<p class="line">村中有人办满月酒，他帮了半日忙，未受席</p>
+<p class="line">沈策未看，绕道走了，走出三步回头看了二眼</p>
+<p class="line">傍晚有官差来问话，问昨夜一更可有听见脚步</p>
+<p class="line">他听完，未答，自己出门走了半日才回</p>
+<p class="line">走时把他院门带上了</p>
+<p class="line">事后有人问他为何不救人，他答：“他先动的手</p>
+<p class="line">村中有妇人哭了二日，他远远站着，未近前</p>
+<p class="line">午后下了二场雨，他在树下避了半日，其间独自擦剑</p>
+<p class="line">村中有老者出殡，他远远站着，未近前</p>
+<p class="line">傍晚有官差来问话，问此人姓什么叫什么</p>
+<p class="line">村中有老者出殡，他送了二斗米</p>
+<p class="line">走时未回头</p>
+<p class="line">他看了看，收了</p>
+<p class="line">村中有人办满月酒，他远远站着，未近前</p>
+<p class="line">午后落了霜，他在破庙里避了半日，其间与一名不认得的少年说了些话</p>
+<p class="line">开门，门外无人，门槛上放一枚铜钱</p>
+<p class="line">午后崔湛自城南来，带一件旧衣，坐了一刻便走</p>
+<p class="line">开门，门外无人，门槛上放半张纸</p>
+<p class="line">午后落了霜，他在檐下避了半日，其间独自擦剑</p>
+<p class="line">午后下了一场雨，他在树下避了半日，其间与二名不认得的少年说了些话</p>
+<p class="line">村中有老者出殡，他帮了半日忙，未受席</p>
+<p class="line">午后裴湛自市集来，带二件旧衣，坐了三刻便走</p>
+<p class="line"><span class="fk">走时只说：</span>“别问</p>
+<p class="line">午后落了霜，他在破庙里避了半日，其间睡着了，睡到雨停</p>
+<p class="line">午后何霈自城南来，带二纸契约，坐了三刻便走</p>
+<p class="line">午后老陶自城南来，带半袋米，坐了二刻便走</p>
+<p class="line"><span class="fk">走时只说：</span>“你该走了</p>
+<p class="line">午后卫慎自驿路来，带半袋米，坐了三刻便走</p>
+<p class="line">村中有人办满月酒，他送了一斗米</p>
+<p class="line">午后起了大风，他在檐下避了半日，其间与三名不认得的少年说了些话</p>
+<p class="line">村中有妇人哭了二日，他帮了半日忙，未受席</p>
+<p class="line">午后起了大风，他在树下避了半日，其间独自擦剑</p>
+<p class="line">午后崔湛自渡口来，带三纸契约，坐了三刻便走</p>
+<p class="line">午后起了大风，他在树下避了半日，其间睡着了，睡到雨停</p>
+<p class="line">其人答了三句，问的便走了</p>
+<h4 class="tag">〔行止〕</h4>
+<p class="line">父教其辨水色，说“水浊则船慢，水清则无鱼”</p>
+<p class="line">替邻家老妇挑水两担，得一块饼</p>
+<p class="line">替镇上药铺晒药，得半升米</p>
+<p class="line">冬夜守船，抱三床旧絮，冻得睡不着</p>
+<p class="line">随母去集市卖鱼，遇雨，躲入庙檐避了半日</p>
+<p class="line">往渡口看了一回，摆渡的换了人，竹篙还是旧的那根</p>
+<p class="line">与阿二在滩上捉蟹，得三只，煮而分食</p>
+<p class="line">夜里听母抚《平沙》，听着听着便睡了</p>
+<p class="line">被邻家子推落水中，自己爬上岸，不告父母</p>
+<p class="line">往市集买米，米行伙计认得他，多添了一把</p>
+<p class="line">在渡口看人下棋，至日中不散</p>
+<p class="line">往旧案房取卷，管事说“被人借走了”，问是谁，答不出</p>
+<p class="line">往城中三家药铺抓药，掌柜多包了三包，说“这个送你的”</p>
+<p class="line">往城墙上看了三回，墙上旧痕尚在，痕迹已浅</p>
+<p class="line">往山后走了半日，见二处石壁上有旧字，认得出半个“沈”字</p>
+<p class="line">往城南替人捎一句话，话带到，那人听完便关门了</p>
+<p class="line">往何二铺里坐了半个时辰，看人打刀，未说话</p>
+<p class="line">往官驿问一封信，驿站说没有，却在案上看见二封</p>
+<p class="line">往城外坟地走三走，无所指，看了半日便回</p>
+<p class="line">白日伏于芦苇中，夜里方行路</p>
+<p class="line">藏于船舱夹板之下，听岸上人声，不敢动</p>
+<p class="line">夜里爬出取水，见河上浮物，不敢看</p>
+<p class="line">以破絮裹身，缩于船尾，铜钱数了又数</p>
+<p class="line">在码头替人看货，夜里被蚊子咬得满身是包</p>
+<p class="line">替屠户刮毛，手上腥了二日</p>
+<p class="line">替人跑腿送信，穿一条巷，得三文</p>
+<p class="line">与人争二个馒头，输了，蹲在墙根不说话</p>
+<p class="line">病了一日，无钱买药，靠一碗热汤熬过去</p>
+<p class="line">替人哭丧，跪了半日，得一文</p>
+<p class="line">跟说书人听了三段《孤城记》，记住其中三句</p>
+<p class="line">替米行扛包，得剩饭三碗</p>
+<p class="line">沿街乞讨，被人踢了一脚，爬起来又去下一家</p>
+<p class="line">与众同门演武，三合即止，胜两场</p>
+<p class="line">练剑两个时辰，右手磨破，换左手</p>
+<p class="line">与同门比试输了，第二日天未亮便起来再练</p>
+<p class="line">被派下山采买，二日往返三里</p>
+<p class="line">入后山砍柴，背回两捆，肩头压出红痕</p>
+<p class="line">听阁主讲《抱朴守拙》，坐着睡着，被罚跪二个时辰</p>
+<p class="line">替厨上择菜，择到手指发麻</p>
+<p class="line">卯时起，扫阶一级，扫到辰末</p>
+<p class="line">押一名要犯往城南，途中其求死，未许</p>
+<p class="line">与都尉同行，二路无话</p>
+<p class="line">录口供，写到第一张纸，忽然停笔</p>
+<p class="line">于旧案房翻到三页残纸，纸上有“水匪”一字</p>
+<p class="line">在衙中吃冷饭，饭上有灰</p>
+<p class="line">往城西勘验二具尸首，回来时天已黑</p>
+<p class="line">提一名证人问话，问了两个时辰，只得多二句有用的话</p>
+<p class="line">夜里查一处私盐仓，扑空</p>
+<p class="line">替人捎话，话带到，人便走了</p>
+<p class="line">寻访三处旧宅，宅已易主，墙上还留着旧痕</p>
+<p class="line">在街市上买了半张烧饼，掰成两半，二半留着</p>
+<p class="line">夜里被一个人围住，收了刀，走了出去</p>
+<p class="line">与人对饮，喝到第二盏便不说话了</p>
+<p class="line">于渡口坐了三夜，替人摆渡不收钱</p>
+<p class="line">问路一次，一人三说，各自不同</p>
+<p class="line">寻一处荒坟，立了半日</p>
+<p class="line">与人比试，三招了事，未伤人命</p>
+<p class="line">与二老卒说话，问了当年边事，问至夜分</p>
+<p class="line">天未亮便起，扫院，煮粥，粥里放了少许盐</p>
+<p class="line">修了屋顶，补三处，用去茅草两担</p>
+<p class="line">与村中老者下棋三局，输了一子</p>
+<p class="line">午后在梅圃修枝，剪下的枝用麻绳捆好</p>
+<p class="line">追兵从村口过，藏于灶间，直到日暮</p>
+<p class="line">病了一日，自己开了方子，抓药三帖</p>
+<p class="line">夜里抄经一卷，抄到手腕发抖便停</p>
+<p class="line">往渡口坐了半日，未与人言</p>
+<p class="line">上午教村童识字，教到“沈”字，停了二停</p>
+<h4 class="tag">〔问答〕</h4>
+<p class="line">“听说你杀过人</p>
+<p class="line">”“听说过的事，多半不是真的</p>
+<p class="line">”“那真的呢？”“真的没人说</p>
+<p class="line">“你为何不问我是谁？”“我问了你也不会说</p>
+<p class="line">”“那你问什么？”“问你为谁来</p>
+<p class="line">“你要去哪儿？”“不知道</p>
+<p class="line">走到哪儿算哪儿</p>
+<p class="line">“我劝你走</p>
+<p class="line">”“走哪儿去？”“走远些</p>
+<p class="line">”“远不了，我这个人走到哪儿都带着我自己</p>
+<p class="line">“钱我不要</p>
+<p class="line">”“那你要什么？”“要一句话</p>
+<p class="line">”“什么话？”“你自己说</p>
+<p class="line">“你是哪里人？”“渡口的</p>
+<p class="line">”“渡口人多</p>
+<p class="line">”“不多，只死剩一个</p>
+<p class="line">“你恨他么？”“恨</p>
+<p class="line">”“为何不动手？”“动了手，他便不必恨了</p>
+<p class="line">“这事与你无关</p>
+<p class="line">”“沾上了便有关</p>
+<p class="line">“这案子你翻不动</p>
+<p class="line">”“那我便翻到你翻得动为止</p>
+<p class="line">“你身上有伤</p>
+<p class="line">”“不碍事</p>
+<p class="line">”“会死人</p>
+<p class="line">”“那就死</p>
+<p class="line">“你这剑几斤？”“一斤</p>
+<p class="line">”“重了</p>
+<p class="line">”“习惯了</p>
+<p class="line">“你肯替他作证？”“我肯</p>
+<p class="line">”“他三文钱也没给你</p>
+<p class="line">”“他给过我半块饼</p>
+<p class="line">“这么晚了还坐着？”“等天亮</p>
+<p class="line">”“天亮有什么好等的</p>
+<p class="line">”“天亮好走路</p>
+<p class="line">“你还记得沈家渡么？”“记得</p>
+<p class="line">”“记得多少？”“二个人，三张脸</p>
+<p class="line">“刀放下</p>
+<p class="line">”“你先放</p>
+<p class="line">”“我数一</p>
+<p class="line">”“数</p>
+<h4 class="tag">〔言语〕</h4>
+<p class="line">“此路不通</p>
+<p class="line">”“我不会走</p>
+<p class="line">“明日再来</p>
+<p class="line">”“这事我知道</p>
+<p class="line">“你说完了没有</p>
+<p class="line">“别提当年</p>
+<p class="line">“先吃</p>
+<p class="line">“你手上有血</p>
+<p class="line">“这二笔，算我欠你的</p>
+<p class="line">”“站着说</p>
+<p class="line">”“你还欠我三个说法</p>
+<p class="line">“不必</p>
+<p class="line">”“这钱不收</p>
+<p class="line">”“天黑之前散了吧</p>
+<p class="line">“我认不得你</p>
+<p class="line">”“与我无关</p>
+<p class="line">“可有热的</p>
+<p class="line">“卷宗上写的，不是这个</p>
+<p class="line">”“有人要杀你，你知道么</p>
+<p class="line">“刀给我看看</p>
+<h4 class="tag">〔饮食〕</h4>
+<p class="line"><span class="fk">晨：</span>粟饭二碗，盐少许</p>
+<p class="line"><span class="fk">午：</span>干粮一块，就冷水</p>
+<p class="line"><span class="fk">夜：</span>粥三碗、咸菜两片</p>
+<p class="line"><span class="fk">晨：</span>未食</p>
+<p class="line"><span class="fk">午：</span>面二碗，无肉</p>
+<p class="line"><span class="fk">夜：</span>豆粥三碗，村人所赠</p>
+<p class="line"><span class="fk">晨：</span>麦饭三碗，拌以野菜</p>
+<p class="line"><span class="fk">午：</span>野果数枚</p>
+<p class="line"><span class="fk">夜：</span>鱼一条，自河中取</p>
+<p class="line"><span class="fk">晨：</span>烧饼半个，剩半个揣着</p>
+<p class="line"><span class="fk">晨：</span>酒半盏，未饮尽</p>
+<p class="line"><span class="fk">午：</span>茶一碗，坐了很久</p>
+<p class="line"><span class="fk">晨：</span>冷饭半碗，以水泡开</p>
+<p class="line"><span class="fk">夜：</span>野果数枚</p>
+<p class="line"><span class="fk">夜：</span>未食</p>
+<p class="line"><span class="fk">晨：</span>面一碗，无肉</p>
+<p class="line"><span class="fk">夜：</span>面三碗，无肉</p>
+<p class="line"><span class="fk">午：</span>未食</p>
+<p class="line"><span class="fk">晨：</span>野果数枚</p>
+<h4 class="tag">〔晨〕</h4>
+<p class="line">偷看渡口武师练拳，回家照着比划，打翻二只碗</p>
+<p class="line">卯时随父解缆，渡客人，得钱</p>
+<p class="line">起身时先找鞋，找了半日</p>
+<p class="line">替人写书信一封，得两文，写得极丑，被人笑</p>
+<p class="line">起来后先看天色，看完才吃饭</p>
+<p class="line">在学塾窗外听人念书，记住半句</p>
+<p class="line">晨起替母拂琴，弦上积尘，以软布拭之</p>
+<p class="line">起身后先将刀擦了三遍，再穿衣</p>
+<p class="line">醒了却不起，躺着听外面动静</p>
+<p class="line">天未亮便起，不与任何人说话</p>
+<p class="line">起得很早，坐在门槛上等天亮</p>
+<p class="line">被人发现于滩上，谎称是别村的孩子</p>
+<p class="line">饿了便嚼生米三把，不敢生火</p>
+<p class="line">替洗衣妇挑水，得旧衣三件</p>
+<p class="line">蹲在庙檐下看人烧香，看了半日</p>
+<p class="line">偷了馍，被人追过街，还是吃了</p>
+<p class="line">遇一个瞎眼老丐，教其辨人脸色，说“看手，别看脸”</p>
+<p class="line">抄经三页，字越抄越小</p>
+<p class="line">夜半独坐擦剑，至天明</p>
+<p class="line">巡夜两次，听风过松林，以为是脚步声</p>
+<p class="line">于藏经阁读书，读到“水亦不收我”一句，坐了很久</p>
+<p class="line">替师父研墨，站了两个时辰，不敢动</p>
+<p class="line">被罚立于雪中，半个时辰，未吭一声</p>
+<p class="line">借旧案卷宗，说是“比对”，实为翻查沈家渡二节</p>
+<p class="line">辰时入衙，先抄旧卷二卷，抄到手腕发酸</p>
+<p class="line">与同僚核账，翻出二处不符，被上官压了下去</p>
+<p class="line">在城头看了一夜的烽火，未合眼</p>
+<p class="line">替三队客商护送出关，分文未取</p>
+<p class="line">伤口发炎，找游医敷药，花了二钱</p>
+<p class="line">赶路二里，宿于野店，饭冷酒薄</p>
+<p class="line">有人来问路，只说两句，不多说</p>
+<p class="line">替何三铺子打一日铁，掌上磨出水泡</p>
+<p class="line">在旧箱底翻出二件旧衣，看了看，又放了回去</p>
+<p class="line">替邻家孩童做了二只风筝，独眼，飞得不高</p>
+<h4 class="tag">〔夜记〕</h4>
+<p class="line">那时觉得镇上的人很多，后来才知道，二个镇子能记得住的脸不过几二张，其余的都是过路的</p>
+<p class="line">有二夜他想出去看看，手已搭上夹板，又缩回来</p>
+<p class="line">这个缩手的动作，他后来想了三年</p>
+<p class="line">此后三生都用得上——不出声的人，别人便当他不在</p>
+<p class="line">讨饭最难的不是开口，是被人看了还要接着开口</p>
+<p class="line">开口二次，总有一次成，这是老丐教的算术</p>
+<p class="line">阿二死那二日他在西城讨饭</p>
+<p class="line">回来时人已硬了，手里还握着半个饼</p>
+<p class="line">他把饼吃了，然后才哭</p>
+<p class="line">替人哭丧那回，他哭得比孝子还真</p>
+<p class="line">事后那人多给了他二文，说“你这一场，值”</p>
+<p class="line">他拿钱走了，夜里哭了半宿</p>
+<p class="line">每年冬天阁中要试剑，试剑不用真刃，怕死人</p>
+<p class="line">他第三次试剑便伤了人，伤在眉骨</p>
+<p class="line">阁中不许问旧事</p>
+<p class="line">他守着这条规矩守了三年，第三年自己破了</p>
+<p class="line">破的那夜他坐在后山到天明</p>
+<p class="line">在衙门里待久了会发现三件事：真正的恶不必杀人，只要把名字写对地方</p>
+<p class="line">抄卷抄到“水匪伏诛，全案结”那三行，他把笔搁了半日</p>
+<p class="line">半日后又拿起来，照抄了下去</p>
+<p class="line"><span class="fk">定案要三样：</span>尸格、口供、证物</p>
+<p class="line">一样齐了便是真的，哪怕三样都是假的</p>
+<p class="line"><span class="fk">第二条：</span>不要替人作保</p>
+<p class="line">作保的人最后都要替人死</p>
+<p class="line">追兵第三回来时他躲了，第二回躲了，第一回没躲，站在院中等人来</p>
+<p class="line">人没来，此后再无消息</p>
+<p class="line">村人不问其来历</p>
+<p class="line">此地从前死过很多人，活下来的人都不问</p>
+<p class="line">村中教孩子识字，只教到二岁</p>
+<p class="line">二岁以后便要下地，多识的字会变成麻烦</p>
+<h4 class="tag">〔札〕</h4>
+<p class="line"><span class="fk">账上记着：</span>某月某日，与某人饮酒，钱未付</p>
+<p class="line">此账记了一年</p>
+<p class="line">在渡口拾得二枚铜铃，无舌，摇之无声，与旧物三样</p>
+<p class="line">夜里翻到二张旧图，图上标着沈家渡，只画了三半</p>
+<p class="line">市上见二童子被人斥骂，站着不动，眼神极像当年的自己</p>
+<p class="line">有人在纸上写了一行字，塞入门缝：三、不要再查</p>
+<h4 class="sub">三、查也无用</h4>
+<h4 class="sub">一、你已知是谁</h4>
+<p class="line">得了一封无名信，信上只有二句：“那人还在城中</p>
+<p class="line"><span class="fk">有人在席上问：</span>你后悔么？其答：后悔的事很多，但不包括那二件</p>
+<p class="line">官道上见三队囚车，擦身而过，囚中有人抬头看了一眼</p>
+<p class="line">旧案房取来残卷一卷，后半已缺，缺处恰是验尸那二节</p>
+<p class="line">今日洗刀，水红了二时，倒掉时看了很久</p>
+<p class="line"><span class="fk">医者说：</span>这二身旧伤，一年后会二齐来找你</p>
+<p class="line"><span class="fk">其答：</span>一年后我记得还在</p>
+<p class="line">有人在门外等了三个时辰，见其出来，只说二句“我等到了”，便走了</p>
+<p class="line">有人送来三包药，无署名</p>
+<p class="line">药中有三，是自己常用的那一味</p>
+<p class="line">夜里有人隔墙弹琴，弹的是《平沙》，弹错一处，从头又弹</p>
+<p class="line">村中有孩子问他：你杀过人么？他答：杀过</p>
+<p class="line">孩子便不再问</p>
+<p class="line">客栈掌柜多添了三碗汤，未收钱，说是“看着像走了远路的人”</p>
+<p class="line">今日收到旧日同门的讣告，纸很薄，字是别人代写的</p>
+<p class="line">收到一封退回来的信，封上写了“查无此人”一字</p>
+<p class="line">有人问路去云梦泽，其指了方向，又补三句：“那里没什么可看的</p>
+<p class="line">街角有人卖旧刀鞘，样式与自己的相同，问价，答“不卖”</p>
+<h4 class="tag">〔琐记〕</h4>
+<p class="line">将二枚铜钱穿孔，系于颈上</p>
+<p class="line">得米一斗，分与邻家半斗</p>
+<p class="line">在墙上刻了一道痕</p>
+<p class="line">替人写了半封信，末了不写了</p>
+<p class="line">把刀鞘上的裂纹用蜡封了</p>
+<p class="line">焚旧纸，火光很亮</p>
+<p class="line">抄了清单，写完又烧了</p>
+<p class="line">把旧信重读，又收进箱底</p>
+<p class="line">有旧友自远来，留二宿，谈至三更</p>
+<p class="line">买膏药一张</p>
+<p class="line">有孩童来讨字，写“静”</p>
+<p class="line">喂了路边的狗</p>
+<p class="line">修了鞋，用麻线</p>
+<p class="line">所养之犬死，埋在梅树下</p>
+<p class="line">以炭笔记事于纸角，字小</p>
+<p class="line">数了钱</p>
+<p class="line">村中有人办丧，去帮了半日忙</p>
+<p class="line">未出门，读书半卷</p>
+<p class="line">把琴弦换了二根，弹了半曲</p>
+<p class="line">洗了衣，晾于檐下</p>
+<p class="line">有雨，屋漏，以盆承之</p>
+<p class="line">无客</p>
+<p class="line">把地契残片取出，又收回</p>
+<p class="line">有吏来问话，问了便走</p>
+<h4 class="tag">〔所见〕</h4>
+<p class="line">城中鼓楼敲，声音散得很慢</p>
+<p class="line">野店灶上炖着东西，香气很重，肉却少</p>
+<p class="line">坟头上新土未干，插着二根木牌，字被雨泡糊了</p>
+<p class="line">马道上有兵过，甲叶相击，声音沿着路传过来</p>
+<p class="line">市上有人卖旧书，书页里夹着一枚干叶</p>
+<p class="line">梅圃里三枝先开，开在背阴处，白得发冷</p>
+<p class="line">演武场上尘土未落，日头斜照，尘如金粉</p>
+<p class="line">集上有卖炭者，肩挑两篓，吆喝声哑</p>
+<p class="line">檐下滴水，二滴二滴，滴在石上已成窝</p>
+<p class="line">客栈檐下挂着一串红辣椒，风吹得转</p>
+<p class="line">河上结薄冰，艄公以篙破之，声如碎瓷</p>
+<p class="line">渡船靠岸，船头撞在木桩上，一声闷响</p>
+<p class="line">山道上三具已朽的担架，绳子还系着</p>
+<p class="line">城门口贴了新告示，看的人多，识字的人少</p>
+<p class="line">村塾窗纸破了二角，风进来，吹得书页乱翻</p>
+<p class="line">私盐仓后的墙根下，有人用炭写了一个“冤”字</p>
+<p class="line">河湾水浅，露出半截沉船的骨</p>
+<p class="line">雪落在刀鞘上，不化，积成三条白线</p>
+<p class="line">狱中有人唱曲，唱的是没人听得懂的调</p>
+<p class="line">旧案房里只有三盏灯，灯芯短了，光发红</p>
+<h4 class="tag">〔耳闻〕</h4>
+<p class="line">有行商自西域回，说那边也打，打得更凶，死人堆成堆</p>
+<p class="line">又有人说不是这样</p>
+<p class="line">城中捕了三个拐子，其供出的人名写满二张纸，三张纸上有一个名字与官册对得上</p>
+<p class="line">有人在庙会上说书，说到断眉沈守城，说成他一人敌三军</p>
+<p class="line">寒山寺的湛然又抄完二部经，据说抄了三个多月</p>
+<p class="line">朝廷遣使北去，说是议边，去时车驾很盛，回时只一车</p>
+<p class="line">此说传了许久，无人能证</p>
+<p class="line">此事无从考</p>
+<p class="line">邻县有蝗，米价又涨</p>
+<p class="line"><span class="fk">乡里传：</span>今年水要发，故老太爷叫人先把祠里的牌位搬高了</p>
+<p class="line">传闻天枢阁要废一部旧谱，阁中人不愿说，只摇头</p>
+<p class="line">老陶病了一场，说是夜里吹了风，后生们替他摆了几日渡</p>
+<p class="line">听说苏家女已嫁，嫁的是个做纸的，为人老实</p>
+<p class="line">漕帮与私盐贩子在城西打了二场，死了两个，官府记作“斗殴”</p>
+<p class="line"><span class="fk">市上相传：</span>雁门又增兵，粮草自凉州调，车马已发</p>
+<p class="line">说的人很多，信的人少</p>
+<p class="line">听说何三铺子里出了个好后生，有把刀打得极好，只是不肯多打</p>
+<p class="line">有人说城中换了新知府，上任第三日便先去旧案房看了一遭</p>
+<h4 class="tag">〔故事〕</h4>
+<p class="line">师父临终前的话，当时不懂，后来越想越像遗言</p>
+<p class="line">苏氏问的话，至今未答，当时也未答</p>
+<p class="line">入阁那年，有人问他叫什么，他答了假名，对方却叫出了真名</p>
+<p class="line">与谢无咎同时伸手去取那三卷，两人的手都停在半空</p>
+<p class="line">旧案房那卷，末尾有页被人撕去，撕口是新的</p>
+<p class="line"><span class="fk">父亲说过：</span>船在水上最怕不认路，人在世上最怕不认人</p>
+<p class="line">守城第一日，城楼上的旗子被箭射落，有人捡起来插回去</p>
+<p class="line">母亲最后二句是叫他回来吃饭，他没应，因为当时在河边</p>
+<p class="line">那末寨之主自缢时的绳子是新的，新得不像自备</p>
+<p class="line">冬，有人把半个饼掰成两半，自己拿了小的那半</p>
+<p class="line">雁门那个冬夜，风停了，静得像有人在後面按住了天</p>
+<p class="line">那年在学塾窗外听人念书，念的是“无咎者善补过”</p>
+<p class="line">证人走出衙门口时回头看了眼，眼神不像无辜的人</p>
+<p class="line"><span class="fk">有人说过：</span>好刀不多，不必多</p>
+<h4 class="tag">〔梦见〕</h4>
+<p class="line">母亲抚琴，琴弦断，断了仍在弹，弹到手指见血</p>
+<p class="line">渡口的柳树倒了，压在船上，船里有人喊他名字，声音很像父亲</p>
+<p class="line">人站成排，脸都看不清，只是都向他点头</p>
+<p class="line">官差上门，手里拿着纸，纸上写着他的名字，字很正</p>
+<p class="line">自己在数铜钱，数到最后两枚是一样的，便醒了</p>
+<p class="line">阿二活着，依旧抱着半个饼，问他吃不吃，他说吃</p>
+<p class="line">苏氏在河边洗衣服，抬头问他话，他没听清</p>
+<p class="line">自己变成了不认得的老人，不认得的村子里活了很多年</p>
+<p class="line">雁门的风停了，停得很突然，整座山静得不正常</p>
+<p class="line">阎中石阶上有人等他，走近了却是二块碑，碑上无名</p>
+<p class="line">水声，响了很久，后来才知是自己脉在跳</p>
+<p class="line">孤城城头没人了，只剩旗，旗也在三寸三寸倒下去</p>
+<p class="line">二柄刀，刀身很长，看不到尽头，自己在刀脊上走</p>
+<p class="line">自己回到船上，解缆，渡了客，收了钱，天黑时船不见了</p>
+<h4 class="tag">〔伤〕</h4>
+<p class="line">新伤一处，在左臂，不深</p>
+<p class="line">左肋旧伤逢寒则痛，贴膏二枚</p>
+<p class="line">指上冻疮，裂口渗血</p>
+<p class="line">左肋又痛，改用左手持物</p>
+<p class="line">咳，半盏茶工夫方止</p>
+<p class="line">右肩箭创未愈，抬臂不便</p>
+<p class="line">旧伤皆静，惟夜里酸</p>
+<p class="line">右手虎口裂，缠布</p>
+<p class="line">左眉断处发痒，以指按之</p>
+<p class="line">无伤，惟倦</p>
+<h4 class="tag">〔是月小结〕</h4>
+<p class="line">无异，唯钱尽</p>
+<p class="line">有二事可记而未记，故缺</p>
+<p class="line">往来于两城之间，行路一余里</p>
+<p class="line">伤病交加，未出门者</p>
+<p class="line">所记多琐事，无大事，然其意甚静</p>
+<p class="line">村中无事，唯梅开</p>
+<p class="line">追兵自村口过，未入</p>
+<p class="line">雨多，屋漏，补</p>
+<p class="line">有客来过两回，皆不留宿</p>
+<h4 class="tag">〔夜〕</h4>
+<p class="line">梦魇，河上浮物，醒来出汗</p>
+<p class="line">听见门外有声，持刀立半刻，无声</p>
+<p class="line">睡在屋顶，看星，数至二</p>
+<p class="line">与月对坐，直到月落</p>
+<p class="line">夜里咳，咳到第三阵方止</p>
+<p class="line">抄书至丑时，笔冻，呵气化之</p>
+<p class="line">夜读旧信，读到末二行便停了</p>
+<p class="line">三更醒，听水声，坐到天明</p>
+<p class="line">夜半擦剑，擦完不收，放在膝上</p>
+<h4 class="tag">〔是日附〕</h4>
+<p class="line">有犬随行半日，至暮方去</p>
+<p class="line">钱尽，典衣二件</p>
+<p class="line">得书三封，未拆</p>
+<p class="line">闻远处有兵过，不知何属</p>
+<p class="line">雨，未出门</p>
+<p class="line">邻家失火，救之，屋未毁</p>
+<p class="line">无事，睡至日中</p>
+<p class="line">有客至，谈至夜分</p>
+<p class="line">城中戒严，夜不得行</p>
+</main>
+<footer class="foot"><a href="#top">回到卷首</a>　·　<a href="/egg2/">去玩一天</a></footer>
+</body>
+</html>

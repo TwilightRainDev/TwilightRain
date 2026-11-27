@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f6efe2">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>沈策又过了一天（文字游戏）</title>
+<script src="/egg2/theme.js"></script>
+<style>
+:root{--paper:#f6efe2;--ink:#2a2622;--red:#a8322a;--dim:#8b8175;--line:#d9cdb8;--gold:#8a6a2f}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{color-scheme:light}
+html[data-theme="dark"]{color-scheme:dark}
+html,body{margin:0;height:100%;-webkit-text-size-adjust:100%}
+body{background:var(--paper)!important;color:var(--ink)!important;font-family:"Songti SC","Noto Serif CJK SC",serif;
+ display:flex;justify-content:center;overflow-x:hidden}
+#app{width:100%;max-width:520px;height:100vh;height:100dvh;display:flex;flex-direction:column;
+ padding:calc(8px + env(safe-area-inset-top)) 10px calc(8px + env(safe-area-inset-bottom));gap:8px}
+header{display:flex;flex-direction:column;gap:3px;border-bottom:1px solid var(--line);padding-bottom:6px}
+h1{font-size:15px;margin:0;letter-spacing:.06em;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+h1 small{font-size:10px;color:var(--dim);font-weight:400;margin-left:4px}
+#date{font-size:12.5px;color:var(--red);letter-spacing:.04em;white-space:nowrap;flex:0 0 auto}
+.hrow{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;row-gap:5px}
+.chips{display:flex;align-items:center;gap:4px;flex-wrap:nowrap;justify-content:flex-end;flex:0 1 auto;margin-left:auto}
+.chip{font-size:11px;color:var(--gold);border:1px solid var(--line);border-radius:20px;padding:2px 8px;background:#fffdf8;white-space:nowrap;flex:0 0 auto}
+.chip:active{background:#f3e6df}
+.chip.red{background:var(--red);color:#fff6ee;border-color:var(--red);font-weight:600}
+.chip.red b{font-size:12px}
+.stamp{border:1.5px solid var(--red);color:var(--red);border-radius:4px;padding:1px 6px;font-size:10px;
+ letter-spacing:.08em;transform:rotate(-2deg);background:rgba(168,50,42,.05);white-space:nowrap;flex:none}
+.stamp b{font-size:11px}
+.stamp{touch-action:manipulation;position:relative}
+.stamp:active{background:rgba(168,50,42,.15)}
+#story{position:fixed;inset:0;display:none;background:#f6efe2;z-index:60;flex-direction:column;isolation:isolate}
+body.story-on #app{display:none}
+body.story-on{overflow:hidden}
+#story.on{display:flex}
+#story .top{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 14px 8px;border-bottom:1px solid var(--line)}
+#story .top b{font-size:14px;letter-spacing:.08em}
+#story .top small{color:var(--gold);font-size:11px;letter-spacing:.06em}
+#story .body{flex:1;overflow-y:auto;padding:16px 18px;font-size:14.5px;line-height:2.05;-webkit-overflow-scrolling:touch}
+#story .body p{margin:0 0 12px;text-indent:2em}
+#story .body p.h{text-indent:0;color:var(--red);font-size:12.5px;letter-spacing:.1em;margin-top:18px}
+#story .body p.note{text-indent:0;color:var(--dim);font-size:12px;font-style:italic}
+#story .foot{display:flex;gap:8px;padding:8px 14px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
+#story .foot button{flex:1;font-size:13px;padding:11px 4px}
+#story .foot .exit{flex:.8;border-color:var(--line);color:var(--dim)}
+.chip.rawbadge{background:#d2604f;color:#fff6ee;border-color:#d2604f;letter-spacing:.1em;font-weight:600}
+#rawpane{display:none;flex:1;overflow-y:auto;background:#15120f;border:1px solid #3b332a;border-radius:8px;padding:10px;font-size:13px;line-height:1.72;-webkit-overflow-scrolling:touch}
+#rawpane.on{display:block}
+.rawbox{padding:0;margin:0;background:transparent;border:0}
+.rawtitle{font-size:15px;letter-spacing:.32em;color:#d2604f;text-align:center;margin:2px 0 6px;font-weight:600}
+.rawsub{font-size:10.5px;color:#8d8375;text-align:center;margin-bottom:8px;letter-spacing:.04em}
+.rawbox .ln .x{color:#e6ddca}
+.rawbox .ln .t{color:#c9a24a}
+.rawbox .ln .c{color:#6d6455}
+.rawbox .rawtip{color:#8d8375;font-size:10.5px;text-align:center;margin-top:8px;border-top:1px dashed #3b332a;padding-top:6px}
+body.raw-on{background:#131110!important;color:#e8e0cf!important}
+body.raw-on header{border-color:#3b332a}
+body.raw-on h1,body.raw-on h1 small,body.raw-on #stats b{color:#e8e0cf}
+body.raw-on h1 small{color:#8d8375}
+body.raw-on #date{color:#d2604f}
+body.raw-on #bar{background:#3b332a}
+body.raw-on #log{background:#15120f;border-color:#3b332a;color:#cfc6b3}
+body.raw-on #log .ln.day{color:#d2604f;border-color:#3b332a}
+body.raw-on #log .ln.sys{color:#8d8375}
+body.raw-on #stats div{background:#1a1714;border-color:#3b332a;color:#8d8375}
+body.raw-on #stats b{color:#e8e0cf}
+body.raw-on button{background:#1a1714;color:#d2604f;border-color:#5a2a24}
+body.raw-on button.primary{background:#8f2f28;color:#f7ece0}
+body.raw-on .chip{background:#1a1714;border-color:#3b332a;color:#c9a24a}
+body.raw-on .chip.red{background:#8f2f28;color:#f7ece0;border-color:#8f2f28}
+body.raw-on .stamp{border-color:#d2604f;color:#d2604f;background:rgba(210,96,79,.10)}
+body.raw-on #pop{background:rgba(0,0,0,.66)}
+body.raw-on .card{background:#15120f;border-color:#5a2a24;box-shadow:0 16px 40px rgba(0,0,0,.65)}
+body.raw-on .card h3{color:#d2604f}
+body.raw-on .card .body{color:#e6ddca}
+body.raw-on .card .body em{color:#e8846f}
+body.raw-on .card .body h4{color:#c9a24a}
+body.raw-on .card .body p{color:#d8cfbc}
+body.raw-on .card button{background:#1a1714;color:#d2604f;border-color:#5a2a24}
+body.raw-on .card button:active{background:#241f1a}
+body.raw-on .card button.ghost{background:transparent;color:#8d8375;border-color:#3b332a}
+body.raw-on .bd{background:#1a1714;border-color:#3b332a;color:#7d7466}
+body.raw-on .bd b{color:#7d7466}
+body.raw-on .bd.on{background:#1f1310;border-color:#8f2f28;color:#e6ddca}
+body.raw-on .bd.on b{color:#e8846f}
+body.raw-on .bd span{color:#8d8375!important}
+.rawtip{color:var(--dim);font-size:10.5px;font-style:italic;margin-bottom:4px}
+.ln.raw .t{color:#b0742f}
+.ln.case{color:#7a3b12}
+.ln.case .t{color:var(--red)}
+#badges{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.bd{border:1px solid var(--line);border-radius:7px;padding:6px 7px;font-size:11px;color:#b3a894;line-height:1.4;background:#faf5ea}
+.bd.on{border-color:var(--red);color:var(--ink);background:#fff6ef}
+.bd b{display:block;font-size:12px;color:inherit;margin-bottom:2px}
+.bd.on b{color:var(--red)}
+.card button.ghost{background:transparent;color:var(--dim);border-color:var(--line);margin-top:6px}
+#bar{height:3px;background:var(--line);border-radius:2px;overflow:hidden}
+#bar i{display:block;height:100%;width:0;background:var(--red);transition:width .2s}
+.statsbar{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:10.5px;color:var(--dim);margin:-2px 0 -2px}
+.statsbar span{letter-spacing:.12em}
+.progwrap{flex:1;min-width:0;overflow:hidden}
+#progLabel{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.statsbar button{font-family:inherit;font-size:10.5px;padding:2px 8px;border-radius:20px;border:1px solid var(--line);background:#fffdf8;color:var(--gold);line-height:1.6}
+.statsbar button:active{background:#f3e6df}
+body.raw-on .statsbar button{background:#1a1714;border-color:#3b332a;color:#c9a24a}
+body.raw-on .statsbar{color:#8d8375}
+#stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;font-size:10px;color:var(--dim)}
+#stats div{background:#fffdf8;border:1px solid var(--line);border-radius:5px;padding:3px 5px;line-height:1.25;overflow:hidden;white-space:nowrap}
+#stats b{display:block;font-size:13px;color:var(--ink);font-weight:600}
+#log{flex:1;overflow-y:auto;background:#fffdf8;border:1px solid var(--line);border-radius:8px;
+ padding:9px;font-size:13px;line-height:1.7;-webkit-overflow-scrolling:touch}
+.ln{margin:2px 0;display:flex;gap:5px;align-items:baseline}
+.ln .t{color:var(--gold);font-size:10.5px;flex:none;opacity:.9}
+.ln .x{flex:1}
+.ln .c{color:#b9ae9a;font-size:9.5px;flex:none}
+.ln.day{color:var(--red);font-size:11.5px;margin-top:7px;border-top:1px dashed var(--line);padding-top:5px}
+.ln.sys{color:var(--dim);font-size:11.5px}
+.ln.hot .x{color:var(--red)}
+footer{display:grid;grid-template-columns:1.15fr 1fr 1fr .82fr .82fr;gap:5px}
+button{font-family:inherit;font-size:12.5px;padding:10px 3px;border-radius:7px;border:1px solid var(--red);
+ background:#fffdf8;color:var(--red);letter-spacing:.02em}
+button:active{background:#f3e6df}
+button.primary{background:var(--red);color:#fff8f0}
+#pop{position:fixed;inset:0;display:none;place-items:center;background:rgba(42,38,34,.45);padding:18px;z-index:9}
+#pop.on{display:grid}
+.card{background:var(--paper);border:1px solid var(--red);border-radius:12px;padding:16px 14px 12px;
+ max-width:360px;width:100%;box-shadow:0 12px 30px rgba(0,0,0,.28);max-height:80vh;max-height:80dvh;
+ display:flex;flex-direction:column;overflow:hidden}
+.card h3{margin:0 0 8px;font-size:15px;color:var(--red);letter-spacing:.06em;flex:none}
+.card .body{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;font-size:13.5px;line-height:1.75;margin-bottom:12px}
+.card .body em{font-style:normal;color:var(--red);font-weight:600}
+.card .body h4{font-size:12px;color:var(--gold);margin:12px 0 4px;letter-spacing:.1em}
+.card .body p{margin:0 0 6px}
+.card button{width:100%;flex:none;padding:9px}
+/* 深色主题的数据来自 body.raw-on 那套暗色皮肤；浮层与按下态另补 */
+html[data-theme="dark"] body{background:#131110!important;color:#e8e0cf!important}
+html[data-theme="dark"] header{border-color:#3b332a}
+html[data-theme="dark"] h1,html[data-theme="dark"] h1 small,html[data-theme="dark"] #stats b{color:#e8e0cf}
+html[data-theme="dark"] h1 small{color:#8d8375}
+html[data-theme="dark"] #date{color:#d2604f}
+html[data-theme="dark"] #bar{background:#3b332a}
+html[data-theme="dark"] #log{background:#15120f;border-color:#3b332a;color:#cfc6b3}
+html[data-theme="dark"] #log .ln.day{color:#d2604f;border-color:#3b332a}
+html[data-theme="dark"] #log .ln.sys{color:#8d8375}
+html[data-theme="dark"] #stats div{background:#1a1714;border-color:#3b332a;color:#8d8375}
+html[data-theme="dark"] #stats b{color:#e8e0cf}
+html[data-theme="dark"] button{background:#1a1714;color:#d2604f;border-color:#5a2a24}
+html[data-theme="dark"] button.primary{background:#8f2f28;color:#f7ece0}
+html[data-theme="dark"] .chip{background:#1a1714;border-color:#3b332a;color:#c9a24a}
+html[data-theme="dark"] .chip.red{background:#8f2f28;color:#f7ece0;border-color:#8f2f28}
+html[data-theme="dark"] .stamp{border-color:#d2604f;color:#d2604f;background:rgba(210,96,79,.10)}
+html[data-theme="dark"] #pop{background:rgba(0,0,0,.66)}
+html[data-theme="dark"] .card{background:#15120f;border-color:#5a2a24;box-shadow:0 16px 40px rgba(0,0,0,.65)}
+html[data-theme="dark"] .card h3{color:#d2604f}
+html[data-theme="dark"] .card .body{color:#e6ddca}
+html[data-theme="dark"] .card .body em{color:#e8846f}
+html[data-theme="dark"] .card .body h4{color:#c9a24a}
+html[data-theme="dark"] .card .body p{color:#d8cfbc}
+html[data-theme="dark"] .card button{background:#1a1714;color:#d2604f;border-color:#5a2a24}
+html[data-theme="dark"] .card button:active{background:#241f1a}
+html[data-theme="dark"] .card button.ghost{background:transparent;color:#8d8375;border-color:#3b332a}
+html[data-theme="dark"] .bd{background:#1a1714;border-color:#3b332a;color:#7d7466}
+html[data-theme="dark"] .bd b{color:#7d7466}
+html[data-theme="dark"] .bd.on{background:#1f1310;border-color:#8f2f28;color:#e6ddca}
+html[data-theme="dark"] .bd.on b{color:#e8846f}
+html[data-theme="dark"] .bd span{color:#8d8375!important}
+html[data-theme="dark"] .statsbar button{background:#1a1714;border-color:#3b332a;color:#c9a24a}
+html[data-theme="dark"] .statsbar{color:#8d8375}
+body.raw-on #story,html[data-theme="dark"] #story{background:#131110}
+body.raw-on #story .top,html[data-theme="dark"] #story .top{border-color:#3b332a}
+body.raw-on #story .top b,html[data-theme="dark"] #story .top b{color:#e8e0cf}
+body.raw-on #story .top small,html[data-theme="dark"] #story .top small{color:#c9a24a}
+body.raw-on #story .body,html[data-theme="dark"] #story .body{color:#d8cfbc}
+body.raw-on #story .body p.h,html[data-theme="dark"] #story .body p.h{color:#d2604f}
+body.raw-on #story .body p.note,html[data-theme="dark"] #story .body p.note{color:#8d8375}
+body.raw-on #story .foot,html[data-theme="dark"] #story .foot{border-color:#3b332a}
+body.raw-on #story .foot .exit,html[data-theme="dark"] #story .foot .exit{border-color:#3b332a;color:#8d8375}
+body.raw-on .chip:active,html[data-theme="dark"] .chip:active{background:#241f1a}
+body.raw-on .stamp:active,html[data-theme="dark"] .stamp:active{background:rgba(210,96,79,.18)}
+body.raw-on .card button.ghost:active,html[data-theme="dark"] .card button.ghost:active{background:#1a1714}
+</style></head><body>
+<div id="app">
+  <header>
+    <div class="hrow"><h1>沈策又过了一天<small>96 MB 设定集</small></h1><div class="stamp" id="stampBtn" role="button" aria-label="打开原书剧情">剧情进展 <b>+0</b></div></div>
+    <div class="hrow"><div id="date">永嘉十四年正月初一　四岁</div>
+      <div class="chips"><span id="life" class="chip" style="display:none"></span><span id="achi" class="chip">成就 0/124</span><span class="chip" id="musicChip" role="button" title="古筝配乐，点一下开关">配乐 关</span><span class="chip red" id="zhuChip" role="button" title="看看原书那天写的什么">朱批 <b id="zhu">0</b></span></div></div>
+    <div id="bar"><i></i></div>
+  </header>
+  <div class="statsbar"><div class="progwrap"><span id="progLabel">本页统计</span></div><button id="statsToggle" type="button">展开全部</button></div>
+  <div id="stats"></div>
+  <div id="log"></div>
+  <div id="rawpane"></div>
+  <footer>
+    <button id="b1" class="primary">过一天</button>
+    <button id="b30">过一月</button>
+    <button id="b360">过一年</button>
+    <button id="b3600">过十年</button>
+    <button id="bEv">罪证</button>
+  </footer>
+</div>
+<div id="story">
+  <div class="top"><div><b id="st-title">总纲</b><br><small id="st-src"></small></div>
+    <div style="text-align:right;font-size:11px;color:var(--dim)"><span id="st-idx"></span><br><span style="color:var(--gold)">原书没有剧情</span><br><a id="st-book" href="/egg2/book/" style="color:var(--red);text-decoration:none;border-bottom:1px solid var(--line);white-space:nowrap">读全书这一卷</a></div></div>
+  <div class="body" id="st-body"></div>
+  <div class="foot"><button id="st-prev">上一章</button><button id="st-next" class="ghost">下一章</button><button id="st-exit" class="exit">回到日子</button></div>
+</div>
+<div id="pop"><div class="card"><h3 id="pt"></h3><div class="body" id="pb"></div><button id="pb2">知道了</button><button id="pb4" class="ghost" style="display:none">转世重生</button><button id="pb3" class="ghost" style="display:none">清空存档</button></div></div>
+<script src="/egg2/price.js"></script>
+<script src="/egg2/main.js"></script></body></html>
